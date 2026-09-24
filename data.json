@@ -1,0 +1,174 @@
+{
+  "profile": {
+    "name": "Dương Phúc Khánh",
+    "nickname": "Kido",
+    "title": "Systems Architect & Engineering Leader",
+    "tagline": "Architecting high-throughput distributed systems, algorithmic trading tools, and agentic developer platforms.",
+    "location": "Da Nang, Vietnam",
+    "email": "phuckhanh22@gmail.com",
+    "github": "https://github.com/khanhduong22",
+    "status": "Available for Strategic Advisory & System Architecture"
+  },
+  "metrics": [
+    { "value": "50,000+", "label": "Req/s Sustained Throughput", "context": "Stress-tested FastAPI & Redis gateway" },
+    { "value": "98%", "label": "Memory Footprint Reduction", "context": "Redis HyperLogLog real-time analytics" },
+    { "value": "3x", "label": "Consecutive Best Performance", "context": "Awarded at SBI FPT (2022, 2023, 2024)" },
+    { "value": "8+", "label": "Years Engineering Experience", "context": "Distributed systems & FinTech platforms" }
+  ],
+  "flagships": [
+    {
+      "name": "Index",
+      "category": "FinTech Social Network & Crawler",
+      "url": "https://index.vn",
+      "description": "Community engine built in NestJS with dynamic groups, Base32 Materialized Path comment trees, fine-grained Bitmask RBAC, and multi-source distributed ETL ingestion pipeline with <5ms latency.",
+      "tech": ["NestJS", "Base32 Materialized Path", "Bitmask RBAC", "Redis HLL", "Cloudflare R2"]
+    },
+    {
+      "name": "Linkpul",
+      "category": "High-Throughput Gateway",
+      "url": "https://linkpul.com",
+      "description": "High-concurrency URL redirection sustaining 50k req/sec p99 using Redis Mutex Locks, asynchronous clickstream queue workers, and multi-layer SigNoz APM telemetry.",
+      "tech": ["FastAPI", "Redis Mutex", "PostgreSQL", "SigNoz APM", "Docker"]
+    },
+    {
+      "name": "Agent Harness Kit",
+      "category": "Multi-Agent AI Engineering",
+      "url": "https://github.com/khanhduong22/agent-harness-kit",
+      "description": "Portable framework standardizing 70+ AI skills, parallel Git worktrees, TDD loops, and 7 mandatory quality gates across Claude Code, Codex, and Google Antigravity.",
+      "tech": ["TypeScript", "Multi-Agent Worktrees", "MCP", "SonarQube", "Vitest", "Playwright"]
+    }
+  ],
+  "satellites": [
+    {
+      "id": "md",
+      "name": "MD Preview",
+      "subdomain": "md.khanhdp.com",
+      "url": "https://md.khanhdp.com",
+      "category": "Productivity",
+      "badge": "Public Tool",
+      "desc": "Client-side Markdown live editor and custom PDF exporter with zero backend storage."
+    },
+    {
+      "id": "tools",
+      "name": "IT-Tools Hub",
+      "subdomain": "tools.khanhdp.com",
+      "url": "https://tools.khanhdp.com",
+      "category": "Developer Tools",
+      "badge": "Self-Hosted",
+      "desc": "Handy collection of developer utilities: JWT debugger, regex tester, hash generator, base64."
+    },
+    {
+      "id": "p2p",
+      "name": "P2P Tracker",
+      "subdomain": "p2p.khanhdp.com",
+      "url": "https://p2p.khanhdp.com",
+      "category": "FinTech & Data",
+      "badge": "Automated",
+      "desc": "Real-time P2P market scraping, liquidity depth monitoring, and arbitrage spread tracking."
+    },
+    {
+      "id": "finance",
+      "name": "Personal Finance",
+      "subdomain": "finance.khanhdp.com",
+      "url": "https://finance.khanhdp.com",
+      "category": "FinTech & Data",
+      "badge": "Private",
+      "desc": "Quantitative asset tracking, capital allocation, and portfolio rebalancing intelligence."
+    },
+    {
+      "id": "12weeks",
+      "name": "12-Week Year Hub",
+      "subdomain": "12weeks.khanhdp.com",
+      "url": "https://12weeks.khanhdp.com",
+      "category": "Life Ops",
+      "badge": "Accountability",
+      "desc": "High-velocity execution and weekly scoring system based on the 12-Week Year methodology."
+    },
+    {
+      "id": "health",
+      "name": "PHR Health Hub",
+      "subdomain": "health.khanhdp.com",
+      "url": "https://health.khanhdp.com",
+      "category": "Life Ops",
+      "badge": "Private",
+      "desc": "Personal health record tracker, biometrics logging, and lifestyle optimization dashboard."
+    },
+    {
+      "id": "food",
+      "name": "Food & Nutrition Hub",
+      "subdomain": "food.khanhdp.com",
+      "url": "https://food.khanhdp.com",
+      "category": "Life Ops",
+      "badge": "Personal Ops",
+      "desc": "Diet tracking, nutritional analytics, and daily meal planning intelligence."
+    },
+    {
+      "id": "signoz",
+      "name": "SigNoz APM",
+      "subdomain": "signoz.khanhdp.com",
+      "url": "https://signoz.khanhdp.com",
+      "category": "Cloud & Observability",
+      "badge": "Infrastructure",
+      "desc": "Distributed tracing, OpenTelemetry collectors, and p99 service latency telemetry."
+    },
+    {
+      "id": "grafana",
+      "name": "Grafana Dashboards",
+      "subdomain": "grafana.khanhdp.com",
+      "url": "https://grafana.khanhdp.com",
+      "category": "Cloud & Observability",
+      "badge": "Infrastructure",
+      "desc": "Unified system metrics, CPU/memory telemetry, and real-time VPS resource utilization."
+    },
+    {
+      "id": "kuma",
+      "name": "Uptime Kuma",
+      "subdomain": "kuma.khanhdp.com",
+      "url": "https://kuma.khanhdp.com",
+      "category": "Cloud & Observability",
+      "badge": "Status Page",
+      "desc": "24/7 service uptime monitoring, SLA tracking, and heartbeat incident alerting."
+    },
+    {
+      "id": "dozzle",
+      "name": "Dozzle Logs",
+      "subdomain": "dozzle.khanhdp.com",
+      "url": "https://dozzle.khanhdp.com",
+      "category": "Cloud & Observability",
+      "badge": "DevOps",
+      "desc": "Real-time streaming logs viewer across all running Docker containers on Contabo VPS."
+    },
+    {
+      "id": "sonar",
+      "name": "SonarQube Quality",
+      "subdomain": "sonar.khanhdp.com",
+      "url": "https://sonar.khanhdp.com",
+      "category": "Quality & Security",
+      "badge": "CI/CD Gate",
+      "desc": "Automated code smell inspection, vulnerability audit, and test coverage quality gate."
+    }
+  ],
+  "trading": {
+    "indicator": {
+      "title": "TradingView Custom Indicator",
+      "platform": "TradingView Pine Script",
+      "url": "https://vn.tradingview.com/script/neSZYFwg/",
+      "desc": "Custom technical analysis indicator authored in Pine Script for market volatility and trend breakouts."
+    },
+    "robots": {
+      "title": "Algorithmic Expert Advisors (EA)",
+      "platform": "MetaTrader 5 (MQL5)",
+      "desc": "Quantitative automated trading robots for Forex & Crypto markets with low-latency execution and trailing risk control."
+    }
+  },
+  "awards": [
+    "Startup Runway 2018 Champion (JustOrder)",
+    "SBI FPT Best Performance Team (2022, 2023, 2024)",
+    "City Computer Science Award First Prize"
+  ],
+  "certifications": [
+    "Claude Certified Architect – Foundations (Anthropic)",
+    "AWS Certified Solutions Architect – Associate (SAA)",
+    "Project Management Professional (PMP Track)"
+  ]
+}

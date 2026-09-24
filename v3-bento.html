@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dương Phúc Khánh (Kido) | Systems Architect & Engineering Leader</title>
+  <meta name="description" content="Architecting high-throughput distributed systems, algorithmic trading tools, and agentic developer platforms.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              dark: '#0b0f17',
+              surface: 'rgba(255, 255, 255, 0.03)',
+              surfaceHover: 'rgba(255, 255, 255, 0.06)',
+              border: 'rgba(255, 255, 255, 0.08)',
+              borderHover: 'rgba(56, 189, 248, 0.4)',
+              cyan: '#38bdf8',
+              emerald: '#10b981',
+              violet: '#a855f7',
+              amber: '#f59e0b'
+            }
+          },
+          boxShadow: {
+            'bento': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.1), 0 20px 40px -15px rgba(0, 0, 0, 0.7)',
+            'bento-hover': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.2), 0 25px 50px -12px rgba(56, 189, 248, 0.15)',
+            'glow-cyan': '0 0 35px -5px rgba(56, 189, 248, 0.25)',
+            'glow-emerald': '0 0 35px -5px rgba(16, 185, 129, 0.25)',
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'shimmer': 'shimmer 2.5s infinite linear',
+          },
+          keyframes: {
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0f17;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Glassmorphism backdrop blur */
+    .bento-card {
+      background: rgba(18, 24, 38, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .bento-card:hover {
+      border-color: rgba(56, 189, 248, 0.35);
+      transform: translateY(-2px);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.15), 0 20px 40px -15px rgba(56, 189, 248, 0.12);
+    }
+
+    .bento-card-interactive {
+      cursor: pointer;
+    }
+
+    /* Subtle grid pattern background */
+    .bg-grid-pattern {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    }
+
+    /* Gradient Text */
+    .text-gradient-cyan {
+      background: linear-gradient(135deg, #ffffff 0%, #bae6fd 60%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #ffffff 0%, #fef08a 50%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-gradient-emerald {
+      background: linear-gradient(135deg, #ffffff 0%, #a7f3d0 50%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Ambient glow spots */
+    .ambient-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.45;
+    }
+  </style>
+</head>
+<body class="bg-[#0b0f17] text-slate-200 font-sans min-h-screen relative overflow-x-hidden selection:bg-cyan-500/20 selection:text-cyan-200">
+
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow w-[550px] h-[550px] bg-cyan-600/15 top-[-100px] left-1/4"></div>
+  <div class="ambient-glow w-[650px] h-[650px] bg-violet-600/15 top-[600px] right-[-150px]"></div>
+  <div class="ambient-glow w-[500px] h-[500px] bg-emerald-600/10 bottom-[400px] left-[-100px]"></div>
+
+  <!-- Background subtle grid -->
+  <div class="fixed inset-0 bg-grid-pattern pointer-events-none z-0"></div>
+
+  <!-- Main Container -->
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+
+    <!-- Top Sticky / Glass Header -->
+    <header class="bento-card rounded-2xl p-4 sm:p-5 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/30 border border-cyan-400/30 shadow-inner">
+          <span class="font-mono font-extrabold text-cyan-300 text-lg tracking-wider">KD</span>
+          <span class="absolute -top-1 -right-1 flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-white text-base sm:text-lg tracking-tight">khanhdp.com</h1>
+            <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300">v3.4-bento</span>
+          </div>
+          <p class="text-xs text-slate-400 flex items-center gap-2">
+            <span>Contabo VPS Infrastructure</span>
+            <span class="text-slate-600">•</span>
+            <span id="live-clock" class="font-mono text-slate-300">Da Nang, VN (UTC+7)</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Navigation & Action Quicklinks -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+        <a href="#overview" class="text-xs font-medium text-slate-300 hover:text-cyan-400 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors">Overview</a>
+        <a href="#flagships" class="text-xs font-medium text-slate-300 hover:text-cyan-400 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors">Flagships</a>
+        <a href="#satellites" class="text-xs font-medium text-slate-300 hover:text-cyan-400 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors">Satellite Apps</a>
+        <a href="#quant" class="text-xs font-medium text-slate-300 hover:text-cyan-400 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors">Quant & Honors</a>
+        
+        <div class="h-4 w-[1px] bg-slate-700/60 mx-1 hidden sm:block"></div>
+
+        <!-- Spotlight Search Trigger -->
+        <button id="open-search-btn" class="flex items-center gap-2 text-xs bg-slate-900/90 border border-slate-700 hover:border-cyan-500/50 px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all shadow-sm">
+          <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <span class="hidden sm:inline">Search Satellites</span>
+          <kbd class="font-mono text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700">⌘K</kbd>
+        </button>
+
+        <!-- Direct Email Copy Button -->
+        <button id="copy-email-btn" onclick="copyEmailToClipboard()" class="relative flex items-center gap-1.5 text-xs bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 hover:border-cyan-400 px-3 py-1.5 rounded-lg font-medium transition-all group">
+          <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+          <span>phuckhanh22@gmail.com</span>
+          <span id="copy-tooltip" class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-cyan-500 text-cyan-300 text-[10px] py-0.5 px-2 rounded opacity-0 pointer-events-none transition-opacity whitespace-nowrap">Copied!</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- SECTION 1: MASTER BENTO GRID (Hero + Metrics + Bio) -->
+    <section id="overview" class="mb-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        
+        <!-- Bento 1: Primary Hero Architecture Card (Spans 8 cols on large screens) -->
+        <div class="lg:col-span-8 bento-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group">
+          <!-- Decorative Top Corner Shimmer -->
+          <div class="absolute -right-20 -top-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-cyan-500/20 transition-all duration-700"></div>
+          
+          <div>
+            <!-- Status Pill -->
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-medium mb-6">
+              <span class="flex h-2 w-2 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span>Available for Strategic Advisory & System Architecture</span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5 mb-5">
+              <!-- Avatar with Ring -->
+              <div class="relative shrink-0">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-cyan-950 border-2 border-cyan-500/40 p-1 shadow-xl flex items-center justify-center">
+                  <div class="w-full h-full rounded-xl bg-slate-950 flex flex-col items-center justify-center text-center relative overflow-hidden">
+                    <span class="font-mono text-2xl font-black text-cyan-400">KIDO</span>
+                    <span class="text-[9px] text-slate-400 font-mono tracking-widest uppercase">Da Nang</span>
+                  </div>
+                </div>
+                <div class="absolute -bottom-1 -right-1 bg-cyan-500 text-slate-950 text-[10px] font-bold px-1.5 py-0.5 rounded-md shadow-md">
+                  ARCH
+                </div>
+              </div>
+
+              <!-- Name & Title -->
+              <div>
+                <div class="flex items-center gap-3 flex-wrap">
+                  <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">Dương Phúc Khánh</h2>
+                  <span class="text-sm font-semibold px-2.5 py-1 rounded-lg bg-slate-800/80 text-cyan-300 border border-slate-700">“Kido”</span>
+                </div>
+                <p class="text-base sm:text-lg font-medium text-cyan-400 mt-1">Systems Architect & Engineering Leader</p>
+                <div class="flex items-center gap-3 text-xs text-slate-400 mt-2 font-mono">
+                  <span class="flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Da Nang, Vietnam
+                  </span>
+                  <span>•</span>
+                  <a href="https://github.com/khanhduong22" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 hover:text-cyan-300 transition-colors">
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                    github.com/khanhduong22
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tagline description -->
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl mt-4">
+              Architecting <span class="text-white font-semibold">high-throughput distributed systems</span>, algorithmic trading tools, and agentic developer platforms with uncompromising type safety, latency-bounded pipelines, and autonomous multi-agent engineering workflows.
+            </p>
+          </div>
+
+          <!-- Bottom Bar of Hero: CTAs & Technology Badges -->
+          <div class="mt-8 pt-6 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-[11px] font-mono uppercase tracking-wider text-slate-500 mr-1">Core Stack:</span>
+              <span class="text-xs px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700 text-slate-300">NestJS / FastAPI</span>
+              <span class="text-xs px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700 text-slate-300">Valkey 8 / Redis HLL</span>
+              <span class="text-xs px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700 text-slate-300">PostgreSQL / Base32</span>
+              <span class="text-xs px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700 text-slate-300">SigNoz APM</span>
+              <span class="text-xs px-2.5 py-1 rounded-md bg-cyan-950/60 border border-cyan-700/50 text-cyan-300">Agent Harness Kit</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <a href="#satellites" class="inline-flex items-center gap-2 text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 px-4 py-2 rounded-xl transition-all shadow-md shadow-cyan-500/20 hover:scale-[1.02]">
+                <span>Launch Satellite Apps</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento 2: Quant & Algorithmic Trading Station (Spans 4 cols) -->
+        <div id="quant" class="lg:col-span-4 bento-card rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden group">
+          <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-amber-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-amber-500/20 transition-all"></div>
+
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                </div>
+                <h3 class="font-bold text-white text-base">Quantitative & Algorithmic</h3>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300">PineScript / MQL5</span>
+            </div>
+
+            <!-- Trading Indicator Card -->
+            <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 mb-3 hover:border-amber-500/40 transition-colors">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-semibold text-slate-200">TradingView Custom Indicator</span>
+                <a href="https://vn.tradingview.com/script/neSZYFwg/" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:text-amber-300 text-xs flex items-center gap-1 font-mono">
+                  <span>View</span>
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </a>
+              </div>
+              <p class="text-[11px] text-slate-400 leading-snug">
+                Custom technical analysis indicator authored in Pine Script for volatility compression and breakout detection.
+              </p>
+            </div>
+
+            <!-- EA Robots -->
+            <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/40 transition-colors">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-semibold text-slate-200">Algorithmic Expert Advisors (EA)</span>
+                <span class="text-[10px] font-mono text-slate-400">MetaTrader 5</span>
+              </div>
+              <p class="text-[11px] text-slate-400 leading-snug">
+                Automated algorithmic robots for Forex & Crypto with low-latency execution and trailing risk management.
+              </p>
+            </div>
+          </div>
+
+          <!-- Mini Candlestick Simulation Banner -->
+          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span class="flex items-center gap-1.5 text-emerald-400">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              Quantitative Risk Engine
+            </span>
+            <span class="text-slate-500">Live Models</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bento Metrics Row: 4 Specialized Stat Counter Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
+        
+        <!-- Metric 1: Req/sec -->
+        <div class="bento-card rounded-2xl p-5 relative overflow-hidden group">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+            <span class="font-mono uppercase text-slate-400 tracking-wider">Gateway Latency</span>
+            <div class="w-2 h-2 rounded-full bg-cyan-400"></div>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight group-hover:text-cyan-300 transition-colors">
+            50,000<span class="text-cyan-400">+</span>
+          </div>
+          <div class="text-xs font-medium text-slate-200 mt-1">Req/s Sustained Throughput</div>
+          <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Stress-tested FastAPI & Redis gateway</p>
+        </div>
+
+        <!-- Metric 2: Memory Reduction -->
+        <div class="bento-card rounded-2xl p-5 relative overflow-hidden group">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+            <span class="font-mono uppercase text-slate-400 tracking-wider">Storage Efficiency</span>
+            <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight group-hover:text-emerald-300 transition-colors">
+            98<span class="text-emerald-400">%</span>
+          </div>
+          <div class="text-xs font-medium text-slate-200 mt-1">Memory Footprint Reduction</div>
+          <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Redis HyperLogLog real-time analytics</p>
+        </div>
+
+        <!-- Metric 3: Best Performance -->
+        <div class="bento-card rounded-2xl p-5 relative overflow-hidden group">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+            <span class="font-mono uppercase text-slate-400 tracking-wider">Industry Honor</span>
+            <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight group-hover:text-amber-300 transition-colors">
+            3<span class="text-amber-400">x</span>
+          </div>
+          <div class="text-xs font-medium text-slate-200 mt-1">Consecutive Best Performance</div>
+          <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Awarded at SBI FPT (2022, 2023, 2024)</p>
+        </div>
+
+        <!-- Metric 4: Years Experience -->
+        <div class="bento-card rounded-2xl p-5 relative overflow-hidden group">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+            <span class="font-mono uppercase text-slate-400 tracking-wider">Track Record</span>
+            <div class="w-2 h-2 rounded-full bg-violet-400"></div>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight group-hover:text-violet-300 transition-colors">
+            8<span class="text-violet-400">+</span>
+          </div>
+          <div class="text-xs font-medium text-slate-200 mt-1">Years Engineering Experience</div>
+          <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Distributed systems & FinTech platforms</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: FLAGSHIP PLATFORMS (Hero Bento Architecture Cards) -->
+    <section id="flagships" class="mb-14">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
+        <div>
+          <div class="flex items-center gap-2 text-cyan-400 text-xs font-mono font-semibold uppercase tracking-wider mb-1">
+            <span class="inline-block w-2 h-2 rounded-full bg-cyan-400"></span>
+            Production Architectures
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Flagship Systems</h2>
+        </div>
+        <p class="text-xs text-slate-400 max-w-md">
+          Mission-critical platforms engineered for microsecond latencies, horizontal scalability, and high-concurrency resilience.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Flagship 1: Index.vn -->
+        <div class="bento-card rounded-3xl p-6 flex flex-col justify-between group hover:border-cyan-500/50">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-300">
+                FinTech Social Network
+              </span>
+              <a href="https://index.vn" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-cyan-300 transition-colors p-1" title="Visit index.vn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+
+            <div class="flex items-baseline gap-2 mb-2">
+              <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">Index</h3>
+              <span class="text-xs font-mono text-cyan-400/80">index.vn</span>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed mb-5">
+              Community engine built in NestJS with dynamic groups, Base32 Materialized Path comment trees, fine-grained Bitmask RBAC, and multi-source distributed ETL ingestion pipeline with &lt;5ms latency.
+            </p>
+          </div>
+
+          <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">NestJS</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">Base32 Path</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">Bitmask RBAC</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">Redis HLL</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">Cloudflare R2</span>
+            </div>
+            
+            <a href="https://index.vn" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 w-full text-xs font-semibold py-2 rounded-xl bg-slate-800/80 hover:bg-cyan-500/20 text-slate-200 hover:text-cyan-300 border border-slate-700/80 hover:border-cyan-500/40 transition-all">
+              <span>Launch Live System</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Flagship 2: Linkpul -->
+        <div class="bento-card rounded-3xl p-6 flex flex-col justify-between group hover:border-emerald-500/50">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-300">
+                High-Throughput Gateway
+              </span>
+              <a href="https://linkpul.com" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-emerald-300 transition-colors p-1" title="Visit linkpul.com">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+
+            <div class="flex items-baseline gap-2 mb-2">
+              <h3 class="text-xl font-bold text-white group-hover:text-emerald-300 transition-colors">Linkpul</h3>
+              <span class="text-xs font-mono text-emerald-400/80">linkpul.com</span>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed mb-5">
+              High-concurrency URL redirection sustaining 50k req/sec p99 using Redis Mutex Locks, asynchronous clickstream queue workers, and multi-layer SigNoz APM telemetry.
+            </p>
+          </div>
+
+          <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">FastAPI</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">Redis Mutex</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">PostgreSQL</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">SigNoz APM</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">Docker</span>
+            </div>
+
+            <a href="https://linkpul.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 w-full text-xs font-semibold py-2 rounded-xl bg-slate-800/80 hover:bg-emerald-500/20 text-slate-200 hover:text-emerald-300 border border-slate-700/80 hover:border-emerald-500/40 transition-all">
+              <span>Launch Live System</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Flagship 3: Agent Harness Kit -->
+        <div class="bento-card rounded-3xl p-6 flex flex-col justify-between group hover:border-violet-500/50">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-md bg-violet-500/10 border border-violet-500/20 text-violet-300">
+                Multi-Agent AI Engineering
+              </span>
+              <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-violet-300 transition-colors p-1" title="View on GitHub">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              </a>
+            </div>
+
+            <div class="flex items-baseline gap-2 mb-2">
+              <h3 class="text-xl font-bold text-white group-hover:text-violet-300 transition-colors">Agent Harness Kit</h3>
+              <span class="text-xs font-mono text-violet-400/80">GitHub</span>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed mb-5">
+              Portable framework standardizing 70+ AI skills, parallel Git worktrees, TDD loops, and 7 mandatory quality gates across Claude Code, Codex, and Google Antigravity.
+            </p>
+          </div>
+
+          <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">TypeScript</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">Multi-Agent</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">MCP Server</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">SonarQube</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">Playwright</span>
+            </div>
+
+            <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 w-full text-xs font-semibold py-2 rounded-xl bg-slate-800/80 hover:bg-violet-500/20 text-slate-200 hover:text-violet-300 border border-slate-700/80 hover:border-violet-500/40 transition-all">
+              <span>Explore GitHub Repository</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: SATELLITE ECOSYSTEM APP LAUNCHER (Interactive Mission Control) -->
+    <section id="satellites" class="mb-14">
+      
+      <!-- Section Header with Search & Controls -->
+      <div class="bento-card rounded-3xl p-6 sm:p-7 mb-6">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-800">
+          <div>
+            <div class="flex items-center gap-2 text-cyan-400 text-xs font-mono font-semibold uppercase tracking-wider mb-1">
+              <span class="inline-block w-2 h-2 rounded-full bg-cyan-400"></span>
+              Dedicated Cloud Services &bull; Contabo VPS
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+              <span>Satellite Ecosystem</span>
+              <span id="satellites-counter" class="text-xs font-mono px-2.5 py-1 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-300">
+                11 Apps Live
+              </span>
+            </h2>
+          </div>
+
+          <!-- Search Input Box -->
+          <div class="relative w-full lg:w-96">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <input 
+              type="text" 
+              id="satellite-search" 
+              placeholder="Search satellites by name, tech, or domain (Press '/')..." 
+              class="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 focus:border-cyan-400 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all font-sans"
+            />
+            <button id="clear-search-btn" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 hidden">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Pill Chips -->
+        <div class="flex items-center justify-between gap-4 pt-5 flex-wrap">
+          <div class="flex items-center gap-2 flex-wrap" id="category-filters">
+            <button data-cat="all" class="cat-pill active text-xs font-medium px-3.5 py-1.5 rounded-xl bg-cyan-500 text-slate-950 font-bold transition-all shadow-sm">
+              All Satellites (11)
+            </button>
+            <button data-cat="Productivity" class="cat-pill text-xs font-medium px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white transition-all">
+              Productivity
+            </button>
+            <button data-cat="Developer Tools" class="cat-pill text-xs font-medium px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white transition-all">
+              Developer Tools
+            </button>
+            <button data-cat="FinTech & Data" class="cat-pill text-xs font-medium px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white transition-all">
+              FinTech & Data
+            </button>
+            <button data-cat="Life Ops" class="cat-pill text-xs font-medium px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white transition-all">
+              Life Ops
+            </button>
+            <button data-cat="Cloud & Observability" class="cat-pill text-xs font-medium px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white transition-all">
+              Cloud & Observability
+            </button>
+            <button data-cat="Quality & Security" class="cat-pill text-xs font-medium px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white transition-all">
+              Quality & Security
+            </button>
+          </div>
+
+          <!-- View Mode Toggle -->
+          <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <button id="view-grid" class="p-1.5 rounded-lg bg-slate-800 text-cyan-300" title="Bento Grid View">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            </button>
+            <button id="view-compact" class="p-1.5 rounded-lg text-slate-400 hover:text-white" title="Compact Table / List View">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SATELLITE CARDS GRID CONTAINER -->
+      <div id="satellites-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        
+        <!-- App 1: MD Preview -->
+        <div class="satellite-card bento-card rounded-2xl p-5 flex flex-col justify-between group" data-category="Productivity" data-name="MD Preview" data-sub="md.khanhdp.com" data-tags="markdown editor pdf client-side export">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-cyan-300 transition-colors">MD Preview</h4>
+                  <span class="text-xs font-mono text-slate-400">md.khanhdp.com</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 whitespace-nowrap">
+                Public Tool
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              Client-side Markdown live editor and custom PDF exporter with zero backend storage.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-medium">Productivity</span>
+            <div class="flex items-center gap-2">
+              <button onclick="copySubdomain('md.khanhdp.com')" class="text-[11px] font-mono text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Copy URL">Copy</button>
+              <a href="https://md.khanhdp.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-cyan-400 hover:text-cyan-300 px-2.5 py-1 rounded-lg bg-cyan-950/50 hover:bg-cyan-900/60 border border-cyan-500/30 transition-all">
+                <span>Launch</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 2: IT-Tools Hub -->
+        <div class="satellite-card bento-card rounded-2xl p-5 flex flex-col justify-between group" data-category="Developer Tools" data-name="IT-Tools Hub" data-sub="tools.khanhdp.com" data-tags="jwt regex base64 hash utilities developer">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-blue-300 transition-colors">IT-Tools Hub</h4>
+                  <span class="text-xs font-mono text-slate-400">tools.khanhdp.com</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-blue-950/70 border border-blue-500/30 text-blue-300 whitespace-nowrap">
+                Self-Hosted
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              Handy collection of developer utilities: JWT debugger, regex tester, hash generator, base64.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-medium">Developer Tools</span>
+            <div class="flex items-center gap-2">
+              <button onclick="copySubdomain('tools.khanhdp.com')" class="text-[11px] font-mono text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Copy URL">Copy</button>
+              <a href="https://tools.khanhdp.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-blue-400 hover:text-blue-300 px-2.5 py-1 rounded-lg bg-blue-950/50 hover:bg-blue-900/60 border border-blue-500/30 transition-all">
+                <span>Launch</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 3: P2P Tracker -->
+        <div class="satellite-card bento-card rounded-2xl p-5 flex flex-col justify-between group" data-category="FinTech & Data" data-name="P2P Tracker" data-sub="p2p.khanhdp.com" data-tags="p2p arbitrage crypto spread liquidity tracking">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-amber-300 transition-colors">P2P Tracker</h4>
+                  <span class="text-xs font-mono text-slate-400">p2p.khanhdp.com</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-amber-950/70 border border-amber-500/30 text-amber-300 whitespace-nowrap">
+                Automated
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              Real-time P2P market scraping, liquidity depth monitoring, and arbitrage spread tracking.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-medium">FinTech & Data</span>
+            <div class="flex items-center gap-2">
+              <button onclick="copySubdomain('p2p.khanhdp.com')" class="text-[11px] font-mono text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Copy URL">Copy</button>
+              <a href="https://p2p.khanhdp.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-amber-400 hover:text-amber-300 px-2.5 py-1 rounded-lg bg-amber-950/50 hover:bg-amber-900/60 border border-amber-500/30 transition-all">
+                <span>Launch</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 4: Personal Finance -->
+        <div class="satellite-card bento-card rounded-2xl p-5 flex flex-col justify-between group" data-category="FinTech & Data" data-name="Personal Finance" data-sub="finance.khanhdp.com" data-tags="finance portfolio quantitative capital assets">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-emerald-300 transition-colors">Personal Finance</h4>
+                  <span class="text-xs font-mono text-slate-400">finance.khanhdp.com</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300 whitespace-nowrap">
+                Private
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              Quantitative asset tracking, capital allocation, and portfolio rebalancing intelligence.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-medium">FinTech & Data</span>
+            <div class="flex items-center gap-2">
+              <button onclick="copySubdomain('finance.khanhdp.com')" class="text-[11px] font-mono text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Copy URL">Copy</button>
+              <a href="https://finance.khanhdp.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:text-emerald-300 px-2.5 py-1 rounded-lg bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-500/30 transition-all">
+                <span>Launch</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 5: 12-Week Year Hub -->
+        <div class="satellite-card bento-card rounded-2xl p-5 flex flex-col justify-between group" data-category="Life Ops" data-name="12-Week Year Hub" data-sub="12weeks.khanhdp.com" data-tags="12-week velocity accountability execution goals">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-orange-300 transition-colors">12-Week Year Hub</h4>
+                  <span class="text-xs font-mono text-slate-400">12weeks.khanhdp.com</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-orange-950/70 border border-orange-500/30 text-orange-300 whitespace-nowrap">
+                Accountability
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              High-velocity execution and weekly scoring system based on the 12-Week Year methodology.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-medium">Life Ops</span>
+            <div class="flex items-center gap-2">
+              <button onclick="copySubdomain('12weeks.khanhdp.com')" class="text-[11px] font-mono text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Copy URL">Copy</button>
+              <a href="https://12weeks.khanhdp.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-orange-400 hover:text-orange-300 px-2.5 py-1 rounded-lg bg-orange-950/50 hover:bg-orange-900/60 border border-orange-500/30 transition-all">
+                <span>Launch</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 6: PHR Health Hub -->
+        <div class="satellite-card bento-card rounded-2xl p-5 flex flex-col justify-between group" data-category="Life Ops" data-name="PHR Health Hub" data-sub="health.khanhdp.com" data-tags="health biometrics phr medical lifestyle">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-rose-300 transition-colors">PHR Health Hub</h4>
+                  <span class="text-xs font-mono text-slate-400">health.khanhdp.com</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300 whitespace-nowrap">
+                Private
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              Personal health record tracker, biometrics logging, and lifestyle optimization dashboard.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-medium">Life Ops</span>
+            <div class="flex items-center gap-2">
+              <button onclick="copySubdomain('health.khanhdp.com')" class="text-[11px] font-mono text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Copy URL">Copy</button>
+              <a href="https://health.khanhdp.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-rose-400 hover:text-rose-300 px-2.5 py-1 rounded-lg bg-rose-950/50 hover:bg-rose-900/60 border border-rose-500/30 transition-all">
+                <span>Launch</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 7: SigNoz APM -->
+        <div class="satellite-card bento-card rounded-2xl p-5 flex flex-col justify-between group" data-category="Cloud & Observability" data-name="SigNoz APM" data-sub="signoz.khanhdp.com" data-tags="signoz apm opentelemetry tracing latency observability">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-purple-300 transition-colors">SigNoz APM</h4>
+                  <span class="text-xs font-mono text-slate-400">signoz.khanhdp.com</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-purple-950/70 border border-purple-500/30 text-purple-300 whitespace-nowrap">
+                Infrastructure
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              Distributed tracing, OpenTelemetry collectors, and p99 service latency telemetry.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-medium">Cloud & Observability</span>
+            <div class="flex items-center gap-2">
+              <button onclick="copySubdomain('signoz.khanhdp.com')" class="text-[11px] font-mono text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Copy URL">Copy</button>
+              <a href="https://signoz.khanhdp.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-purple-400 hover:text-purple-300 px-2.5 py-1 rounded-lg bg-purple-950/50 hover:bg-purple-900/60 border border-purple-500/30 transition-all">
+                <span>Launch</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 8: Grafana Dashboards -->
+        <div class="satellite-card bento-card rounded-2xl p-5 flex flex-col justify-between group" data-category="Cloud & Observability" data-name="Grafana Dashboards" data-sub="grafana.khanhdp.com" data-tags="grafana metrics dashboards cpu memory vps telemetry">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-orange-300 transition-colors">Grafana Dashboards</h4>
+                  <span class="text-xs font-mono text-slate-400">grafana.khanhdp.com</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-orange-950/70 border border-orange-500/30 text-orange-300 whitespace-nowrap">
+                Infrastructure
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              Unified system metrics, CPU/memory telemetry, and real-time VPS resource utilization.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-medium">Cloud & Observability</span>
+            <div class="flex items-center gap-2">
+              <button onclick="copySubdomain('grafana.khanhdp.com')" class="text-[11px] font-mono text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Copy URL">Copy</button>
+              <a href="https://grafana.khanhdp.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-orange-400 hover:text-orange-300 px-2.5 py-1 rounded-lg bg-orange-950/50 hover:bg-orange-900/60 border border-orange-500/30 transition-all">
+                <span>Launch</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 9: Uptime Kuma -->
+        <div class="satellite-card bento-card rounded-2xl p-5 flex flex-col justify-between group" data-category="Cloud & Observability" data-name="Uptime Kuma" data-sub="kuma.khanhdp.com" data-tags="kuma uptime sla monitoring heartbeat status">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-emerald-300 transition-colors">Uptime Kuma</h4>
+                  <span class="text-xs font-mono text-slate-400">kuma.khanhdp.com</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 whitespace-nowrap">
+                Status Page
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              24/7 service uptime monitoring, SLA tracking, and heartbeat incident alerting.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-medium">Cloud & Observability</span>
+            <div class="flex items-center gap-2">
+              <button onclick="copySubdomain('kuma.khanhdp.com')" class="text-[11px] font-mono text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Copy URL">Copy</button>
+              <a href="https://kuma.khanhdp.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:text-emerald-300 px-2.5 py-1 rounded-lg bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-500/30 transition-all">
+                <span>Launch</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 10: Dozzle Logs -->
+        <div class="satellite-card bento-card rounded-2xl p-5 flex flex-col justify-between group" data-category="Cloud & Observability" data-name="Dozzle Logs" data-sub="dozzle.khanhdp.com" data-tags="dozzle docker logs container streaming devops">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-cyan-300 transition-colors">Dozzle Logs</h4>
+                  <span class="text-xs font-mono text-slate-400">dozzle.khanhdp.com</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 whitespace-nowrap">
+                DevOps
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              Real-time streaming logs viewer across all running Docker containers on Contabo VPS.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-medium">Cloud & Observability</span>
+            <div class="flex items-center gap-2">
+              <button onclick="copySubdomain('dozzle.khanhdp.com')" class="text-[11px] font-mono text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Copy URL">Copy</button>
+              <a href="https://dozzle.khanhdp.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-cyan-400 hover:text-cyan-300 px-2.5 py-1 rounded-lg bg-cyan-950/50 hover:bg-cyan-900/60 border border-cyan-500/30 transition-all">
+                <span>Launch</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 11: SonarQube Quality -->
+        <div class="satellite-card bento-card rounded-2xl p-5 flex flex-col justify-between group" data-category="Quality & Security" data-name="SonarQube Quality" data-sub="sonar.khanhdp.com" data-tags="sonar sonarqube code quality security vulnerability gate smells">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-indigo-300 transition-colors">SonarQube Quality</h4>
+                  <span class="text-xs font-mono text-slate-400">sonar.khanhdp.com</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-indigo-950/70 border border-indigo-500/30 text-indigo-300 whitespace-nowrap">
+                CI/CD Gate
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              Automated code smell inspection, vulnerability audit, and test coverage quality gate.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-medium">Quality & Security</span>
+            <div class="flex items-center gap-2">
+              <button onclick="copySubdomain('sonar.khanhdp.com')" class="text-[11px] font-mono text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Copy URL">Copy</button>
+              <a href="https://sonar.khanhdp.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-400 hover:text-indigo-300 px-2.5 py-1 rounded-lg bg-indigo-950/50 hover:bg-indigo-900/60 border border-indigo-500/30 transition-all">
+                <span>Launch</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- No Results Placeholder -->
+      <div id="no-satellites" class="hidden bento-card rounded-2xl p-10 text-center">
+        <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-3 text-slate-400">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <h4 class="text-white font-semibold text-base mb-1">No Satellites Found</h4>
+        <p class="text-xs text-slate-400 max-w-sm mx-auto mb-4">We couldn't find any app matching your criteria. Try adjusting your query or category filter.</p>
+        <button onclick="resetFilters()" class="text-xs font-semibold px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors">
+          Reset All Filters
+        </button>
+      </div>
+
+    </section>
+
+    <!-- SECTION 4: HONORS & CERTIFICATIONS BENTO ROW -->
+    <section class="mb-14">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        
+        <!-- Awards & Recognitions -->
+        <div class="bento-card rounded-3xl p-6 sm:p-7 relative overflow-hidden group">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Engineering Honors & Awards</h3>
+              <p class="text-xs text-slate-400">Competitive hackathons and performance excellence</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <span class="text-amber-400 font-bold text-sm mt-0.5">🏆</span>
+              <div>
+                <h5 class="text-sm font-semibold text-slate-200">Startup Runway 2018 Champion</h5>
+                <p class="text-xs text-slate-400">JustOrder Platform – First Prize Grand Champion</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <span class="text-amber-400 font-bold text-sm mt-0.5">⭐</span>
+              <div>
+                <h5 class="text-sm font-semibold text-slate-200">SBI FPT Best Performance Team</h5>
+                <p class="text-xs text-slate-400">Awarded consecutively for 3 years: 2022, 2023, 2024</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <span class="text-amber-400 font-bold text-sm mt-0.5">🥇</span>
+              <div>
+                <h5 class="text-sm font-semibold text-slate-200">City Computer Science Award First Prize</h5>
+                <p class="text-xs text-slate-400">Municipal excellence in algorithmic problem solving</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Certifications & Credentials -->
+        <div class="bento-card rounded-3xl p-6 sm:p-7 relative overflow-hidden group">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Certifications & Credentials</h3>
+              <p class="text-xs text-slate-400">Cloud architecture, AI systems & management tracks</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div class="w-6 h-6 rounded bg-violet-500/20 text-violet-300 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">AI</div>
+              <div>
+                <h5 class="text-sm font-semibold text-slate-200">Claude Certified Architect – Foundations</h5>
+                <p class="text-xs text-slate-400">Anthropic AI Architect Credential</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div class="w-6 h-6 rounded bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">AWS</div>
+              <div>
+                <h5 class="text-sm font-semibold text-slate-200">AWS Certified Solutions Architect – Associate (SAA)</h5>
+                <p class="text-xs text-slate-400">Amazon Web Services Cloud Architecture</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div class="w-6 h-6 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">PMP</div>
+              <div>
+                <h5 class="text-sm font-semibold text-slate-200">Project Management Professional (PMP Track)</h5>
+                <p class="text-xs text-slate-400">Enterprise project execution and engineering leadership</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER / INFRASTRUCTURE TELEMETRY -->
+    <footer class="bento-card rounded-2xl p-6 sm:p-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div>
+        <div class="flex items-center justify-center sm:justify-start gap-2 mb-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span class="font-mono text-xs text-slate-300">Contabo VPS Infrastructure &bull; Valkey 8.0 &bull; SigNoz APM</span>
+        </div>
+        <p class="text-xs text-slate-500">
+          Crafted for high-performance engineering &bull; Single-file Bento Architecture Prototype
+        </p>
+      </div>
+
+      <div class="flex items-center gap-4 text-xs text-slate-400">
+        <a href="https://github.com/khanhduong22" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">GitHub</a>
+        <span>&bull;</span>
+        <a href="mailto:phuckhanh22@gmail.com" class="hover:text-cyan-400 transition-colors">Email Direct</a>
+        <span>&bull;</span>
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-slate-400 hover:text-white transition-colors">Back to Top ↑</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Command Palette Modal (Cmd+K / Spotlight Search) -->
+  <div id="cmd-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-start justify-center pt-20 px-4 hidden">
+    <div class="w-full max-w-xl bento-card rounded-2xl border border-slate-700 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Search Input Bar in Modal -->
+      <div class="p-4 border-b border-slate-800 flex items-center gap-3">
+        <svg class="w-5 h-5 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <input 
+          type="text" 
+          id="cmd-input" 
+          placeholder="Type an app name to launch immediately (e.g. tools, signoz, p2p)..." 
+          class="w-full bg-transparent text-white placeholder-slate-500 text-sm focus:outline-none font-sans"
+        />
+        <kbd class="font-mono text-[10px] bg-slate-800 text-slate-400 px-2 py-1 rounded border border-slate-700">ESC</kbd>
+      </div>
+
+      <!-- Quick List Results -->
+      <div id="cmd-results" class="max-h-80 overflow-y-auto p-2 divide-y divide-slate-800/40">
+        <!-- Injected dynamically by JS -->
+      </div>
+      
+      <div class="p-3 bg-slate-950/70 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+        <span>Press <kbd class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">Enter</kbd> to launch</span>
+        <span>khanhdp.com Satellite Command</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification for Copy -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bento-card border border-cyan-500/50 text-cyan-200 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs font-medium">
+      <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <span id="toast-msg">Copied to clipboard!</span>
+    </div>
+  </div>
+
+  <!-- Interactive JavaScript Logic -->
+  <script>
+    // Data list of satellites for fast search & command palette
+    const satelliteData = [
+      { id: "md", name: "MD Preview", sub: "md.khanhdp.com", url: "https://md.khanhdp.com", category: "Productivity", badge: "Public Tool", desc: "Client-side Markdown live editor and custom PDF exporter with zero backend storage." },
+      { id: "tools", name: "IT-Tools Hub", sub: "tools.khanhdp.com", url: "https://tools.khanhdp.com", category: "Developer Tools", badge: "Self-Hosted", desc: "Handy collection of developer utilities: JWT debugger, regex tester, hash generator, base64." },
+      { id: "p2p", name: "P2P Tracker", sub: "p2p.khanhdp.com", url: "https://p2p.khanhdp.com", category: "FinTech & Data", badge: "Automated", desc: "Real-time P2P market scraping, liquidity depth monitoring, and arbitrage spread tracking." },
+      { id: "finance", name: "Personal Finance", sub: "finance.khanhdp.com", url: "https://finance.khanhdp.com", category: "FinTech & Data", badge: "Private", desc: "Quantitative asset tracking, capital allocation, and portfolio rebalancing intelligence." },
+      { id: "12weeks", name: "12-Week Year Hub", sub: "12weeks.khanhdp.com", url: "https://12weeks.khanhdp.com", category: "Life Ops", badge: "Accountability", desc: "High-velocity execution and weekly scoring system based on the 12-Week Year methodology." },
+      { id: "health", name: "PHR Health Hub", sub: "health.khanhdp.com", url: "https://health.khanhdp.com", category: "Life Ops", badge: "Private", desc: "Personal health record tracker, biometrics logging, and lifestyle optimization dashboard." },
+      { id: "signoz", name: "SigNoz APM", sub: "signoz.khanhdp.com", url: "https://signoz.khanhdp.com", category: "Cloud & Observability", badge: "Infrastructure", desc: "Distributed tracing, OpenTelemetry collectors, and p99 service latency telemetry." },
+      { id: "grafana", name: "Grafana Dashboards", sub: "grafana.khanhdp.com", url: "https://grafana.khanhdp.com", category: "Cloud & Observability", badge: "Infrastructure", desc: "Unified system metrics, CPU/memory telemetry, and real-time VPS resource utilization." },
+      { id: "kuma", name: "Uptime Kuma", sub: "kuma.khanhdp.com", url: "https://kuma.khanhdp.com", category: "Cloud & Observability", badge: "Status Page", desc: "24/7 service uptime monitoring, SLA tracking, and heartbeat incident alerting." },
+      { id: "dozzle", name: "Dozzle Logs", sub: "dozzle.khanhdp.com", url: "https://dozzle.khanhdp.com", category: "Cloud & Observability", badge: "DevOps", desc: "Real-time streaming logs viewer across all running Docker containers on Contabo VPS." },
+      { id: "sonar", name: "SonarQube Quality", sub: "sonar.khanhdp.com", url: "https://sonar.khanhdp.com", category: "Quality & Security", badge: "CI/CD Gate", desc: "Automated code smell inspection, vulnerability audit, and test coverage quality gate." }
+    ];
+
+    // Live Clock with ICT (UTC+7)
+    function updateClock() {
+      const now = new Date();
+      const options = { 
+        timeZone: 'Asia/Ho_Chi_Minh', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        hour12: false 
+      };
+      const timeStr = now.toLocaleTimeString('en-US', options);
+      const clockEl = document.getElementById('live-clock');
+      if (clockEl) {
+        clockEl.textContent = `Da Nang, VN: ${timeStr} ICT`;
+      }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Clipboard & Toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      if (toast && toastMsg) {
+        toastMsg.textContent = msg;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        setTimeout(() => {
+          toast.classList.add('translate-y-20', 'opacity-0');
+        }, 2200);
+      }
+    }
+
+    function copyEmailToClipboard() {
+      navigator.clipboard.writeText('phuckhanh22@gmail.com').then(() => {
+        showToast('Email copied to clipboard!');
+        const tooltip = document.getElementById('copy-tooltip');
+        if (tooltip) {
+          tooltip.classList.remove('opacity-0');
+          setTimeout(() => tooltip.classList.add('opacity-0'), 1500);
+        }
+      });
+    }
+
+    function copySubdomain(sub) {
+      navigator.clipboard.writeText('https://' + sub).then(() => {
+        showToast(`Copied https://${sub}`);
+      });
+    }
+
+    // Filter & Search Logic
+    const searchInput = document.getElementById('satellite-search');
+    const clearBtn = document.getElementById('clear-search-btn');
+    const catButtons = document.querySelectorAll('.cat-pill');
+    const cards = document.querySelectorAll('.satellite-card');
+    const noResults = document.getElementById('no-satellites');
+    const counter = document.getElementById('satellites-counter');
+
+    let currentCategory = 'all';
+    let currentQuery = '';
+
+    function filterSatellites() {
+      let visibleCount = 0;
+      const q = currentQuery.toLowerCase().trim();
+
+      cards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        const cardName = card.getAttribute('data-name').toLowerCase();
+        const cardSub = card.getAttribute('data-sub').toLowerCase();
+        const cardTags = (card.getAttribute('data-tags') || '').toLowerCase();
+
+        const matchesCat = (currentCategory === 'all' || cardCategory === currentCategory);
+        const matchesQuery = !q || cardName.includes(q) || cardSub.includes(q) || cardTags.includes(q) || cardCategory.toLowerCase().includes(q);
+
+        if (matchesCat && matchesQuery) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      if (counter) {
+        counter.textContent = `${visibleCount} of 11 Apps`;
+      }
+
+      if (noResults) {
+        if (visibleCount === 0) {
+          noResults.classList.remove('hidden');
+        } else {
+          noResults.classList.add('hidden');
+        }
+      }
+
+      if (clearBtn) {
+        if (q.length > 0) {
+          clearBtn.classList.remove('hidden');
+        } else {
+          clearBtn.classList.add('hidden');
+        }
+      }
+    }
+
+    // Search event
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        currentQuery = e.target.value;
+        filterSatellites();
+      });
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        if (searchInput) {
+          searchInput.value = '';
+          currentQuery = '';
+          filterSatellites();
+          searchInput.focus();
+        }
+      });
+    }
+
+    // Category button click
+    catButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        catButtons.forEach(b => {
+          b.classList.remove('active', 'bg-cyan-500', 'text-slate-950', 'font-bold');
+          b.classList.add('bg-slate-900', 'border-slate-800', 'text-slate-300');
+        });
+        btn.classList.add('active', 'bg-cyan-500', 'text-slate-950', 'font-bold');
+        btn.classList.remove('bg-slate-900', 'border-slate-800', 'text-slate-300');
+
+        currentCategory = btn.getAttribute('data-cat');
+        filterSatellites();
+      });
+    });
+
+    function resetFilters() {
+      currentCategory = 'all';
+      currentQuery = '';
+      if (searchInput) searchInput.value = '';
+      catButtons.forEach(b => {
+        if (b.getAttribute('data-cat') === 'all') {
+          b.classList.add('active', 'bg-cyan-500', 'text-slate-950', 'font-bold');
+          b.classList.remove('bg-slate-900', 'border-slate-800', 'text-slate-300');
+        } else {
+          b.classList.remove('active', 'bg-cyan-500', 'text-slate-950', 'font-bold');
+          b.classList.add('bg-slate-900', 'border-slate-800', 'text-slate-300');
+        }
+      });
+      filterSatellites();
+    }
+
+    // View switcher (Grid vs Compact)
+    const gridBtn = document.getElementById('view-grid');
+    const compactBtn = document.getElementById('view-compact');
+    const gridContainer = document.getElementById('satellites-grid');
+
+    if (gridBtn && compactBtn && gridContainer) {
+      gridBtn.addEventListener('click', () => {
+        gridContainer.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5";
+        gridBtn.classList.add('bg-slate-800', 'text-cyan-300');
+        gridBtn.classList.remove('text-slate-400');
+        compactBtn.classList.remove('bg-slate-800', 'text-cyan-300');
+        compactBtn.classList.add('text-slate-400');
+      });
+
+      compactBtn.addEventListener('click', () => {
+        gridContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-3";
+        compactBtn.classList.add('bg-slate-800', 'text-cyan-300');
+        compactBtn.classList.remove('text-slate-400');
+        gridBtn.classList.remove('bg-slate-800', 'text-cyan-300');
+        gridBtn.classList.add('text-slate-400');
+      });
+    }
+
+    // Command Palette Modal Handling
+    const cmdModal = document.getElementById('cmd-modal');
+    const cmdInput = document.getElementById('cmd-input');
+    const cmdResults = document.getElementById('cmd-results');
+    const openSearchBtn = document.getElementById('open-search-btn');
+
+    function openModal() {
+      if (!cmdModal) return;
+      cmdModal.classList.remove('hidden');
+      renderCmdResults('');
+      if (cmdInput) {
+        cmdInput.value = '';
+        cmdInput.focus();
+      }
+    }
+
+    function closeModal() {
+      if (!cmdModal) return;
+      cmdModal.classList.add('hidden');
+    }
+
+    function renderCmdResults(filter) {
+      if (!cmdResults) return;
+      const q = filter.toLowerCase().trim();
+      const matched = satelliteData.filter(app => 
+        !q || app.name.toLowerCase().includes(q) || app.sub.toLowerCase().includes(q) || app.desc.toLowerCase().includes(q)
+      );
+
+      if (matched.length === 0) {
+        cmdResults.innerHTML = `<div class="p-4 text-center text-xs text-slate-500">No matching apps found.</div>`;
+        return;
+      }
+
+      cmdResults.innerHTML = matched.map((app, idx) => `
+        <a href="${app.url}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3 rounded-xl hover:bg-cyan-500/10 hover:border hover:border-cyan-500/30 transition-colors group">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-cyan-400 font-mono text-xs font-bold">
+              ${app.name.substring(0, 2).toUpperCase()}
+            </div>
+            <div>
+              <div class="text-sm font-semibold text-white group-hover:text-cyan-300 flex items-center gap-2">
+                <span>${app.name}</span>
+                <span class="text-[10px] font-mono text-slate-400">${app.sub}</span>
+              </div>
+              <div class="text-xs text-slate-400 line-clamp-1">${app.desc}</div>
+            </div>
+          </div>
+          <span class="text-xs text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 font-mono">
+            Launch ↗
+          </span>
+        </a>
+      `).join('');
+    }
+
+    if (openSearchBtn) {
+      openSearchBtn.addEventListener('click', openModal);
+    }
+
+    if (cmdInput) {
+      cmdInput.addEventListener('input', (e) => {
+        renderCmdResults(e.target.value);
+      });
+      cmdInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const firstLink = cmdResults.querySelector('a');
+          if (firstLink) {
+            window.open(firstLink.href, '_blank');
+            closeModal();
+          }
+        }
+      });
+    }
+
+    // Keyboard Shortcuts: '/' to focus search, 'Cmd+K' / 'Ctrl+K' for modal, 'Esc' to close
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        if (cmdModal && !cmdModal.classList.contains('hidden')) {
+          closeModal();
+        } else {
+          openModal();
+        }
+      } else if (e.key === '/' && document.activeElement !== searchInput && document.activeElement !== cmdInput) {
+        e.preventDefault();
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } else if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    if (cmdModal) {
+      cmdModal.addEventListener('click', (e) => {
+        if (e.target === cmdModal) {
+          closeModal();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

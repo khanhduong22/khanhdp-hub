@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KIDO // TERMINAL STATION [BLOOMBERG EDITION]</title>
+  <meta name="description" content="Dương Phúc Khánh (Kido) - Systems Architect & Engineering Leader. High-throughput distributed systems, algorithmic trading tools, and agentic developer platforms.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Monospace Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+          },
+          colors: {
+            term: {
+              black: '#05080c',
+              bg: '#080d14',
+              surface: '#0d1520',
+              card: '#101a28',
+              cardHover: '#142234',
+              border: '#1c2d42',
+              borderBright: '#2a4362',
+              cyan: '#06b6d4',
+              cyanGlow: '#22d3ee',
+              green: '#10b981',
+              greenGlow: '#34d399',
+              amber: '#f59e0b',
+              amberGlow: '#fbbf24',
+              red: '#ef4444',
+              muted: '#64748b',
+              dim: '#334155',
+              text: '#e2e8f0',
+              textMuted: '#94a3b8'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080d14;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #06b6d4;
+    }
+
+    /* CRT Scanline Overlay */
+    .crt-scanlines {
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.35) 50%
+      ), 
+      linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 3px, 3px 100%;
+      pointer-events: none;
+    }
+
+    /* Phosphor Glows */
+    .glow-cyan {
+      text-shadow: 0 0 8px rgba(6, 182, 212, 0.7), 0 0 18px rgba(6, 182, 212, 0.3);
+    }
+    .glow-green {
+      text-shadow: 0 0 8px rgba(16, 185, 129, 0.7), 0 0 18px rgba(16, 185, 129, 0.3);
+    }
+    .glow-amber {
+      text-shadow: 0 0 8px rgba(245, 158, 11, 0.7), 0 0 18px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Terminal Box Shadows */
+    .terminal-box-glow {
+      box-shadow: 0 0 20px -5px rgba(6, 182, 212, 0.15), inset 0 0 15px -5px rgba(6, 182, 212, 0.05);
+    }
+    .terminal-box-green {
+      box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.15), inset 0 0 15px -5px rgba(16, 185, 129, 0.05);
+    }
+    .terminal-box-amber {
+      box-shadow: 0 0 20px -5px rgba(245, 158, 11, 0.15), inset 0 0 15px -5px rgba(245, 158, 11, 0.05);
+    }
+
+    /* Live Blinking Cursor */
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    .cursor-blink {
+      animation: blink 1s infinite;
+    }
+
+    /* Ticker marquee animation */
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 35s linear infinite;
+    }
+    .ticker-track:hover {
+      animation-play-state: paused;
+    }
+
+    /* Corner brackets */
+    .corner-bracket {
+      position: relative;
+    }
+    .corner-bracket::before {
+      content: "┌";
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      font-size: 11px;
+      color: #06b6d4;
+      line-height: 1;
+      opacity: 0.7;
+    }
+    .corner-bracket::after {
+      content: "┘";
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      font-size: 11px;
+      color: #06b6d4;
+      line-height: 1;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body class="bg-term-black text-term-text font-mono min-h-screen selection:bg-cyan-500 selection:text-black antialiased relative overflow-x-hidden">
+
+  <!-- CRT Screen Effect Overlay -->
+  <div id="crtOverlay" class="crt-scanlines fixed inset-0 z-50 pointer-events-none transition-opacity duration-300"></div>
+
+  <!-- TOP BLOOMBERG TELEMETRY & STATUS BAR -->
+  <header class="border-b border-term-border bg-term-bg/95 sticky top-0 z-40 backdrop-blur-md">
+    <!-- Row 1: Global Station Control & Time -->
+    <div class="px-3 py-1.5 flex flex-wrap items-center justify-between gap-2 text-xs border-b border-term-border/60 bg-black/40">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-950/70 border border-emerald-500/40 text-emerald-400 font-semibold tracking-wider text-[11px]">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block"></span>
+          SYS.ONLINE [NODE: CONTABO-VPS]
+        </span>
+        <span class="hidden sm:inline text-term-muted">|</span>
+        <span class="hidden sm:inline text-[11px] text-term-textMuted tracking-wider">
+          STATION: <span class="text-term-cyan font-bold">BLOOMBERG-PROT-V1</span>
+        </span>
+        <span class="hidden md:inline text-term-muted">|</span>
+        <span class="hidden md:inline text-[11px] text-term-textMuted">
+          UPTIME: <span class="text-term-green font-semibold" id="sysUptime">99.998%</span>
+        </span>
+      </div>
+
+      <div class="flex items-center gap-4 text-[11px]">
+        <!-- Sound FX & CRT Toggles -->
+        <div class="flex items-center gap-1.5">
+          <button id="toggleAudioBtn" onclick="toggleAudio()" class="px-1.5 py-0.5 rounded border border-term-border hover:border-term-cyan text-term-muted hover:text-term-cyan transition-colors text-[10px]">
+            AUDIO: <span id="audioStatusText" class="text-term-cyan">ON</span>
+          </button>
+          <button id="toggleCrtBtn" onclick="toggleCrt()" class="px-1.5 py-0.5 rounded border border-term-border hover:border-term-amber text-term-muted hover:text-term-amber transition-colors text-[10px]">
+            CRT: <span id="crtStatusText" class="text-term-amber">ON</span>
+          </button>
+        </div>
+
+        <span class="text-term-muted">|</span>
+
+        <!-- Live Clock -->
+        <div class="flex items-center gap-2 tabular-nums">
+          <span class="text-term-muted">ICT (VN):</span>
+          <span id="vnClock" class="text-term-cyan font-bold tracking-wider">--:--:--</span>
+          <span class="text-term-muted">/ UTC:</span>
+          <span id="utcClock" class="text-slate-400">--:--:--</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Live FinTech Market & System Metrics Ticker -->
+    <div class="overflow-hidden whitespace-nowrap bg-[#070b10] py-1 border-t border-black text-[11px] font-mono tracking-tight flex items-center">
+      <div class="px-2.5 py-0.5 bg-amber-500/10 border-r border-amber-500/30 text-amber-400 font-bold text-[10px] uppercase flex items-center gap-1 shrink-0 z-10">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+        STREAM TICKER
+      </div>
+      <div class="ticker-track text-term-textMuted flex gap-8 items-center px-4">
+        <!-- Telemetry Items -->
+        <span class="inline-flex items-center gap-1"><span class="text-term-cyan font-bold">INDEX.VN</span> <span class="text-emerald-400 font-medium">ETL LATENCY &lt;5ms</span> <span class="text-emerald-400">▲</span></span>
+        <span class="text-term-border">|</span>
+        <span class="inline-flex items-center gap-1"><span class="text-term-cyan font-bold">LINKPUL.COM</span> <span class="text-amber-400 font-bold">50,000+ REQ/S</span> <span class="text-emerald-400">▲ p99</span></span>
+        <span class="text-term-border">|</span>
+        <span class="inline-flex items-center gap-1"><span class="text-term-green font-bold">VALKEY 8.0</span> <span class="text-emerald-400">ASYNC I/O MULTI-THREAD</span> <span class="text-emerald-400">ACTIVE</span></span>
+        <span class="text-term-border">|</span>
+        <span class="inline-flex items-center gap-1"><span class="text-term-amber font-bold">REDIS HLL</span> <span class="text-amber-300 font-bold">MEMORY CUT -98%</span> <span class="text-emerald-400">OPTIMAL</span></span>
+        <span class="text-term-border">|</span>
+        <span class="inline-flex items-center gap-1"><span class="text-term-cyan font-bold">AGENT HARNESS</span> <span class="text-term-text">70+ SKILLS</span> <span class="text-cyan-400">SYNCED</span></span>
+        <span class="text-term-border">|</span>
+        <span class="inline-flex items-center gap-1"><span class="text-term-green font-bold">SIGNOZ APM</span> <span class="text-emerald-400">0 ERRORS</span> <span class="text-slate-400">100% HEALTH</span></span>
+        <span class="text-term-border">|</span>
+        <span class="inline-flex items-center gap-1"><span class="text-term-amber font-bold">P2P ARBITRAGE</span> <span class="text-amber-400 font-bold">+1.84% SPREAD</span> <span class="text-emerald-400">▲ REALTIME</span></span>
+        <span class="text-term-border">|</span>
+        <span class="inline-flex items-center gap-1"><span class="text-term-cyan font-bold">SONARQUBE GATE</span> <span class="text-emerald-400">PASSED [A-RATING]</span></span>
+        <span class="text-term-border">|</span>
+        <span class="inline-flex items-center gap-1"><span class="text-term-green font-bold">UPTIME KUMA</span> <span class="text-emerald-400">11 SATELLITES 100% SLA</span></span>
+        <span class="text-term-border">|</span>
+        <!-- Duplicated for seamless loop -->
+        <span class="inline-flex items-center gap-1"><span class="text-term-cyan font-bold">INDEX.VN</span> <span class="text-emerald-400 font-medium">ETL LATENCY &lt;5ms</span> <span class="text-emerald-400">▲</span></span>
+        <span class="text-term-border">|</span>
+        <span class="inline-flex items-center gap-1"><span class="text-term-cyan font-bold">LINKPUL.COM</span> <span class="text-amber-400 font-bold">50,000+ REQ/S</span> <span class="text-emerald-400">▲ p99</span></span>
+        <span class="text-term-border">|</span>
+        <span class="inline-flex items-center gap-1"><span class="text-term-green font-bold">VALKEY 8.0</span> <span class="text-emerald-400">ASYNC I/O MULTI-THREAD</span> <span class="text-emerald-400">ACTIVE</span></span>
+        <span class="text-term-border">|</span>
+        <span class="inline-flex items-center gap-1"><span class="text-term-amber font-bold">REDIS HLL</span> <span class="text-amber-300 font-bold">MEMORY CUT -98%</span> <span class="text-emerald-400">OPTIMAL</span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TERMINAL CONTAINER -->
+  <main class="max-w-[1580px] mx-auto px-3 sm:px-6 py-5 space-y-6">
+
+    <!-- ASCII PROMPT & DOSSIER HERO BANNER -->
+    <div class="border border-term-border bg-term-surface/80 rounded-sm p-4 relative terminal-box-glow">
+      <!-- Window Controls Header -->
+      <div class="flex items-center justify-between pb-3 mb-3 border-b border-term-border/70 text-xs">
+        <div class="flex items-center gap-2 text-term-cyan">
+          <span class="text-emerald-400 font-bold">●</span>
+          <span class="font-bold tracking-widest text-[11px] uppercase">SYS_CONSOLE // ARCHITECT_DOSSIER.BIN</span>
+          <span class="text-term-muted text-[10px] hidden sm:inline">[PID: 2209 | ARCH: X86_64-LINUX | TTY: 1]</span>
+        </div>
+        <div class="flex items-center gap-2 text-term-muted text-[11px]">
+          <span class="hover:text-term-cyan cursor-pointer">[_]</span>
+          <span class="hover:text-term-amber cursor-pointer">[□]</span>
+          <span class="hover:text-term-red cursor-pointer">[×]</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <!-- ASCII Art & Terminal Prompt -->
+        <div class="lg:col-span-7 xl:col-span-8 space-y-3">
+          <!-- ASCII Logo Banner -->
+          <pre class="text-[9px] sm:text-[11px] md:text-xs leading-none text-term-cyan glow-cyan font-bold overflow-x-auto select-none py-1">
+██████╗ ██╗   ██╗ ██████╗ ███╗   ██╗ ██████╗     ██████╗ ██╗  ██╗██╗   ██╗ █████╗ ███╗   ██╗██╗  ██╗
+██╔══██╗██║   ██║██╔═══██╗████╗  ██║██╔════╝     ██╔══██╗██║  ██║██║   ██║██╔══██╗████╗  ██║██║ ██╔╝
+██║  ██║██║   ██║██║   ██║██╔██╗ ██║██║  ███╗    ██████╔╝███████║██║   ██║███████║██╔██╗ ██║█████╔╝ 
+██║  ██║██║   ██║██║   ██║██║╚██╗██║██║   ██║    ██╔═══╝ ██╔══██║██║   ██║██╔══██║██║╚██╗██║██╔═██╗ 
+██████╔╝╚██████╔╝╚██████╔╝██║ ╚████║╚██████╔╝    ██║     ██║  ██║╚██████╔╝██║  ██║██║ ╚████║██║  ██╗
+╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝     ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝
+          </pre>
+
+          <!-- Terminal CLI Intro -->
+          <div class="space-y-1.5 text-xs text-term-textMuted bg-black/60 p-3 rounded border border-term-border/70 font-mono">
+            <div class="flex items-center gap-2">
+              <span class="text-term-green font-bold">kido@station-bloomberg</span><span class="text-term-cyan">:</span><span class="text-amber-400">~</span><span class="text-term-text">$</span>
+              <span class="text-term-text font-semibold">whoami --dossier --verbose</span>
+            </div>
+            <div class="pt-1 text-slate-300">
+              <span class="text-term-cyan font-bold">NAME:</span> Dương Phúc Khánh (Kido) &nbsp;|&nbsp;
+              <span class="text-term-cyan font-bold">ROLE:</span> Systems Architect &amp; Engineering Leader &nbsp;|&nbsp;
+              <span class="text-term-cyan font-bold">LOC:</span> Da Nang, Vietnam
+            </div>
+            <div class="text-term-textMuted text-[11px] leading-relaxed">
+              <span class="text-term-amber font-bold">&gt; MISSION:</span> Architecting high-throughput distributed systems, algorithmic trading tools, and agentic developer platforms.
+            </div>
+            <div class="text-emerald-400 text-[11px] flex items-center gap-1.5 pt-1">
+              <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>STATUS: Available for Strategic Advisory &amp; System Architecture</span>
+            </div>
+          </div>
+
+          <!-- Quick Action Commands / Links -->
+          <div class="flex flex-wrap gap-2 text-xs pt-1">
+            <a href="https://github.com/khanhduong22" target="_blank" rel="noopener noreferrer" 
+               class="px-2.5 py-1 rounded bg-term-card hover:bg-term-cardHover border border-term-border hover:border-term-cyan text-term-cyan hover:glow-cyan transition-all flex items-center gap-1.5">
+              <span>[GH]</span> github.com/khanhduong22
+            </a>
+            <a href="mailto:phuckhanh22@gmail.com" 
+               class="px-2.5 py-1 rounded bg-term-card hover:bg-term-cardHover border border-term-border hover:border-term-green text-term-green hover:glow-green transition-all flex items-center gap-1.5">
+              <span>[@]</span> phuckhanh22@gmail.com
+            </a>
+            <button onclick="executeTerminalCommand('satellites')" 
+               class="px-2.5 py-1 rounded bg-term-card hover:bg-term-cardHover border border-term-border hover:border-term-amber text-term-amber hover:glow-amber transition-all flex items-center gap-1.5">
+              <span>[CMD]</span> list_subdomains
+            </button>
+            <button onclick="executeTerminalCommand('metrics')" 
+               class="px-2.5 py-1 rounded bg-term-card hover:bg-term-cardHover border border-term-border hover:border-slate-400 text-slate-300 transition-all flex items-center gap-1.5">
+              <span>[F5]</span> view_benchmarks
+            </button>
+          </div>
+        </div>
+
+        <!-- Awards & Certifications Telemetry Box -->
+        <div class="lg:col-span-5 xl:col-span-4 bg-term-card/70 border border-term-border rounded p-3.5 space-y-3">
+          <div class="flex items-center justify-between border-b border-term-border pb-2">
+            <span class="text-xs font-bold text-term-amber tracking-wider flex items-center gap-1.5">
+              <span>★</span> HONORS &amp; CREDENTIALS
+            </span>
+            <span class="text-[10px] text-term-muted">VERIFIED</span>
+          </div>
+
+          <!-- Awards List -->
+          <div class="space-y-1.5 text-xs">
+            <div class="text-[11px] text-term-muted uppercase font-bold tracking-wider">Major Honors:</div>
+            <ul class="space-y-1 text-slate-300 text-[11px]">
+              <li class="flex items-start gap-1.5">
+                <span class="text-amber-400 font-bold shrink-0">▲</span>
+                <span><strong>Startup Runway 2018 Champion</strong> <span class="text-term-muted">(JustOrder)</span></span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-amber-400 font-bold shrink-0">▲</span>
+                <span><strong>SBI FPT Best Performance Team</strong> <span class="text-emerald-400 font-semibold">(2022, 2023, 2024 - 3x)</span></span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-amber-400 font-bold shrink-0">▲</span>
+                <span><strong>City Computer Science Award</strong> <span class="text-term-muted">First Prize</span></span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Certifications -->
+          <div class="space-y-1.5 text-xs pt-2 border-t border-term-border/60">
+            <div class="text-[11px] text-term-muted uppercase font-bold tracking-wider">Certifications:</div>
+            <div class="flex flex-col gap-1.5 text-[11px]">
+              <div class="flex items-center justify-between bg-black/40 px-2 py-1 rounded border border-term-border/40">
+                <span class="text-cyan-300">Claude Certified Architect</span>
+                <span class="text-[10px] text-term-muted">Anthropic</span>
+              </div>
+              <div class="flex items-center justify-between bg-black/40 px-2 py-1 rounded border border-term-border/40">
+                <span class="text-cyan-300">AWS Solutions Architect (SAA)</span>
+                <span class="text-[10px] text-term-muted">AWS</span>
+              </div>
+              <div class="flex items-center justify-between bg-black/40 px-2 py-1 rounded border border-term-border/40">
+                <span class="text-cyan-300">Project Management Professional</span>
+                <span class="text-[10px] text-term-muted">PMP Track</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METRICS & BENCHMARK HUD (4 CORE TELEMETRY PANELS) -->
+    <section>
+      <div class="flex items-center justify-between mb-2 px-1">
+        <h2 class="text-xs font-bold uppercase tracking-widest text-term-cyan flex items-center gap-2">
+          <span>// 01.</span> ARCHITECTURAL SCALE &amp; HARD BENCHMARKS
+        </h2>
+        <span class="text-[10px] text-term-muted font-mono">MEASURED ON PRODUCTION RIGS</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <!-- Metric 1: 50,000+ Req/s -->
+        <div class="border border-term-border bg-term-surface/90 hover:border-cyan-500/60 transition-all p-4 rounded-sm relative overflow-hidden group terminal-box-glow">
+          <div class="absolute top-1 right-2 text-[10px] text-term-muted font-mono tracking-tighter">TELEMETRY-01</div>
+          <div class="text-xs text-term-muted uppercase font-bold tracking-wider">Throughput Load</div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-term-cyan glow-cyan tracking-tight my-1 flex items-baseline gap-1">
+            50,000+
+            <span class="text-xs text-cyan-400 font-semibold uppercase">Req/Sec</span>
+          </div>
+          <div class="text-xs font-semibold text-slate-200">Sustained Gateway Throughput</div>
+          <p class="text-[11px] text-term-textMuted mt-1 leading-normal border-t border-term-border/50 pt-1.5">
+            Stress-tested FastAPI &amp; Redis Mutex Locks gateway with sub-millisecond p99 dispatching.
+          </p>
+          <div class="mt-2 flex items-center gap-1.5 text-[10px] text-emerald-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span>Linkpul Concurrency Engine</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: 98% Memory Cut -->
+        <div class="border border-term-border bg-term-surface/90 hover:border-emerald-500/60 transition-all p-4 rounded-sm relative overflow-hidden group terminal-box-green">
+          <div class="absolute top-1 right-2 text-[10px] text-term-muted font-mono tracking-tighter">TELEMETRY-02</div>
+          <div class="text-xs text-term-muted uppercase font-bold tracking-wider">Memory Optimization</div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-term-green glow-green tracking-tight my-1 flex items-baseline gap-1">
+            98%
+            <span class="text-xs text-emerald-400 font-semibold uppercase">Reduction</span>
+          </div>
+          <div class="text-xs font-semibold text-slate-200">Footprint Reduction</div>
+          <p class="text-[11px] text-term-textMuted mt-1 leading-normal border-t border-term-border/50 pt-1.5">
+            Redis HyperLogLog real-time unique analytics replacing traditional multi-gigabyte sets.
+          </p>
+          <div class="mt-2 flex items-center gap-1.5 text-[10px] text-emerald-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span>Probabilistic Data Structures</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: 3x Best Performance -->
+        <div class="border border-term-border bg-term-surface/90 hover:border-amber-500/60 transition-all p-4 rounded-sm relative overflow-hidden group terminal-box-amber">
+          <div class="absolute top-1 right-2 text-[10px] text-term-muted font-mono tracking-tighter">TELEMETRY-03</div>
+          <div class="text-xs text-term-muted uppercase font-bold tracking-wider">Engineering Accolade</div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-term-amber glow-amber tracking-tight my-1 flex items-baseline gap-1">
+            3x
+            <span class="text-xs text-amber-300 font-semibold uppercase">Consecutive</span>
+          </div>
+          <div class="text-xs font-semibold text-slate-200">Best Performance Award</div>
+          <p class="text-[11px] text-term-textMuted mt-1 leading-normal border-t border-term-border/50 pt-1.5">
+            Awarded at SBI FPT consecutively in 2022, 2023, and 2024 for architectural leadership.
+          </p>
+          <div class="mt-2 flex items-center gap-1.5 text-[10px] text-amber-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            <span>Enterprise Systems Delivery</span>
+          </div>
+        </div>
+
+        <!-- Metric 4: 8+ Years -->
+        <div class="border border-term-border bg-term-surface/90 hover:border-cyan-500/60 transition-all p-4 rounded-sm relative overflow-hidden group terminal-box-glow">
+          <div class="absolute top-1 right-2 text-[10px] text-term-muted font-mono tracking-tighter">TELEMETRY-04</div>
+          <div class="text-xs text-term-muted uppercase font-bold tracking-wider">Domain Mastery</div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-cyan-300 glow-cyan tracking-tight my-1 flex items-baseline gap-1">
+            8+
+            <span class="text-xs text-cyan-400 font-semibold uppercase">Years</span>
+          </div>
+          <div class="text-xs font-semibold text-slate-200">Engineering Experience</div>
+          <p class="text-[11px] text-term-textMuted mt-1 leading-normal border-t border-term-border/50 pt-1.5">
+            Designing distributed engines, FinTech platforms, and high-frequency quantitative systems.
+          </p>
+          <div class="mt-2 flex items-center gap-1.5 text-[10px] text-cyan-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+            <span>End-to-End System Ownership</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLAGSHIP ARCHITECTURES (3 CORE ENGINES) -->
+    <section>
+      <div class="flex items-center justify-between mb-2 px-1">
+        <h2 class="text-xs font-bold uppercase tracking-widest text-term-cyan flex items-center gap-2">
+          <span>// 02.</span> FLAGSHIP PRODUCTION ARCHITECTURES
+        </h2>
+        <span class="text-[10px] text-term-muted font-mono">[3 CRITICAL NODES]</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- Flagship 1: Index -->
+        <div class="border border-term-border bg-term-surface/90 rounded-sm p-4 flex flex-col justify-between hover:border-cyan-500/70 transition-all group relative">
+          <div class="space-y-3">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-term-cyan uppercase tracking-wider bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30">
+                  FinTech Social Network &amp; Crawler
+                </span>
+                <h3 class="text-xl font-bold text-white mt-1.5 tracking-tight group-hover:text-cyan-300 transition-colors flex items-center gap-2">
+                  <span>INDEX</span>
+                  <span class="text-xs font-normal text-term-muted">[index.vn]</span>
+                </h3>
+              </div>
+              <span class="text-emerald-400 text-xs font-mono">&lt;5ms ETL</span>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Community engine built in NestJS with dynamic groups, Base32 Materialized Path comment trees, fine-grained Bitmask RBAC, and multi-source distributed ETL ingestion pipeline with &lt;5ms latency.
+            </p>
+
+            <div class="space-y-1.5 border-t border-term-border/70 pt-2.5">
+              <span class="text-[10px] text-term-muted uppercase font-bold tracking-wider">Tech Matrix:</span>
+              <div class="flex flex-wrap gap-1.5 text-[11px]">
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-cyan-300">NestJS</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-cyan-300">Base32 Materialized Path</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-cyan-300">Bitmask RBAC</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-cyan-300">Redis HLL</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-cyan-300">Cloudflare R2</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 mt-2 border-t border-term-border/50 flex items-center justify-between">
+            <a href="https://index.vn" target="_blank" rel="noopener noreferrer" 
+               class="text-xs font-bold text-term-cyan hover:underline inline-flex items-center gap-1">
+              <span>EXPLORE NODE</span>
+              <span>↗</span>
+            </a>
+            <button onclick="inspectNode('index')" class="text-[11px] text-term-muted hover:text-white px-2 py-0.5 border border-term-border rounded">
+              [INSPECT SPECS]
+            </button>
+          </div>
+        </div>
+
+        <!-- Flagship 2: Linkpul -->
+        <div class="border border-term-border bg-term-surface/90 rounded-sm p-4 flex flex-col justify-between hover:border-amber-500/70 transition-all group relative">
+          <div class="space-y-3">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-term-amber uppercase tracking-wider bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">
+                  High-Throughput Gateway
+                </span>
+                <h3 class="text-xl font-bold text-white mt-1.5 tracking-tight group-hover:text-amber-300 transition-colors flex items-center gap-2">
+                  <span>LINKPUL</span>
+                  <span class="text-xs font-normal text-term-muted">[linkpul.com]</span>
+                </h3>
+              </div>
+              <span class="text-amber-400 text-xs font-mono">50k Req/s</span>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">
+              High-concurrency URL redirection sustaining 50k req/sec p99 using Redis Mutex Locks, asynchronous clickstream queue workers, and multi-layer SigNoz APM telemetry.
+            </p>
+
+            <div class="space-y-1.5 border-t border-term-border/70 pt-2.5">
+              <span class="text-[10px] text-term-muted uppercase font-bold tracking-wider">Tech Matrix:</span>
+              <div class="flex flex-wrap gap-1.5 text-[11px]">
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-amber-300">FastAPI</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-amber-300">Redis Mutex</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-amber-300">PostgreSQL</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-amber-300">SigNoz APM</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-amber-300">Docker</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 mt-2 border-t border-term-border/50 flex items-center justify-between">
+            <a href="https://linkpul.com" target="_blank" rel="noopener noreferrer" 
+               class="text-xs font-bold text-term-amber hover:underline inline-flex items-center gap-1">
+              <span>EXPLORE NODE</span>
+              <span>↗</span>
+            </a>
+            <button onclick="inspectNode('linkpul')" class="text-[11px] text-term-muted hover:text-white px-2 py-0.5 border border-term-border rounded">
+              [INSPECT SPECS]
+            </button>
+          </div>
+        </div>
+
+        <!-- Flagship 3: Agent Harness Kit -->
+        <div class="border border-term-border bg-term-surface/90 rounded-sm p-4 flex flex-col justify-between hover:border-emerald-500/70 transition-all group relative">
+          <div class="space-y-3">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
+                  Multi-Agent AI Engineering
+                </span>
+                <h3 class="text-xl font-bold text-white mt-1.5 tracking-tight group-hover:text-emerald-300 transition-colors flex items-center gap-2">
+                  <span>AGENT HARNESS</span>
+                  <span class="text-xs font-normal text-term-muted">[OSS Kit]</span>
+                </h3>
+              </div>
+              <span class="text-emerald-400 text-xs font-mono">70+ Skills</span>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Portable framework standardizing 70+ AI skills, parallel Git worktrees, TDD loops, and 7 mandatory quality gates across Claude Code, Codex, and Google Antigravity.
+            </p>
+
+            <div class="space-y-1.5 border-t border-term-border/70 pt-2.5">
+              <span class="text-[10px] text-term-muted uppercase font-bold tracking-wider">Tech Matrix:</span>
+              <div class="flex flex-wrap gap-1.5 text-[11px]">
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-emerald-300">TypeScript</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-emerald-300">Git Worktrees</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-emerald-300">MCP Protocol</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-emerald-300">SonarQube</span>
+                <span class="px-2 py-0.5 rounded bg-black/60 border border-term-border text-emerald-300">Playwright E2E</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 mt-2 border-t border-term-border/50 flex items-center justify-between">
+            <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener noreferrer" 
+               class="text-xs font-bold text-term-green hover:underline inline-flex items-center gap-1">
+              <span>EXPLORE REPO</span>
+              <span>↗</span>
+            </a>
+            <button onclick="inspectNode('harness')" class="text-[11px] text-term-muted hover:text-white px-2 py-0.5 border border-term-border rounded">
+              [INSPECT SPECS]
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUANTITATIVE ALGORITHMIC TRADING MATRIX -->
+    <section class="border border-term-border bg-term-surface/80 rounded-sm p-4">
+      <div class="flex items-center justify-between border-b border-term-border pb-2.5 mb-3">
+        <h2 class="text-xs font-bold uppercase tracking-widest text-term-amber flex items-center gap-2">
+          <span>// 03.</span> QUANTITATIVE &amp; ALGORITHMIC TRADING ENGINES
+        </h2>
+        <span class="text-[10px] text-amber-400 font-mono">FINTECH / LOW-LATENCY ROBOTS</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- TradingView Indicator -->
+        <div class="bg-term-card/80 border border-term-border/70 p-3.5 rounded flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-white flex items-center gap-2">
+                <span class="text-amber-400">📈</span> TradingView Custom Indicator
+              </span>
+              <span class="text-[10px] px-2 py-0.5 bg-amber-500/10 border border-amber-500/30 text-amber-300 rounded">
+                Pine Script v5
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-normal">
+              Custom technical analysis indicator authored in Pine Script for market volatility, statistical trend breakouts, and dynamic liquidity zone tracking.
+            </p>
+          </div>
+          <div class="pt-3 mt-2 border-t border-term-border/50">
+            <a href="https://vn.tradingview.com/script/neSZYFwg/" target="_blank" rel="noopener noreferrer" 
+               class="text-xs font-semibold text-term-amber hover:underline inline-flex items-center gap-1">
+              <span>VIEW PUBLISHED PINE SCRIPT</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- MetaTrader 5 Robots -->
+        <div class="bg-term-card/80 border border-term-border/70 p-3.5 rounded flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-white flex items-center gap-2">
+                <span class="text-cyan-400">🤖</span> Algorithmic Expert Advisors (EA)
+              </span>
+              <span class="text-[10px] px-2 py-0.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 rounded">
+                MetaTrader 5 (MQL5)
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-normal">
+              Quantitative automated trading robots for Forex &amp; Crypto markets with sub-second execution, trailing risk control, and algorithmic position sizing.
+            </p>
+          </div>
+          <div class="pt-3 mt-2 border-t border-term-border/50 text-[11px] text-term-muted flex items-center justify-between">
+            <span class="text-emerald-400 font-mono">● Low-Latency VPS Deployment</span>
+            <span class="text-[10px] text-slate-400">[PRIVATE ALGO REPO]</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SATELLITE SUBDOMAINS MATRIX (LIVE FILTERABLE STATION) -->
+    <section class="border border-term-border bg-term-surface/90 rounded-sm p-4 space-y-4">
+      <!-- Section Header & Controls -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-term-border pb-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-xs font-bold uppercase tracking-widest text-term-cyan flex items-center gap-2">
+              <span>// 04.</span> SATELLITE CLUSTER ARCHITECTURE
+            </h2>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-950 border border-cyan-500/40 text-cyan-300 font-mono" id="subdomainCountBadge">
+              11 ACTIVE NODES
+            </span>
+          </div>
+          <p class="text-[11px] text-term-muted mt-0.5">
+            Decoupled domain routing deployed across Contabo VPS, Nginx Reverse Proxy, and Docker infrastructure.
+          </p>
+        </div>
+
+        <!-- Live Search Box -->
+        <div class="relative w-full md:w-72">
+          <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-term-muted text-xs font-mono">
+            &gt;
+          </div>
+          <input type="text" id="subdomainSearch" placeholder="grep subdomain / keyword..." 
+                 oninput="handleSearch(this.value)"
+                 class="w-full pl-6 pr-3 py-1.5 bg-black/70 border border-term-border focus:border-term-cyan focus:outline-none text-xs text-slate-200 placeholder-term-dim rounded-sm font-mono transition-colors">
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-2.5 flex items-center text-term-muted hover:text-white text-xs">
+            [x]
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono" id="filterTabsContainer">
+        <button onclick="setFilter('ALL')" class="filter-tab active px-3 py-1 rounded-sm border border-term-cyan bg-cyan-950/80 text-cyan-300 font-bold tracking-wider transition-all" data-category="ALL">
+          [0] ALL (11)
+        </button>
+        <button onclick="setFilter('FinTech & Data')" class="filter-tab px-3 py-1 rounded-sm border border-term-border hover:border-term-cyan/60 bg-term-card text-term-muted hover:text-white transition-all" data-category="FinTech & Data">
+          [1] FinTech &amp; Data (2)
+        </button>
+        <button onclick="setFilter('Developer Tools')" class="filter-tab px-3 py-1 rounded-sm border border-term-border hover:border-term-cyan/60 bg-term-card text-term-muted hover:text-white transition-all" data-category="Developer Tools">
+          [2] Dev Tools (2)
+        </button>
+        <button onclick="setFilter('Cloud & Observability')" class="filter-tab px-3 py-1 rounded-sm border border-term-border hover:border-term-cyan/60 bg-term-card text-term-muted hover:text-white transition-all" data-category="Cloud & Observability">
+          [3] Observability &amp; Cloud (4)
+        </button>
+        <button onclick="setFilter('Life Ops')" class="filter-tab px-3 py-1 rounded-sm border border-term-border hover:border-term-cyan/60 bg-term-card text-term-muted hover:text-white transition-all" data-category="Life Ops">
+          [4] Life Ops (2)
+        </button>
+        <button onclick="setFilter('Quality & Security')" class="filter-tab px-3 py-1 rounded-sm border border-term-border hover:border-term-cyan/60 bg-term-card text-term-muted hover:text-white transition-all" data-category="Quality & Security">
+          [5] Quality &amp; Security (1)
+        </button>
+      </div>
+
+      <!-- Subdomain Cards Grid (Dynamically rendered & filterable) -->
+      <div id="subdomainsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyResults" class="hidden text-center py-10 border border-dashed border-term-border rounded text-xs text-term-muted space-y-2">
+        <div class="text-amber-400 font-bold text-sm">NO SUBDOMAIN MATCHED QUERY</div>
+        <p>Try searching for 'tools', 'finance', 'apm', or reset the category filter.</p>
+        <button onclick="resetFilters()" class="px-3 py-1 bg-term-card border border-term-border hover:border-term-cyan text-term-cyan rounded text-xs">
+          [RESET ALL FILTERS]
+        </button>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE TERMINAL PROMPT & CLI EXECUTION DRAWER -->
+    <section class="border border-term-border bg-black/90 rounded-sm p-3.5 space-y-3">
+      <div class="flex items-center justify-between border-b border-term-border/70 pb-2">
+        <div class="flex items-center gap-2 text-xs text-emerald-400 font-bold">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>INTERACTIVE TERMINAL CLI [BLOOMBERG COMMAND DISPATCH]</span>
+        </div>
+        <span class="text-[10px] text-term-muted">TYPE 'help' FOR COMMANDS</span>
+      </div>
+
+      <!-- Terminal Output Log -->
+      <div id="terminalLog" class="h-28 overflow-y-auto text-xs text-slate-300 font-mono space-y-1 p-2 bg-[#05080c] rounded border border-term-border/40">
+        <div class="text-term-muted">&gt; System initialized. Welcome to Khành (Kido) Bloomberg Terminal.</div>
+        <div class="text-term-muted">&gt; Available shortcut buttons below or type command directly into the prompt.</div>
+        <div class="text-term-cyan">&gt; Type <span class="text-white font-bold">'help'</span>, <span class="text-white font-bold">'flagships'</span>, <span class="text-white font-bold">'metrics'</span>, <span class="text-white font-bold">'satellites'</span>, or <span class="text-white font-bold">'clear'</span>.</div>
+      </div>
+
+      <!-- Quick Command Buttons -->
+      <div class="flex flex-wrap gap-1.5 text-[11px]">
+        <button onclick="executeTerminalCommand('help')" class="px-2 py-0.5 bg-term-card hover:bg-term-cardHover border border-term-border text-term-cyan rounded hover:border-term-cyan">
+          [F1 HELP]
+        </button>
+        <button onclick="executeTerminalCommand('flagships')" class="px-2 py-0.5 bg-term-card hover:bg-term-cardHover border border-term-border text-term-cyan rounded hover:border-term-cyan">
+          [F2 FLAGSHIPS]
+        </button>
+        <button onclick="executeTerminalCommand('satellites')" class="px-2 py-0.5 bg-term-card hover:bg-term-cardHover border border-term-border text-term-green rounded hover:border-term-green">
+          [F3 SATELLITES]
+        </button>
+        <button onclick="executeTerminalCommand('metrics')" class="px-2 py-0.5 bg-term-card hover:bg-term-cardHover border border-term-border text-term-amber rounded hover:border-term-amber">
+          [F4 BENCHMARKS]
+        </button>
+        <button onclick="executeTerminalCommand('trading')" class="px-2 py-0.5 bg-term-card hover:bg-term-cardHover border border-term-border text-amber-300 rounded hover:border-amber-400">
+          [F5 TRADING]
+        </button>
+        <button onclick="executeTerminalCommand('ping')" class="px-2 py-0.5 bg-term-card hover:bg-term-cardHover border border-term-border text-slate-300 rounded hover:border-slate-300">
+          [F9 PING CLUSTER]
+        </button>
+        <button onclick="executeTerminalCommand('clear')" class="px-2 py-0.5 bg-term-card hover:bg-term-cardHover border border-term-border text-term-muted hover:text-red-400 rounded hover:border-red-400">
+          [CLEAR]
+        </button>
+      </div>
+
+      <!-- Command Input Line -->
+      <form id="terminalForm" onsubmit="handleTerminalSubmit(event)" class="flex items-center gap-2 pt-1">
+        <span class="text-term-green font-bold text-xs select-none">root@station-kido:~#</span>
+        <input type="text" id="terminalInput" autocomplete="off" spellcheck="false"
+               placeholder="type command (e.g. 'satellites', 'metrics', 'contact', 'clear')..."
+               class="flex-1 bg-transparent border-none outline-none text-xs text-term-cyan font-mono placeholder-term-dim">
+        <button type="submit" class="px-3 py-1 bg-cyan-950 border border-cyan-500/50 hover:bg-cyan-900 text-cyan-300 text-xs font-bold rounded">
+          EXECUTE
+        </button>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-term-border mt-8 py-4 px-4 bg-term-bg text-center text-xs text-term-muted space-y-1">
+    <div>
+      <span class="text-slate-400 font-semibold">Dương Phúc Khánh (Kido)</span> // Senior Systems Architect &amp; Engineering Leader
+    </div>
+    <div class="text-[11px] text-slate-500">
+      Built for High-Throughput Standards &bull; Standalone Single-File FinTech Cyber-Terminal &bull; Hosted on Contabo VPS
+    </div>
+  </footer>
+
+  <!-- NODE INSPECTOR MODAL -->
+  <div id="inspectorModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-term-surface border border-term-cyan rounded max-w-xl w-full p-5 space-y-4 terminal-box-glow relative">
+      <div class="flex items-center justify-between border-b border-term-border pb-3">
+        <div class="flex items-center gap-2 text-term-cyan">
+          <span class="text-emerald-400 font-bold">●</span>
+          <span class="font-bold tracking-wider text-xs uppercase" id="modalTitle">NODE INSPECTION</span>
+        </div>
+        <button onclick="closeInspectorModal()" class="text-term-muted hover:text-term-red text-sm font-bold">
+          [× CLOSE]
+        </button>
+      </div>
+
+      <div id="modalContent" class="space-y-3 text-xs text-slate-300">
+        <!-- Injected via JS -->
+      </div>
+
+      <div class="border-t border-term-border pt-3 flex justify-end gap-2">
+        <button onclick="closeInspectorModal()" class="px-3 py-1 border border-term-border hover:border-slate-400 text-slate-300 rounded text-xs">
+          CANCEL
+        </button>
+        <a id="modalLaunchBtn" href="#" target="_blank" rel="noopener noreferrer" 
+           class="px-3 py-1 bg-cyan-950 border border-cyan-500 text-cyan-300 hover:bg-cyan-900 rounded text-xs font-bold flex items-center gap-1">
+          <span>CONNECT NODE</span> ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- VANILLA JAVASCRIPT LOGIC & DATA STORAGE -->
+  <script>
+    // Embedded Data Model
+    const TERMINAL_DATA = {
+      profile: {
+        name: "Dương Phúc Khánh",
+        nickname: "Kido",
+        title: "Systems Architect & Engineering Leader",
+        tagline: "Architecting high-throughput distributed systems, algorithmic trading tools, and agentic developer platforms.",
+        location: "Da Nang, Vietnam",
+        email: "phuckhanh22@gmail.com",
+        github: "https://github.com/khanhduong22",
+        status: "Available for Strategic Advisory & System Architecture"
+      },
+      metrics: [
+        { value: "50,000+", label: "Req/s Sustained Throughput", context: "Stress-tested FastAPI & Redis gateway" },
+        { value: "98%", label: "Memory Footprint Reduction", context: "Redis HyperLogLog real-time analytics" },
+        { value: "3x", label: "Consecutive Best Performance", context: "Awarded at SBI FPT (2022, 2023, 2024)" },
+        { value: "8+", label: "Years Engineering Experience", context: "Distributed systems & FinTech platforms" }
+      ],
+      flagships: [
+        {
+          id: "index",
+          name: "Index",
+          category: "FinTech Social Network & Crawler",
+          url: "https://index.vn",
+          description: "Community engine built in NestJS with dynamic groups, Base32 Materialized Path comment trees, fine-grained Bitmask RBAC, and multi-source distributed ETL ingestion pipeline with <5ms latency.",
+          tech: ["NestJS", "Base32 Materialized Path", "Bitmask RBAC", "Redis HLL", "Cloudflare R2"]
+        },
+        {
+          id: "linkpul",
+          name: "Linkpul",
+          category: "High-Throughput Gateway",
+          url: "https://linkpul.com",
+          description: "High-concurrency URL redirection sustaining 50k req/sec p99 using Redis Mutex Locks, asynchronous clickstream queue workers, and multi-layer SigNoz APM telemetry.",
+          tech: ["FastAPI", "Redis Mutex", "PostgreSQL", "SigNoz APM", "Docker"]
+        },
+        {
+          id: "harness",
+          name: "Agent Harness Kit",
+          category: "Multi-Agent AI Engineering",
+          url: "https://github.com/khanhduong22/agent-harness-kit",
+          description: "Portable framework standardizing 70+ AI skills, parallel Git worktrees, TDD loops, and 7 mandatory quality gates across Claude Code, Codex, and Google Antigravity.",
+          tech: ["TypeScript", "Multi-Agent Worktrees", "MCP", "SonarQube", "Vitest", "Playwright"]
+        }
+      ],
+      satellites: [
+        {
+          id: "md",
+          name: "MD Preview",
+          subdomain: "md.khanhdp.com",
+          url: "https://md.khanhdp.com",
+          category: "Developer Tools",
+          badge: "Public Tool",
+          desc: "Client-side Markdown live editor and custom PDF exporter with zero backend storage."
+        },
+        {
+          id: "tools",
+          name: "IT-Tools Hub",
+          subdomain: "tools.khanhdp.com",
+          url: "https://tools.khanhdp.com",
+          category: "Developer Tools",
+          badge: "Self-Hosted",
+          desc: "Handy collection of developer utilities: JWT debugger, regex tester, hash generator, base64."
+        },
+        {
+          id: "p2p",
+          name: "P2P Tracker",
+          subdomain: "p2p.khanhdp.com",
+          url: "https://p2p.khanhdp.com",
+          category: "FinTech & Data",
+          badge: "Automated",
+          desc: "Real-time P2P market scraping, liquidity depth monitoring, and arbitrage spread tracking."
+        },
+        {
+          id: "finance",
+          name: "Personal Finance",
+          subdomain: "finance.khanhdp.com",
+          url: "https://finance.khanhdp.com",
+          category: "FinTech & Data",
+          badge: "Private",
+          desc: "Quantitative asset tracking, capital allocation, and portfolio rebalancing intelligence."
+        },
+        {
+          id: "12weeks",
+          name: "12-Week Year Hub",
+          subdomain: "12weeks.khanhdp.com",
+          url: "https://12weeks.khanhdp.com",
+          category: "Life Ops",
+          badge: "Accountability",
+          desc: "High-velocity execution and weekly scoring system based on the 12-Week Year methodology."
+        },
+        {
+          id: "health",
+          name: "PHR Health Hub",
+          subdomain: "health.khanhdp.com",
+          url: "https://health.khanhdp.com",
+          category: "Life Ops",
+          badge: "Private",
+          desc: "Personal health record tracker, biometrics logging, and lifestyle optimization dashboard."
+        },
+        {
+          id: "signoz",
+          name: "SigNoz APM",
+          subdomain: "signoz.khanhdp.com",
+          url: "https://signoz.khanhdp.com",
+          category: "Cloud & Observability",
+          badge: "Infrastructure",
+          desc: "Distributed tracing, OpenTelemetry collectors, and p99 service latency telemetry."
+        },
+        {
+          id: "grafana",
+          name: "Grafana Dashboards",
+          subdomain: "grafana.khanhdp.com",
+          url: "https://grafana.khanhdp.com",
+          category: "Cloud & Observability",
+          badge: "Infrastructure",
+          desc: "Unified system metrics, CPU/memory telemetry, and real-time VPS resource utilization."
+        },
+        {
+          id: "kuma",
+          name: "Uptime Kuma",
+          subdomain: "kuma.khanhdp.com",
+          url: "https://kuma.khanhdp.com",
+          category: "Cloud & Observability",
+          badge: "Status Page",
+          desc: "24/7 service uptime monitoring, SLA tracking, and heartbeat incident alerting."
+        },
+        {
+          id: "dozzle",
+          name: "Dozzle Logs",
+          subdomain: "dozzle.khanhdp.com",
+          url: "https://dozzle.khanhdp.com",
+          category: "Cloud & Observability",
+          badge: "DevOps",
+          desc: "Real-time streaming logs viewer across all running Docker containers on Contabo VPS."
+        },
+        {
+          id: "sonar",
+          name: "SonarQube Quality",
+          subdomain: "sonar.khanhdp.com",
+          url: "https://sonar.khanhdp.com",
+          category: "Quality & Security",
+          badge: "CI/CD Gate",
+          desc: "Automated code smell inspection, vulnerability audit, and test coverage quality gate."
+        }
+      ]
+    };
+
+    // State Variables
+    let currentCategory = 'ALL';
+    let currentSearchQuery = '';
+    let isAudioEnabled = true;
+    let isCrtEnabled = true;
+
+    // Web Audio Synthesizer for Terminal Beeps & Clicks (Zero External Dependencies)
+    let audioCtx = null;
+    function playTerminalClick(freq = 800, duration = 0.03, type = 'sine') {
+      if (!isAudioEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        // Audio error silent fallback
+      }
+    }
+
+    // Toggle Audio
+    function toggleAudio() {
+      isAudioEnabled = !isAudioEnabled;
+      const statusEl = document.getElementById('audioStatusText');
+      if (isAudioEnabled) {
+        statusEl.textContent = 'ON';
+        statusEl.className = 'text-term-cyan font-bold';
+        playTerminalClick(1200, 0.05);
+      } else {
+        statusEl.textContent = 'OFF';
+        statusEl.className = 'text-term-muted';
+      }
+    }
+
+    // Toggle CRT Screen Lines
+    function toggleCrt() {
+      isCrtEnabled = !isCrtEnabled;
+      const overlay = document.getElementById('crtOverlay');
+      const statusEl = document.getElementById('crtStatusText');
+      playTerminalClick(600, 0.04);
+      if (isCrtEnabled) {
+        overlay.classList.remove('opacity-0');
+        statusEl.textContent = 'ON';
+        statusEl.className = 'text-term-amber font-bold';
+      } else {
+        overlay.classList.add('opacity-0');
+        statusEl.textContent = 'OFF';
+        statusEl.className = 'text-term-muted';
+      }
+    }
+
+    // Live Clock Manager
+    function updateClocks() {
+      const now = new Date();
+      
+      // ICT (Vietnam UTC+7)
+      const vnTimeStr = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Ho_Chi_Minh', hour12: false });
+      document.getElementById('vnClock').textContent = vnTimeStr;
+
+      // UTC
+      const utcTimeStr = now.toLocaleTimeString('en-GB', { timeZone: 'UTC', hour12: false });
+      document.getElementById('utcClock').textContent = utcTimeStr;
+    }
+    setInterval(updateClocks, 1000);
+    updateClocks();
+
+    // Render Subdomain Cards
+    function renderSubdomains() {
+      const grid = document.getElementById('subdomainsGrid');
+      const emptyState = document.getElementById('emptyResults');
+      
+      // Filter logic
+      const filtered = TERMINAL_DATA.satellites.filter(item => {
+        const matchesCategory = (currentCategory === 'ALL') || (item.category === currentCategory);
+        const query = currentSearchQuery.toLowerCase().trim();
+        const matchesSearch = !query || 
+          item.name.toLowerCase().includes(query) ||
+          item.subdomain.toLowerCase().includes(query) ||
+          item.desc.toLowerCase().includes(query) ||
+          item.category.toLowerCase().includes(query) ||
+          item.badge.toLowerCase().includes(query);
+        return matchesCategory && matchesSearch;
+      });
+
+      // Update count badge
+      document.getElementById('subdomainCountBadge').textContent = `${filtered.length} NODES SHOWN`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      } else {
+        emptyState.classList.add('hidden');
+      }
+
+      // Render cards
+      grid.innerHTML = filtered.map(item => {
+        // Badge color mapping
+        let badgeColorClass = 'text-cyan-300 border-cyan-500/40 bg-cyan-950/60';
+        let statusDot = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>';
+        
+        if (item.badge === 'Private') {
+          badgeColorClass = 'text-amber-300 border-amber-500/40 bg-amber-950/60';
+          statusDot = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>';
+        } else if (item.badge === 'Infrastructure' || item.badge === 'DevOps') {
+          badgeColorClass = 'text-purple-300 border-purple-500/40 bg-purple-950/60';
+        } else if (item.badge === 'CI/CD Gate') {
+          badgeColorClass = 'text-emerald-300 border-emerald-500/40 bg-emerald-950/60';
+        }
+
+        return `
+          <div class="border border-term-border bg-term-card hover:border-cyan-500/50 hover:bg-term-cardHover transition-all rounded-sm p-3.5 flex flex-col justify-between group">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border ${badgeColorClass}">
+                  ${item.badge}
+                </span>
+                <span class="text-[10px] text-term-muted font-mono flex items-center gap-1">
+                  ${statusDot}
+                  ${item.category}
+                </span>
+              </div>
+
+              <div>
+                <h4 class="text-sm font-bold text-white group-hover:text-term-cyan transition-colors flex items-center gap-1.5">
+                  <span>${item.name}</span>
+                </h4>
+                <div class="text-[11px] font-mono text-cyan-400/90 tracking-tight mt-0.5 flex items-center gap-1">
+                  <span>https://${item.subdomain}</span>
+                </div>
+              </div>
+
+              <p class="text-xs text-term-textMuted leading-relaxed">
+                ${item.desc}
+              </p>
+            </div>
+
+            <div class="pt-3 mt-2 border-t border-term-border/40 flex items-center justify-between text-xs">
+              <button onclick="copyToClipboard('${item.subdomain}')" class="text-[10px] text-term-muted hover:text-slate-200 flex items-center gap-1 transition-colors">
+                <span>[COPY DOMAIN]</span>
+              </button>
+              <a href="${item.url}" target="_blank" rel="noopener noreferrer" 
+                 onclick="playTerminalClick(1000, 0.04)"
+                 class="font-semibold text-term-cyan hover:underline inline-flex items-center gap-1">
+                <span>LAUNCH</span> ↗
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Set Active Filter Tab
+    function setFilter(category) {
+      playTerminalClick(800, 0.03);
+      currentCategory = category;
+      
+      const buttons = document.querySelectorAll('.filter-tab');
+      buttons.forEach(btn => {
+        if (btn.getAttribute('data-category') === category) {
+          btn.className = 'filter-tab active px-3 py-1 rounded-sm border border-term-cyan bg-cyan-950/80 text-cyan-300 font-bold tracking-wider transition-all';
+        } else {
+          btn.className = 'filter-tab px-3 py-1 rounded-sm border border-term-border hover:border-term-cyan/60 bg-term-card text-term-muted hover:text-white transition-all';
+        }
+      });
+
+      renderSubdomains();
+    }
+
+    // Search Input Handler
+    function handleSearch(query) {
+      currentSearchQuery = query;
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (query.trim()) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      renderSubdomains();
+    }
+
+    // Clear Search
+    function clearSearch() {
+      playTerminalClick(500, 0.03);
+      const input = document.getElementById('subdomainSearch');
+      input.value = '';
+      currentSearchQuery = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      renderSubdomains();
+    }
+
+    // Reset All Filters
+    function resetFilters() {
+      playTerminalClick(700, 0.04);
+      currentCategory = 'ALL';
+      currentSearchQuery = '';
+      document.getElementById('subdomainSearch').value = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      setFilter('ALL');
+    }
+
+    // Clipboard Copy Helper
+    function copyToClipboard(text) {
+      playTerminalClick(1100, 0.04);
+      navigator.clipboard.writeText(text).then(() => {
+        logToTerminal(`&gt; Copied domain '${text}' to system clipboard.`);
+      }).catch(err => {
+        logToTerminal(`&gt; Clipboard error: ${err}`);
+      });
+    }
+
+    // Terminal Logging Helper
+    function logToTerminal(messageHtml) {
+      const log = document.getElementById('terminalLog');
+      const entry = document.createElement('div');
+      entry.innerHTML = messageHtml;
+      log.appendChild(entry);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    // Interactive Terminal CLI Logic
+    function handleTerminalSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('terminalInput');
+      const cmd = input.value.trim();
+      if (!cmd) return;
+      
+      playTerminalClick(950, 0.04);
+      executeTerminalCommand(cmd);
+      input.value = '';
+    }
+
+    function executeTerminalCommand(cmdStr) {
+      playTerminalClick(900, 0.04);
+      const cleanCmd = cmdStr.toLowerCase().trim();
+      logToTerminal(`<span class="text-term-green font-bold">root@station-kido:~#</span> <span class="text-white">${cmdStr}</span>`);
+
+      switch (cleanCmd) {
+        case 'help':
+        case 'f1':
+          logToTerminal(`<div class="text-term-cyan">&gt; AVAILABLE COMMANDS:</div>
+            <div class="pl-3 text-slate-300">
+              &bull; <strong class="text-white">satellites</strong> - List all 11 satellite subdomains and statuses<br>
+              &bull; <strong class="text-white">flagships</strong> - Inspect Index, Linkpul, Agent Harness Kit<br>
+              &bull; <strong class="text-white">metrics</strong> - View production stress-test benchmarks<br>
+              &bull; <strong class="text-white">trading</strong> - View TradingView indicator and MQL5 algorithmic robots<br>
+              &bull; <strong class="text-white">contact</strong> - Show communication links &amp; email<br>
+              &bull; <strong class="text-white">ping</strong> - Test cluster heartbeat response<br>
+              &bull; <strong class="text-white">clear</strong> - Reset terminal log screen
+            </div>`);
+          break;
+
+        case 'satellites':
+        case 'f3':
+          logToTerminal(`<div class="text-emerald-400">&gt; SATELLITE CLUSTER STATUS [11 NODES ACTIVE]:</div>`);
+          TERMINAL_DATA.satellites.forEach(s => {
+            logToTerminal(`<div class="pl-3 text-[11px]"><span class="text-term-cyan font-bold">${s.subdomain}</span> &rarr; ${s.name} [${s.badge} | ${s.category}]</div>`);
+          });
+          break;
+
+        case 'flagships':
+        case 'f2':
+          logToTerminal(`<div class="text-cyan-400">&gt; FLAGSHIP ARCHITECTURES:</div>
+            <div class="pl-3 text-[11px]">
+              &bull; <strong>Index</strong> (index.vn) - FinTech Social Network, Base32 Comment Tree, &lt;5ms ETL<br>
+              &bull; <strong>Linkpul</strong> (linkpul.com) - High-throughput URL Gateway, 50,000+ Req/s p99<br>
+              &bull; <strong>Agent Harness Kit</strong> - Multi-agent AI runtime, 70+ skills, parallel worktrees
+            </div>`);
+          break;
+
+        case 'metrics':
+        case 'f4':
+        case 'f5':
+          logToTerminal(`<div class="text-amber-400">&gt; SYSTEM BENCHMARKS:</div>
+            <div class="pl-3 text-[11px]">
+              &bull; <strong>50,000+ req/s</strong> sustained FastAPI + Redis gateway throughput<br>
+              &bull; <strong>98% memory reduction</strong> via Redis HyperLogLog analytics<br>
+              &bull; <strong>3x Best Performance</strong> awards at SBI FPT (2022, 2023, 2024)<br>
+              &bull; <strong>8+ Years</strong> distributed systems &amp; FinTech architecture
+            </div>`);
+          break;
+
+        case 'trading':
+          logToTerminal(`<div class="text-amber-400">&gt; QUANTITATIVE &amp; TRADING SYSTEMS:</div>
+            <div class="pl-3 text-[11px]">
+              &bull; <strong>TradingView Indicator:</strong> Pine Script v5 trend breakout &amp; volatility algorithm.<br>
+              &bull; <strong>MetaTrader 5 (MQL5):</strong> Automated low-latency Expert Advisors for Forex/Crypto with trailing risk control.
+            </div>`);
+          break;
+
+        case 'ping':
+        case 'f9':
+          const latency = (Math.random() * 4 + 1.2).toFixed(2);
+          logToTerminal(`<div class="text-emerald-400">&gt; PING contabo-vps.kido.app (104.21.58.12): 56 data bytes</div>
+            <div class="pl-3 text-[11px] text-slate-300">
+              64 bytes from vps: icmp_seq=1 ttl=58 time=${latency} ms [STATUS: NOMINAL / 0.00% packet loss]
+            </div>`);
+          break;
+
+        case 'contact':
+          logToTerminal(`<div class="text-term-cyan">&gt; CONTACT CHANNELS:</div>
+            <div class="pl-3 text-[11px]">
+              &bull; Email: <a href="mailto:phuckhanh22@gmail.com" class="text-emerald-400 underline">phuckhanh22@gmail.com</a><br>
+              &bull; GitHub: <a href="https://github.com/khanhduong22" target="_blank" class="text-cyan-400 underline">https://github.com/khanhduong22</a><br>
+              &bull; Location: Da Nang, Vietnam
+            </div>`);
+          break;
+
+        case 'clear':
+          document.getElementById('terminalLog').innerHTML = `
+            <div class="text-term-muted">&gt; Screen buffer cleared. Terminal ready.</div>
+          `;
+          break;
+
+        default:
+          logToTerminal(`<div class="text-red-400">&gt; Command not recognized: '${cmdStr}'. Type 'help' for commands.</div>`);
+          break;
+      }
+    }
+
+    // Node Inspector Modal
+    function inspectNode(nodeId) {
+      playTerminalClick(1000, 0.04);
+      const modal = document.getElementById('inspectorModal');
+      const title = document.getElementById('modalTitle');
+      const content = document.getElementById('modalContent');
+      const launchBtn = document.getElementById('modalLaunchBtn');
+
+      let nodeData = TERMINAL_DATA.flagships.find(f => f.id === nodeId);
+      if (!nodeData) return;
+
+      title.textContent = `INSPECT NODE // ${nodeData.name.toUpperCase()}`;
+      launchBtn.href = nodeData.url;
+
+      content.innerHTML = `
+        <div class="space-y-3 font-mono text-xs">
+          <div class="bg-black/60 p-2.5 rounded border border-term-border">
+            <div class="text-term-muted text-[10px] uppercase font-bold">CATEGORY:</div>
+            <div class="text-cyan-300 font-bold">${nodeData.category}</div>
+            <div class="text-term-muted text-[10px] uppercase font-bold mt-2">LIVE TARGET:</div>
+            <div class="text-white">${nodeData.url}</div>
+          </div>
+
+          <div>
+            <div class="text-term-muted text-[10px] uppercase font-bold mb-1">ARCHITECTURAL SPECIFICATION:</div>
+            <p class="text-slate-300 leading-relaxed text-xs">
+              ${nodeData.description}
+            </p>
+          </div>
+
+          <div>
+            <div class="text-term-muted text-[10px] uppercase font-bold mb-1.5">STACK &amp; PROTOCOLS:</div>
+            <div class="flex flex-wrap gap-1.5">
+              ${nodeData.tech.map(t => `<span class="px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 text-[11px]">${t}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeInspectorModal() {
+      playTerminalClick(500, 0.03);
+      const modal = document.getElementById('inspectorModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Close modal on Escape key
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeInspectorModal();
+      }
+    });
+
+    // Initial render
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSubdomains();
+    });
+  </script>
+</body>
+</html>
