@@ -84,45 +84,45 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "revision": "90aaa1b9bb4cb2ccb66fb8f36c5ac2ae"
   }, {
     "url": "index.html",
-    "revision": "d0037d6095a1edc3c171255093f8d535"
+    "revision": "d6f96fb0aa095485e78b037ca9a44bba"
   }, {
     "url": "icons/icon.svg",
     "revision": "5b8b096b2096256148b31ec4de5ea2fc"
   }, {
-    "url": "assets/vendor-react-BPts3Kxs.js",
+    "url": "assets/vendor-react-HmxRV-22.js",
     "revision": null
   }, {
     "url": "assets/vendor-DRcGonlY.js",
     "revision": null
   }, {
-    "url": "assets/index-CZk2KSWd.js",
-    "revision": null
-  }, {
     "url": "assets/index-Bn7eQPHt.css",
     "revision": null
   }, {
-    "url": "assets/icons-f8Ks2EN5.js",
+    "url": "assets/index-BaPLQbpt.js",
     "revision": null
   }, {
-    "url": "assets/StoresPage-qBCCDFNJ.js",
+    "url": "assets/icons-DHWbhu8O.js",
     "revision": null
   }, {
-    "url": "assets/OrderTrackingPage-DvVNUOMz.js",
+    "url": "assets/StoresPage-CD6hubOz.js",
     "revision": null
   }, {
-    "url": "assets/LocationPickerModal-B47GKYK5.js",
+    "url": "assets/OrderTrackingPage-CVX7ww7Q.js",
     "revision": null
   }, {
-    "url": "assets/KitchenPage-BHGIy9ET.js",
+    "url": "assets/LocationPickerModal-dfDSUweG.js",
     "revision": null
   }, {
-    "url": "assets/HomePage-CEndIPXG.js",
+    "url": "assets/KitchenPage-CfZX8-yd.js",
     "revision": null
   }, {
-    "url": "assets/CheckoutPage-C64JyAdL.js",
+    "url": "assets/HomePage-BIZnlRCi.js",
     "revision": null
   }, {
-    "url": "assets/AccountPage-BwKH6qzm.js",
+    "url": "assets/CheckoutPage-D8gKLhKc.js",
+    "revision": null
+  }, {
+    "url": "assets/AccountPage-BG4tNdOt.js",
     "revision": null
   }, {
     "url": "icons/icon.svg",
