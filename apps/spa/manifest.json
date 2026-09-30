@@ -1,0 +1,17 @@
+{
+  "name": "An Yên Spa & Wellness - Đặt Lịch Làm Đẹp",
+  "short_name": "An Yên Spa",
+  "description": "Đặt lịch chăm sóc da, massage trị liệu và dịch vụ làm đẹp cao cấp",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#C5A880",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

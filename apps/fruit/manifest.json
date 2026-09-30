@@ -1,0 +1,17 @@
+{
+  "name": "Fruit Store - Trái Cây Tươi & Giỏ Quà Biếu VIP",
+  "short_name": "FruitStore",
+  "description": "Vựa trái cây nhập khẩu bay Air, đặc sản nhiệt đới hái tại vườn & giỏ quà biếu VIP cao cấp",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDFBF7",
+  "theme_color": "#15803D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

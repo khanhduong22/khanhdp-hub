@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <circle cx="50" cy="50" r="48" fill="#F4ECE1" stroke="#C5A880" stroke-width="2"/>
+  <!-- Stylized Lotus Petals in Champagne Gold -->
+  <path d="M50 18 C50 18 36 36 36 54 C36 65 42 74 50 78 C58 74 64 65 64 54 C64 36 50 18 50 18 Z" fill="#C5A880" fill-opacity="0.85"/>
+  <path d="M50 32 C50 32 24 44 24 60 C24 70 32 76 42 77 C38 68 40 54 50 46 C60 54 62 68 58 77 C68 76 76 70 76 60 C76 44 50 32 50 32 Z" fill="#AF8E60" fill-opacity="0.6"/>
+  <circle cx="50" cy="52" r="4" fill="#FFFFFF"/>
+</svg>

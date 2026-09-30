@@ -16,6 +16,34 @@
     {
       "source": "/portfolio",
       "destination": "/portfolio.html"
+    },
+    {
+      "source": "/apps/ride",
+      "destination": "/apps/ride/index.html"
+    },
+    {
+      "source": "/apps/dental",
+      "destination": "/apps/dental/index.html"
+    },
+    {
+      "source": "/apps/bakery",
+      "destination": "/apps/bakery/index.html"
+    },
+    {
+      "source": "/apps/fruit",
+      "destination": "/apps/fruit/index.html"
+    },
+    {
+      "source": "/apps/flower",
+      "destination": "/apps/flower/index.html"
+    },
+    {
+      "source": "/apps/spa",
+      "destination": "/apps/spa/index.html"
+    },
+    {
+      "source": "/apps/fastfood",
+      "destination": "/apps/fastfood/index.html"
     }
   ],
   "headers": [

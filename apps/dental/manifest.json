@@ -1,0 +1,17 @@
+{
+  "name": "Nha Khoa Thẩm Mỹ Quốc Tế Ngọc Bích",
+  "short_name": "Jade Dental",
+  "description": "Trung tâm Nha khoa Thẩm mỹ Công nghệ cao - Kiến tạo nụ cười rạng ngời chuẩn y khoa",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#0EA5E9",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
