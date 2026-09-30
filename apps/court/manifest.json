@@ -1,0 +1,16 @@
+{
+  "name": "V-Arena | Đặt Sân Pickleball & Cầu Lông",
+  "short_name": "V-Arena Sports",
+  "description": "Đặt sân Pickleball & Cầu Lông tiêu chuẩn quốc tế, giữ slot 5 phút và thanh toán VietQR",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#22C55E",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

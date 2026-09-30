@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Khang Thinh (Kido) — SME Web Apps & Micro-SaaS Ecosystem 2026</title>
-  <meta name="description" content="Hệ sinh thái 7 Web App Mobile-First PWA chuyên biệt cho doanh nghiệp SME: Vận Tải, Spa, Nha Khoa, F&B, Trái Cây, Hoa Tươi, Tiệm Bánh. Tự động hóa thanh toán VietQR 0% phí, Litestream PITR, in bill K80.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+  <title>Khánh (Kido) — Hệ Sinh Thái 12 Giải Pháp Web App SME 2026</title>
+  <meta name="description" content="Hệ sinh thái 12 giải pháp Web App Mobile-First PWA chuyên biệt cho doanh nghiệp SME: Vận Tải, Spa, Nha Khoa, Thể Thao Pickleball, Thú Cưng, Homestay, F&B, Tiệm Bánh, Trái Cây, Hoa Tươi, Giặt Sấy, Gara Ô Tô. 100% dữ liệu riêng, 0% phí trung gian.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310B981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,11 +21,19 @@
             mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
-            brand: {
-              50: '#f0fdf4',
-              400: '#4ade80',
-              500: '#22c55e',
-              600: '#16a34a',
+            obsidian: {
+              950: '#07090E',
+              900: '#0B0D13',
+              850: '#10131B',
+              800: '#141824',
+              700: '#1E2435',
+            },
+            accent: {
+              50: '#ECFDF5',
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+              700: '#047857',
             }
           }
         }
@@ -33,726 +41,761 @@
     }
   </script>
   <style>
-    /* Theme Transition */
     * {
-      transition: background-color 0.2s ease, border-color 0.2s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
     }
     
-    /* Dark Theme (Default) */
     html.dark body {
-      background-color: #07090e;
-      color: #f1f5f9;
-      background-image: 
-        radial-gradient(circle at 15% 15%, rgba(34, 197, 94, 0.06) 0%, transparent 40%),
-        radial-gradient(circle at 85% 65%, rgba(56, 189, 248, 0.05) 0%, transparent 45%);
+      background-color: #0B0D13;
+      color: #E2E8F0;
     }
     
-    /* Light Theme */
     html:not(.dark) body {
-      background-color: #f8fafc;
-      color: #0f172a;
-      background-image: 
-        radial-gradient(circle at 15% 15%, rgba(34, 197, 94, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 65%, rgba(56, 189, 248, 0.08) 0%, transparent 45%);
+      background-color: #F8FAFC;
+      color: #0F172A;
     }
 
-    html.dark .glass-card {
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(14px);
+    /* Swiss Precision Minimalist Cards */
+    html.dark .craft-card {
+      background-color: #11141D;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     }
-    html.dark .glass-card:hover {
-      border-color: rgba(34, 197, 94, 0.35);
-      transform: translateY(-3px);
-      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.6);
+    html.dark .craft-card:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+      transform: translateY(-1px);
     }
 
-    html:not(.dark) .glass-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    html:not(.dark) .craft-card {
+      background-color: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
     }
-    html:not(.dark) .glass-card:hover {
-      border-color: rgba(34, 197, 94, 0.6);
-      transform: translateY(-3px);
-      box-shadow: 0 20px 35px -10px rgba(34, 197, 94, 0.12);
+    html:not(.dark) .craft-card:hover {
+      border-color: #CBD5E1;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.06);
     }
 
-    .badge-gradient {
-      background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(56, 189, 248, 0.15) 100%);
-      border: 1px solid rgba(34, 197, 94, 0.3);
+    .badge-subtle {
+      background-color: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .text-gradient {
-      background: linear-gradient(135deg, #22c55e 0%, #38bdf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    html:not(.dark) .badge-subtle {
+      background-color: #F1F5F9;
+      border: 1px solid #E2E8F0;
     }
+
     .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.3);
+      background: rgba(148, 163, 184, 0.25);
       border-radius: 4px;
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-black">
 
-  <!-- Top Announcement Bar -->
-  <div class="w-full bg-emerald-950/40 dark:bg-emerald-950/40 bg-emerald-50 border-b border-emerald-500/20 py-2 px-4 text-center text-xs font-mono text-emerald-600 dark:text-emerald-400">
-    ⚡ 100% SME Web Apps tích hợp thanh toán VietQR Napas 247 khớp tiền trong 3s • 0% Phí Cổng Trung Gian • SQLite WAL + Litestream PITR
+  <!-- Minimalist Top Status Strip -->
+  <div class="w-full bg-obsidian-950 dark:bg-[#07090E] border-b border-slate-200 dark:border-white/[0.08] py-2 px-4 text-center text-xs font-mono text-slate-600 dark:text-slate-400 flex items-center justify-center gap-3">
+    <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold text-[11px]">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+      HỆ THỐNG PHẦN MỀM SME D2C 2026
+    </div>
+    <span class="text-slate-400 dark:text-slate-600 hidden sm:inline">•</span>
+    <span class="text-[11px] hidden sm:inline">100% SỞ HỮU DỮ LIỆU KHÁCH HÀNG • VIETQR 0% PHÍ SÀN • TỰ ĐỘNG HÓA 24/7</span>
   </div>
 
-  <!-- Navigation -->
-  <nav class="max-w-7xl mx-auto w-full px-6 py-5 flex items-center justify-between border-b border-slate-200 dark:border-slate-800/60 sticky top-0 z-40 backdrop-blur-md bg-white/70 dark:bg-[#07090e]/70">
+  <!-- Header Navigation -->
+  <nav class="max-w-7xl mx-auto w-full px-6 py-4 flex items-center justify-between border-b border-slate-200 dark:border-white/[0.08] sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-obsidian-900/80">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-bold text-black shadow-lg shadow-emerald-500/20">
-        KT
+      <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 flex items-center justify-center font-bold font-mono text-sm">
+        K
       </div>
       <div>
         <div class="flex items-center gap-2">
-          <a href="https://khanhdp.com" class="text-base font-bold tracking-tight text-slate-900 dark:text-white hover:text-emerald-500 transition-colors">khanhdp.com</a>
-          <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/30">PORTFOLIO</span>
+          <a href="https://khanhdp.com" class="text-sm font-bold tracking-tight text-slate-900 dark:text-white hover:text-emerald-500 transition-colors">khanhdp.com</a>
+          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">SOFTWARE STUDIO</span>
         </div>
-        <span class="text-xs text-slate-500 block font-mono">SME Micro-SaaS Ecosystem</span>
+        <span class="text-[11px] text-slate-500 dark:text-slate-400 block font-mono">12 SME Micro-SaaS Ecosystem</span>
       </div>
     </div>
 
-    <!-- Navigation links & theme toggle -->
+    <!-- Navigation links & controls -->
     <div class="flex items-center gap-3 md:gap-6">
-      <div class="hidden md:flex items-center gap-5 text-sm font-medium">
-        <a href="#apps" class="text-slate-600 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-white transition-colors">7 Ứng Dụng SME</a>
-        <a href="#packages" class="text-slate-600 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-white transition-colors">12 Core Packages</a>
-        <a href="#infra" class="text-slate-600 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-white transition-colors">Hạ Tầng Cloud</a>
-        <a href="#pricing" class="text-slate-600 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-white transition-colors">Báo Giá</a>
+      <div class="hidden md:flex items-center gap-6 text-xs font-mono font-medium">
+        <a href="#apps" class="text-slate-600 dark:text-slate-300 hover:text-emerald-500 transition-colors">12 Giải Pháp Web App</a>
+        <a href="#infra" class="text-slate-600 dark:text-slate-300 hover:text-emerald-500 transition-colors">Hạ Tầng Cloud</a>
+        <a href="#pricing" class="text-slate-600 dark:text-slate-300 hover:text-emerald-500 transition-colors">Báo Giá Triển Khai</a>
       </div>
 
       <!-- Theme Switcher Button -->
-      <button onclick="toggleTheme()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Đổi giao diện Sáng / Tối">
-        <i id="themeIcon" data-lucide="sun" class="w-4 h-4 hidden dark:block text-amber-400"></i>
+      <button onclick="toggleTheme()" class="p-2 rounded-lg border border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] transition-colors" title="Chuyển chế độ Sáng / Tối">
+        <i id="themeIcon" data-lucide="sun" class="w-4 h-4 hidden dark:block text-slate-300"></i>
         <i id="themeIconDark" data-lucide="moon" class="w-4 h-4 block dark:hidden text-slate-700"></i>
       </button>
 
-      <a href="#contact" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs md:text-sm transition-all shadow-md shadow-emerald-500/20 flex items-center gap-1.5">
-        <i data-lucide="sparkles" class="w-4 h-4"></i> Tư Vấn Ngay
+      <a href="#contact" class="px-3.5 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-xs transition-colors flex items-center gap-1.5">
+        <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Tư Vấn Doanh Nghiệp
       </a>
     </div>
   </nav>
 
   <!-- Hero Section -->
   <main class="max-w-7xl mx-auto w-full px-6 pt-12 pb-20 flex-1">
-    <div class="text-center max-w-4xl mx-auto mb-16">
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full badge-gradient text-emerald-600 dark:text-emerald-400 text-xs font-mono font-medium mb-6">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        Hệ Sinh Thái Micro-SaaS Bàn Giao Trong 3 - 5 Ngày
+    <div class="max-w-4xl mx-auto text-center mb-16">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md badge-subtle text-emerald-600 dark:text-emerald-400 text-xs font-mono font-medium mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        HỆ THỐNG 12 ỨNG DỤNG WEB APP CHUYÊN SÂU TỪNG NGÀNH CHO SME
       </div>
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
-        Đột Phá Doanh Thu Tự Động Cho <br>
-        <span class="text-gradient">Doanh Nghiệp SME Việt Nam</span>
+      
+      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-5 leading-tight">
+        Giải Pháp Phần Mềm & Web App <br class="hidden sm:inline">
+        Chuyên Biệt Theo Từng Ngành Hàng
       </h1>
-      <p class="text-slate-600 dark:text-slate-400 text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
-        Tuyển tập <strong>7 giải pháp Web App chuyên sâu từng ngành</strong> (Vận Tải, Spa, Nha Khoa, F&B, Trái Cây, Hoa Tươi, Bánh Kem) kết hợp <strong>12 packages tái sử dụng 100%</strong>: Tối ưu hoá tuyệt đối cho mobile PWA, thanh toán VietQR Napas 247 không phí cổng, sao lưu Litestream PITR tiệm cận 0s và in bill K80 cầm tay.
+      
+      <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-normal">
+        Bộ sưu tập 12 giải pháp Web App Mobile-First PWA giúp doanh nghiệp SME làm chủ kênh bán hàng trực tiếp, nhận tiền tức thì qua VietQR 0% phí trung gian, tự động hóa đặt hẹn và <strong>sở hữu trọn vẹn dữ liệu khách hàng</strong>.
       </p>
 
-      <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
-        <a href="#apps" class="px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/25">
-          <i data-lucide="play-circle" class="w-4 h-4"></i> Trải Nghiệm 7 Ứng Dụng Thực Tế
+      <div class="flex flex-wrap items-center justify-center gap-3 mt-8">
+        <a href="#apps" class="px-5 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-xs transition-all flex items-center gap-2">
+          <i data-lucide="grid" class="w-4 h-4"></i> Khám Phá 12 Ứng Dụng Thực Tế
         </a>
-        <a href="#roi-calculator" class="px-6 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 font-semibold text-sm transition-all flex items-center gap-2">
-          <i data-lucide="calculator" class="w-4 h-4"></i> Tính Toán Tiết Kiệm Phí (ROI)
+        <a href="#infra" class="px-5 py-2.5 rounded-lg border border-slate-300 dark:border-white/[0.08] hover:bg-slate-100 dark:hover:bg-white/[0.04] text-slate-700 dark:text-slate-300 font-semibold text-xs transition-colors flex items-center gap-2">
+          <i data-lucide="server" class="w-4 h-4"></i> Hạ Tầng & Giám Sát Cloud
         </a>
       </div>
 
-      <!-- Trust Metrics Grid -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 pt-8 border-t border-slate-200 dark:border-slate-800/80 font-mono text-left">
-        <div class="p-3.5 rounded-xl bg-slate-100/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/60">
-          <div class="text-2xl font-bold text-slate-900 dark:text-white">0% PHÍ</div>
-          <div class="text-xs text-slate-500 mt-1">Cổng thanh toán trung gian</div>
+      <!-- Business Value Metrics -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-12 pt-8 border-t border-slate-200 dark:border-white/[0.08] text-left">
+        <div class="p-4 rounded-xl craft-card">
+          <div class="text-[11px] font-mono text-emerald-500 font-bold uppercase tracking-wider">Tiết Kiệm Phí</div>
+          <div class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">15 - 30%</div>
+          <div class="text-xs font-semibold text-slate-700 dark:text-slate-300 mt-1">Chi Phí Chiết Khấu Sàn</div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+            Nhận tiền cọc thẳng VietQR Napas 247, không bị giữ tiền hay cắt phế 15-30% bởi các app trung gian.
+          </p>
         </div>
-        <div class="p-3.5 rounded-xl bg-slate-100/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/60">
-          <div class="text-2xl font-bold text-emerald-500 dark:text-emerald-400">&lt; 3 GIÂY</div>
-          <div class="text-xs text-slate-500 mt-1">Khớp lệnh VietQR Napas 247</div>
+
+        <div class="p-4 rounded-xl craft-card">
+          <div class="text-[11px] font-mono text-emerald-500 font-bold uppercase tracking-wider">Tăng Chốt Đơn</div>
+          <div class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">+35%</div>
+          <div class="text-xs font-semibold text-slate-700 dark:text-slate-300 mt-1">Tỷ Lệ Chuyển Đổi</div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+            Mobile-First PWA 1-chạm không cần cài đặt App Store, giảm thiểu rào cản thao tác của khách hàng.
+          </p>
         </div>
-        <div class="p-3.5 rounded-xl bg-slate-100/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/60">
-          <div class="text-2xl font-bold text-sky-500 dark:text-cyan-400">100% PWA</div>
-          <div class="text-xs text-slate-500 mt-1">Cài đặt trực tiếp như App Native</div>
+
+        <div class="p-4 rounded-xl craft-card">
+          <div class="text-[11px] font-mono text-emerald-500 font-bold uppercase tracking-wider">Tự Động Hóa</div>
+          <div class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">24/7</div>
+          <div class="text-xs font-semibold text-slate-700 dark:text-slate-300 mt-1">Vận Hành Không Nghỉ</div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+            Tự động giữ slot, in hóa đơn nhiệt K80, thông báo Telegram/Zalo, cắt giảm 80% thời gian trực tin nhắn.
+          </p>
         </div>
-        <div class="p-3.5 rounded-xl bg-slate-100/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/60">
-          <div class="text-2xl font-bold text-amber-500 dark:text-amber-400">3-5 NGÀY</div>
-          <div class="text-xs text-slate-500 mt-1">Triển khai & bàn giao full code</div>
+
+        <div class="p-4 rounded-xl craft-card">
+          <div class="text-[11px] font-mono text-emerald-500 font-bold uppercase tracking-wider">Tài Sản Số</div>
+          <div class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">100%</div>
+          <div class="text-xs font-semibold text-slate-700 dark:text-slate-300 mt-1">Sở Hữu Dữ Liệu Khách</div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+            Toàn quyền remarketing, chăm sóc khách hàng thân thiết, không phụ thuộc vào chính sách của bên thứ ba.
+          </p>
         </div>
       </div>
     </div>
 
-    <!-- Live Infrastructure Telemetry Bar -->
-    <section id="infra" class="mb-20">
-      <div class="glass-card rounded-2xl p-6 border-slate-200 dark:border-slate-800">
-        <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-200 dark:border-slate-800/60">
+    <!-- Live Infrastructure Telemetry Section -->
+    <section id="infra" class="mb-16">
+      <div class="craft-card rounded-xl p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-200 dark:border-white/[0.08]">
           <div class="flex items-center gap-2">
-            <span class="relative flex h-2.5 w-2.5">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-            </span>
-            <span class="text-xs font-mono uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold">Contabo Cloud Live Telemetry</span>
-            <span class="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">99.98% Uptime</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="text-xs font-mono uppercase tracking-wider text-slate-800 dark:text-slate-200 font-bold">Cloud Infrastructure Telemetry</span>
+            <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-semibold">ALL SYSTEMS NOMINAL • 99.98% UPTIME</span>
           </div>
-          <div class="text-xs font-mono text-slate-500">
-            Node: contabo-vps (144.91.88.242) • Caddy 2 SSL Origin
+          <div class="text-xs font-mono text-slate-500 dark:text-slate-400">
+            Contabo VPS (144.91.88.242) • Caddy 2 HTTP/3 Edge Proxy • RTT &lt; 25ms
           </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 font-mono text-xs">
-          <!-- Beszel -->
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 font-mono text-xs">
+          <div class="p-3 rounded-lg bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.06]">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                <i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-400"></i> Beszel Hub
+              <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-500"></i> Beszel Hub
               </span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             </div>
-            <div class="text-[11px] text-slate-500 mt-1">Hạ Tầng Giám Sát</div>
-            <a href="https://beszel.khanhdp.com" target="_blank" rel="noopener noreferrer" class="text-emerald-500 dark:text-emerald-400 text-[11px] mt-1 font-semibold hover:underline inline-flex items-center gap-1">beszel.khanhdp.com <i data-lucide="external-link" class="w-3 h-3"></i></a>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Giám sát hạ tầng VPS</div>
+            <a href="https://beszel.khanhdp.com" target="_blank" rel="noopener noreferrer" class="text-emerald-600 dark:text-emerald-400 text-[11px] mt-1 font-semibold hover:underline inline-flex items-center gap-1">beszel.khanhdp.com <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
           </div>
 
-          <!-- PocketBase -->
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
+          <div class="p-3 rounded-lg bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.06]">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                <i data-lucide="database" class="w-3.5 h-3.5 text-sky-400"></i> PocketBase
+              <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <i data-lucide="database" class="w-3.5 h-3.5 text-emerald-500"></i> PocketBase
               </span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             </div>
-            <div class="text-[11px] text-slate-500 mt-1">Realtime BaaS & Auth</div>
-            <a href="https://pb.khanhdp.com/_/" target="_blank" rel="noopener noreferrer" class="text-sky-500 dark:text-sky-400 text-[11px] mt-1 font-semibold hover:underline inline-flex items-center gap-1">pb.khanhdp.com <i data-lucide="external-link" class="w-3 h-3"></i></a>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Realtime BaaS & Auth</div>
+            <a href="https://pb.khanhdp.com/_/" target="_blank" rel="noopener noreferrer" class="text-emerald-600 dark:text-emerald-400 text-[11px] mt-1 font-semibold hover:underline inline-flex items-center gap-1">pb.khanhdp.com <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
           </div>
 
-          <!-- Meilisearch -->
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
+          <div class="p-3 rounded-lg bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.06]">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                <i data-lucide="search" class="w-3.5 h-3.5 text-rose-400"></i> Meilisearch
+              <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-emerald-500"></i> Meilisearch
               </span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             </div>
-            <div class="text-[11px] text-slate-500 mt-1">Full-Text Search &lt;10ms</div>
-            <a href="https://search.khanhdp.com" target="_blank" rel="noopener noreferrer" class="text-rose-500 dark:text-rose-400 text-[11px] mt-1 font-semibold hover:underline inline-flex items-center gap-1">search.khanhdp.com <i data-lucide="external-link" class="w-3 h-3"></i></a>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Tìm kiếm siêu tốc &lt;10ms</div>
+            <a href="https://search.khanhdp.com" target="_blank" rel="noopener noreferrer" class="text-emerald-600 dark:text-emerald-400 text-[11px] mt-1 font-semibold hover:underline inline-flex items-center gap-1">search.khanhdp.com <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
           </div>
 
-          <!-- Stirling-PDF -->
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
+          <div class="p-3 rounded-lg bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.06]">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                <i data-lucide="file-text" class="w-3.5 h-3.5 text-amber-400"></i> Stirling-PDF
+              <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <i data-lucide="printer" class="w-3.5 h-3.5 text-emerald-500"></i> Stirling-PDF
               </span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             </div>
-            <div class="text-[11px] text-slate-500 mt-1">In Hóa Đơn & Bill K80</div>
-            <a href="https://pdf.khanhdp.com" target="_blank" rel="noopener noreferrer" class="text-amber-500 dark:text-amber-400 text-[11px] mt-1 font-semibold hover:underline inline-flex items-center gap-1">pdf.khanhdp.com <i data-lucide="external-link" class="w-3 h-3"></i></a>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">In hóa đơn & Bill K80</div>
+            <a href="https://pdf.khanhdp.com" target="_blank" rel="noopener noreferrer" class="text-emerald-600 dark:text-emerald-400 text-[11px] mt-1 font-semibold hover:underline inline-flex items-center gap-1">pdf.khanhdp.com <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
           </div>
 
-          <!-- Caddy 2 -->
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
+          <div class="p-3 rounded-lg bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.06] col-span-2 sm:col-span-1">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-purple-400"></i> Caddy 2 HTTP/3
+              <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i> Caddy 2 Edge
               </span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             </div>
-            <div class="text-[11px] text-slate-500 mt-1">Cloudflare SSL Edge</div>
-            <div class="text-purple-500 dark:text-purple-400 text-[11px] mt-1 font-semibold">Origin Certificate</div>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">HTTP/3 Cloudflare SSL</div>
+            <div class="text-emerald-600 dark:text-emerald-400 text-[11px] mt-1 font-semibold">Origin Active</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 7 Showcase Apps Section -->
-    <section id="apps" class="mb-24">
-      <div class="flex flex-wrap items-end justify-between gap-4 mb-10 pb-4 border-b border-slate-200 dark:border-slate-800">
+    <!-- 12 Showcase Apps Section -->
+    <section id="apps" class="mb-20">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-4 border-b border-slate-200 dark:border-white/[0.08]">
         <div>
-          <span class="text-xs font-mono uppercase tracking-wider text-emerald-500 font-bold">Featured Portfolio</span>
-          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">7 Ứng Dụng SME Micro-SaaS Đã Hoàn Thiện</h2>
+          <span class="text-xs font-mono uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold">Production Portfolio</span>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">12 Giải Pháp SME Software Sẵn Sàng Vận Hành</h2>
         </div>
-        <div class="text-xs font-mono text-slate-500">
-          Nhấp vào từng ứng dụng để mở Simulator tương tác trực tiếp
+
+        <!-- Segmented Filter Control -->
+        <div class="inline-flex p-1 bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] rounded-lg text-xs font-mono">
+          <button onclick="filterCategory('all')" id="btn-tab-all" class="category-tab active px-3 py-1.5 rounded-md font-semibold text-slate-900 dark:text-white bg-white dark:bg-white/[0.1] shadow-sm">
+            Tất cả (12)
+          </button>
+          <button onclick="filterCategory('service')" id="btn-tab-service" class="category-tab px-3 py-1.5 rounded-md font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            Dịch vụ & Đặt hẹn (5)
+          </button>
+          <button onclick="filterCategory('fnb')" id="btn-tab-fnb" class="category-tab px-3 py-1.5 rounded-md font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            F&B & Bán lẻ (5)
+          </button>
+          <button onclick="filterCategory('logistics')" id="btn-tab-logistics" class="category-tab px-3 py-1.5 rounded-md font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            Vận tải & Kỹ thuật (2)
+          </button>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 12 App Cards Grid -->
+      <div id="appsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 
-        <!-- App 1: Việt Ride Express (NEW) -->
-        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group border-l-4 border-l-amber-500">
+        <!-- App 1: Court Booking (V-Arena) -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="service">
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-500 border border-amber-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
-                <i data-lucide="car" class="w-3.5 h-3.5"></i> Vận Tải / Xe Sân Bay
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                <i data-lucide="trophy" class="w-3.5 h-3.5"></i> Thể Thao / Sân Bãi
               </span>
-              <span class="text-xs font-mono text-slate-500 font-semibold">Gói 35 - 55 Triệu</span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 30 - 50 Triệu</span>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">Việt Ride Express</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-xs mt-2 leading-relaxed">
-              Đưa đón sân bay 7 chặng cố định & xe liên tỉnh. Tích hợp <strong>định tuyến OSRM</strong>, tính cước bậc thang theo km, phụ thu đêm muộn, cọc VietQR 150k và <strong>Radar điều phối tài xế thời gian thực</strong>.
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">V-Arena Pickleball & Cầu Lông</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+              Quản lý ma trận khung giờ vàng (17h-21h), phân loại sân mái che/ngoài trời, phụ thu đèn đêm, thuê dụng cụ vợt bóng, cọc VietQR Napas 247 và <strong>tự động khóa slot chống trùng sân</strong>.
             </p>
             <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">OSRM Haversine</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Bun + Hono v4</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">SQLite WAL</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">VietQR Cọc Xe</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Bot Telegram</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Slot Matrix Realtime</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Thuê Vợt & Dụng Cụ</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Cọc VietQR 0% Phí</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">In Phiếu K80</span>
             </div>
           </div>
-          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/60 flex flex-col gap-3">
-            <a href="/apps/ride/" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02]">
-              <i data-lucide="rocket" class="w-3.5 h-3.5"></i>
-              <span>🚀 Mở Web App Trực Tiếp (Live PWA ↗)</span>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/court/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
             </a>
-            <div class="flex items-center justify-between text-xs">
-              <button onclick="openAppDetail('ride-booking', 'live')" class="font-mono text-emerald-500 hover:text-emerald-400 flex items-center gap-1 font-semibold transition-colors" title="Trải nghiệm live trong phone mockup">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Thử Live Phone 📱
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('court-booking', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
               </button>
-              <button onclick="openAppDetail('ride-booking', 'sim')" class="text-amber-500 hover:text-amber-400 font-bold flex items-center gap-1">
-                Xem Simulator <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              <button onclick="openAppDetail('court-booking', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- App 2: Dental Clinic -->
-        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+        <!-- App 2: Pet Care (Pet Paradise) -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="service">
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="px-2.5 py-1 rounded-md bg-sky-500/10 text-sky-500 border border-sky-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                <i data-lucide="dog" class="w-3.5 h-3.5"></i> Thú Cưng / Pet Care
+              </span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 25 - 45 Triệu</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Pet Paradise Resort & Spa</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+              Đặt phòng khách sạn thú cưng có camera 24/7 trực tiếp, <strong>sổ tiêm chủng điện tử (Vaccine Record)</strong>, in phiếu tiếp nhận K80 ghi chú khẩu phần ăn & dị ứng, tự động gửi nhắc lịch tiêm phòng.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Camera Phòng 24/7</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Sổ Tiêm Điện Tử</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Spa Grooming K80</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Nhắc Hẹn Tự Động</span>
+            </div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/pet/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
+            </a>
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('pet-care', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
+              </button>
+              <button onclick="openAppDetail('pet-care', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 3: Stay Booking (Pine Hill) -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="service">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                <i data-lucide="home" class="w-3.5 h-3.5"></i> Homestay / Villa
+              </span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 35 - 55 Triệu</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Pine Hill Retreat Villa & Homestay</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+              Hệ thống đặt phòng trực tiếp <strong>cắt đứt 15-20% phí hoa hồng sàn OTA</strong>. Khách cọc 50% qua VietQR về thẳng tài khoản chủ nhà. Tự động cấp mã PIN Smart Lock và cẩm nang Welcome Guide tự check-in 24/7.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Direct 0% Phí Sàn</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Cọc 50% VietQR</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">PIN Smart Lock</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Digital Welcome Guide</span>
+            </div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/stay/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
+            </a>
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('stay-booking', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
+              </button>
+              <button onclick="openAppDetail('stay-booking', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 4: Spa Booking -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="service">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Spa / Dưỡng Sinh
+              </span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 30 - 50 Triệu</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">An Yên Luxury Spa & Salon</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+              Đặt lịch theo chuyên viên kỹ thuật yêu thích hoặc xếp tự động, dải băng 14 ngày, tính toán slot trống thời gian thực, cọc 100k VietQR <strong>giảm 90% tình trạng bùng lịch (No-Show)</strong>.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Chọn Kỹ Thuật Viên</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Dải Slot 14 Ngày</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Cọc VietQR</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Giảm 90% No-Show</span>
+            </div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/spa/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
+            </a>
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('spa-booking', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
+              </button>
+              <button onclick="openAppDetail('spa-booking', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 5: Dental Clinic -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="service">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
                 <i data-lucide="stethoscope" class="w-3.5 h-3.5"></i> Nha Khoa / Y Tế
               </span>
-              <span class="text-xs font-mono text-slate-500 font-semibold">Gói 35 - 55 Triệu</span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 35 - 55 Triệu</span>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-sky-500 transition-colors">Nha Khoa Thẩm Mỹ Ngọc Bích</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-xs mt-2 leading-relaxed">
-              Đặt lịch khám 4 bước, hồ sơ chuyên khoa bác sĩ CKI, cọc VietQR giữ lịch, màn hình tiếp đón lễ tân và <strong>ghi chú nha chu lâm sàng 32 vị trí răng</strong> chuyên sâu.
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Nha Khoa Thẩm Mỹ Ngọc Bích</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+              Đặt hẹn 4 bước nhanh gọn, hồ sơ bác sĩ CKI, cọc VietQR giữ lịch, màn hình tiếp đón lễ tân và <strong>sơ đồ răng lâm sàng 32 vị trí</strong> ghi chú nha chu số hóa giúp nâng cao tỷ lệ chốt gói điều trị.
             </p>
             <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Bác Sĩ CKI</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Khám Nha Chu</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Cọc VietQR</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">React 19 PWA</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Bác Sĩ CKI</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Sơ Đồ Răng 32 Vị Trí</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Hồ Sơ Nha Chu Số</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Cọc VietQR</span>
             </div>
           </div>
-          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/60 flex flex-col gap-3">
-            <a href="/apps/dental/" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-sky-500/20 transition-all hover:scale-[1.02]">
-              <i data-lucide="rocket" class="w-3.5 h-3.5"></i>
-              <span>🚀 Mở Web App Trực Tiếp (Live PWA ↗)</span>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/dental/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
             </a>
-            <div class="flex items-center justify-between text-xs">
-              <button onclick="openAppDetail('dental-clinic', 'live')" class="font-mono text-emerald-500 hover:text-emerald-400 flex items-center gap-1 font-semibold transition-colors" title="Trải nghiệm live trong phone mockup">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Thử Live Phone 📱
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('dental-clinic', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
               </button>
-              <button onclick="openAppDetail('dental-clinic', 'sim')" class="text-sky-500 hover:text-sky-400 font-bold flex items-center gap-1">
-                Xem Simulator <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              <button onclick="openAppDetail('dental-clinic', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- App 3: Sweet Melody Bakery -->
-        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+        <!-- App 6: FastFood Express -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="fnb">
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-500 border border-amber-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                <i data-lucide="utensils" class="w-3.5 h-3.5"></i> F&B / Quán Ăn
+              </span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 25 - 45 Triệu</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">FastFood Express Food Order</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+              Order tại bàn hoặc giao hàng tốc độ cao, tích hợp <strong>Kitchen Display System (KDS)</strong> cho đầu bếp xử lý đơn tức thì, in bill bếp K80, phân loại mang đi/tại chỗ tự động.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Order Siêu Tốc</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">KDS Bếp Điện Tử</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">In Bill K80</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Tăng 25% Đơn Combo</span>
+            </div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/fastfood/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
+            </a>
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('fast-food', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
+              </button>
+              <button onclick="openAppDetail('fast-food', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- App 7: Bakery Shop -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="fnb">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
                 <i data-lucide="cake" class="w-3.5 h-3.5"></i> Tiệm Bánh / Bakery
               </span>
-              <span class="text-xs font-mono text-slate-500 font-semibold">Gói 25 - 45 Triệu</span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 25 - 45 Triệu</span>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">Sweet Melody Bakery</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-xs mt-2 leading-relaxed">
-              Bento cake Hàn Quốc & Mousse trái cây. Tùy biến size 14-22cm, cốt bánh, <strong>Live Cake Studio bắt chữ lên mặt bánh thời gian thực</strong>, bếp làm bánh Baker Board 6 bước.
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Sweet Melody Bakery</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+              Bento cake Hàn Quốc & Mousse trái cây. Tùy biến size 14-22cm, cốt bánh, <strong>Live Cake Studio bắt chữ lên mặt bánh thời gian thực</strong>, bếp làm bánh Baker Board 6 bước nắn nót.
             </p>
             <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Live Cake Studio</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Bắt Chữ Lên Bánh</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Baker Board</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Bill Nhiệt K80</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Live Cake Studio</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Bắt Chữ Lên Bánh</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Baker Board 6 Bước</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Bill Nhiệt K80</span>
             </div>
           </div>
-          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/60 flex flex-col gap-3">
-            <a href="/apps/bakery/" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02]">
-              <i data-lucide="rocket" class="w-3.5 h-3.5"></i>
-              <span>🚀 Mở Web App Trực Tiếp (Live PWA ↗)</span>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/bakery/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
             </a>
-            <div class="flex items-center justify-between text-xs">
-              <button onclick="openAppDetail('bakery-shop', 'live')" class="font-mono text-emerald-500 hover:text-emerald-400 flex items-center gap-1 font-semibold transition-colors" title="Trải nghiệm live trong phone mockup">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Thử Live Phone 📱
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('bakery-shop', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
               </button>
-              <button onclick="openAppDetail('bakery-shop', 'sim')" class="text-xs text-amber-500 hover:text-amber-400 font-bold flex items-center gap-1">
-                Xem Simulator <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              <button onclick="openAppDetail('bakery-shop', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- App 4: Flower Shop -->
-        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+        <!-- App 8: Flower Shop -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="fnb">
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-500 border border-rose-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
-                <i data-lucide="flower-2" class="w-3.5 h-3.5"></i> Hoa Tươi / Quà Tặng
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                <i data-lucide="flower" class="w-3.5 h-3.5"></i> Shop Hoa Tươi
               </span>
-              <span class="text-xs font-mono text-slate-500 font-semibold">Gói 25 - 40 Triệu</span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 25 - 40 Triệu</span>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-rose-500 transition-colors">L’Amour Rose Flower Studio</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-xs mt-2 leading-relaxed">
-              Bó hoa tình yêu, khai trương, sinh nhật. Tùy chọn tone màu hoa & giấy gói nghệ thuật, <strong>Live Greeting Card xem trước thiệp chúc mừng</strong>, bàn thợ cắm hoa.
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">L’Amour Rose Flower Studio</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+              Bó hoa nghệ thuật, khai trương, sinh nhật. Tùy chọn tone hoa & giấy gói, <strong>Live Greeting Card xem trước thiệp chúc mừng</strong>, bàn thợ cắm hoa và quy trình giao nhanh 2h.
             </p>
             <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Viết Thiệp Realtime</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Giao Hỏa Tốc 2H</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Thợ Cắm Hoa</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Viết Thiệp Realtime</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Giao Hỏa Tốc 2H</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Bàn Thợ Cắm Hoa</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Chụp Ảnh Nghiệm Thu</span>
             </div>
           </div>
-          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/60 flex flex-col gap-3">
-            <a href="/apps/flower/" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-400 hover:to-rose-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-rose-500/20 transition-all hover:scale-[1.02]">
-              <i data-lucide="rocket" class="w-3.5 h-3.5"></i>
-              <span>🚀 Mở Web App Trực Tiếp (Live PWA ↗)</span>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/flower/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
             </a>
-            <div class="flex items-center justify-between text-xs">
-              <button onclick="openAppDetail('flower-shop', 'live')" class="font-mono text-emerald-500 hover:text-emerald-400 flex items-center gap-1 font-semibold transition-colors" title="Trải nghiệm live trong phone mockup">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Thử Live Phone 📱
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('flower-shop', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
               </button>
-              <button onclick="openAppDetail('flower-shop', 'sim')" class="text-xs text-rose-500 hover:text-rose-400 font-bold flex items-center gap-1">
-                Xem Simulator <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              <button onclick="openAppDetail('flower-shop', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- App 5: Fruit Store -->
-        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+        <!-- App 9: Fruit Store -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="fnb">
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
-                <i data-lucide="apple" class="w-3.5 h-3.5"></i> Trái Cây & Nông Sản
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i> Trái Cây / Giỏ Quà
               </span>
-              <span class="text-xs font-mono text-slate-500 font-semibold">Gói 25 - 45 Triệu</span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 25 - 45 Triệu</span>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Fresh Fruit & Giỏ Quà VIP</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-xs mt-2 leading-relaxed">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Fresh Fruit & Giỏ Quà VIP</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
               Trái cây nhập khẩu & giỏ quà biếu. <strong>Mua theo kg với bước nhảy 0.5kg</strong>, freeship 500k, chọn khung giờ giao tươi, quản lý lô date FEFO và VietQR tự động.
             </p>
             <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Bước Nhảy 0.5kg</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Freeship 500k</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Lô Date FEFO</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">VietQR Auto</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Bước Nhảy 0.5kg</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Freeship 500k</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Lô Date FEFO</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">VietQR Auto</span>
             </div>
           </div>
-          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/60 flex flex-col gap-3">
-            <a href="/apps/fruit/" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02]">
-              <i data-lucide="rocket" class="w-3.5 h-3.5"></i>
-              <span>🚀 Mở Web App Trực Tiếp (Live PWA ↗)</span>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/fruit/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
             </a>
-            <div class="flex items-center justify-between text-xs">
-              <button onclick="openAppDetail('fruit-store', 'live')" class="font-mono text-emerald-500 hover:text-emerald-400 flex items-center gap-1 font-semibold transition-colors" title="Trải nghiệm live trong phone mockup">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Thử Live Phone 📱
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('fruit-store', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
               </button>
-              <button onclick="openAppDetail('fruit-store', 'sim')" class="text-xs text-emerald-500 hover:text-emerald-400 font-bold flex items-center gap-1">
-                Xem Simulator <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              <button onclick="openAppDetail('fruit-store', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- App 6: Spa Booking -->
-        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+        <!-- App 10: Laundry Hub -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="fnb">
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-500 border border-amber-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Spa / Thẩm Mỹ Viện
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                <i data-lucide="shirt" class="w-3.5 h-3.5"></i> Giặt Sấy / Laundry
               </span>
-              <span class="text-xs font-mono text-slate-500 font-semibold">Gói 30 - 50 Triệu</span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 25 - 40 Triệu</span>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">An Yên Luxury Spa & Salon</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-xs mt-2 leading-relaxed">
-              Thiết kế Champagne Gold sang trọng. Đặt lịch theo chuyên viên hoặc tự động, dải băng 14 ngày, <strong>tính toán slot trống theo thời gian thực</strong>, cọc 100k VietQR.
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">LaundryHub Giặt Sấy Lấy Liền</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+              Giặt sấy công nghệ & giặt hấp cao cấp. <strong>Định danh túi đồ mã vạch K80</strong>, giao nhận tận nhà qua định vị GPS, tra cứu trạng thái giặt sấy 4 bước, loại bỏ 100% rủi ro thất lạc.
             </p>
             <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Chọn Kỹ Thuật Viên</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Dải Slot 14 Ngày</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Cọc 100k VietQR</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Định Danh Túi Đồ K80</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Giao Nhận GPS</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Theo Dõi 4 Bước</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Chống Thất Lạc 100%</span>
             </div>
           </div>
-          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/60 flex flex-col gap-3">
-            <a href="/apps/spa/" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02]">
-              <i data-lucide="rocket" class="w-3.5 h-3.5"></i>
-              <span>🚀 Mở Web App Trực Tiếp (Live PWA ↗)</span>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/laundry/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
             </a>
-            <div class="flex items-center justify-between text-xs">
-              <button onclick="openAppDetail('spa-booking', 'live')" class="font-mono text-emerald-500 hover:text-emerald-400 flex items-center gap-1 font-semibold transition-colors" title="Trải nghiệm live trong phone mockup">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Thử Live Phone 📱
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('laundry-hub', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
               </button>
-              <button onclick="openAppDetail('spa-booking', 'sim')" class="text-xs text-amber-500 hover:text-amber-400 font-bold flex items-center gap-1">
-                Xem Simulator <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              <button onclick="openAppDetail('laundry-hub', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- App 7: FastFood Express -->
-        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+        <!-- App 11: Ride Booking (Việt Ride) -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="logistics">
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="px-2.5 py-1 rounded-md bg-red-500/10 text-red-500 border border-red-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
-                <i data-lucide="utensils" class="w-3.5 h-3.5"></i> F&B / Quán Ăn
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                <i data-lucide="car" class="w-3.5 h-3.5"></i> Vận Tải / Xe Sân Bay
               </span>
-              <span class="text-xs font-mono text-slate-500 font-semibold">Gói 25 - 45 Triệu</span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 35 - 55 Triệu</span>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-red-500 transition-colors">FastFood Express Food Order</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-xs mt-2 leading-relaxed">
-              Order món ăn trực tuyến tốc độ cao, combo gà rán burger giòn rụm, tích hợp <strong>Kitchen Display System (KDS)</strong> cho đầu bếp xử lý đơn tức thì và in bill bếp K80.
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Việt Ride Express</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+              Đưa đón sân bay 7 chặng cố định & xe liên tỉnh. Tích hợp <strong>định tuyến OSRM</strong>, tính cước bậc thang theo km, phụ thu đêm muộn, cọc VietQR 150k và radar điều phối tài xế thời gian thực.
             </p>
             <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">Order Siêu Tốc</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">KDS Bếp Điện Tử</span>
-              <span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">In Bill K80</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">OSRM Haversine</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Cước Bậc Thang</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">VietQR Cọc Xe</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Radar Tài Xế Realtime</span>
             </div>
           </div>
-          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/60 flex flex-col gap-3">
-            <a href="/apps/fastfood/" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-red-500/20 transition-all hover:scale-[1.02]">
-              <i data-lucide="rocket" class="w-3.5 h-3.5"></i>
-              <span>🚀 Mở Web App Trực Tiếp (Live PWA ↗)</span>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/ride/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
             </a>
-            <div class="flex items-center justify-between text-xs">
-              <button onclick="openAppDetail('fast-food', 'live')" class="font-mono text-emerald-500 hover:text-emerald-400 flex items-center gap-1 font-semibold transition-colors" title="Trải nghiệm live trong phone mockup">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Thử Live Phone 📱
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('ride-booking', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
               </button>
-              <button onclick="openAppDetail('fast-food', 'sim')" class="text-xs text-red-500 hover:text-red-400 font-bold flex items-center gap-1">
-                Xem Simulator <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              <button onclick="openAppDetail('ride-booking', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
               </button>
             </div>
           </div>
         </div>
 
-      </div>
-    </section>
-
-    <!-- 12 Core Packages Section -->
-    <section id="packages" class="mb-24">
-      <div class="flex flex-wrap items-end justify-between gap-4 mb-10 pb-4 border-b border-slate-200 dark:border-slate-800">
-        <div>
-          <span class="text-xs font-mono uppercase tracking-wider text-emerald-500 font-bold">Engineering Arsenal</span>
-          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">12 Core Packages Tái Sử Dụng 100%</h2>
-        </div>
-        <div class="text-xs font-mono text-slate-500">
-          Strict TypeScript • Dual ESM/CJS exports • Zero Runtime Bloat
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 font-mono text-xs">
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 transition-colors">
-          <div class="text-emerald-500 font-bold flex items-center justify-between">
-            <span>@kt/payment-vietqr</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded">v1.2.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">EMVCo Napas 247, SePay/PayOS Webhook, tự khớp tiền 3s, 0% phí trung gian.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-sky-500 transition-colors">
-          <div class="text-sky-500 font-bold flex items-center justify-between">
-            <span>@kt/notify</span>
-            <span class="text-[10px] bg-sky-500/10 text-sky-500 px-1.5 py-0.5 rounded">v1.1.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">Telegram Bot API & Zalo ZNS thông báo đơn/lịch tức thì không phụ thuộc SMS.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-amber-500 transition-colors">
-          <div class="text-amber-500 font-bold flex items-center justify-between">
-            <span>@kt/geocoding-routing</span>
-            <span class="text-[10px] bg-amber-500/10 text-amber-500 px-1.5 py-0.5 rounded">v1.0.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">Haversine curvature, OSRM client, 7 chặng sân bay cố định, cước bậc thang.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-purple-500 transition-colors">
-          <div class="text-purple-500 font-bold flex items-center justify-between">
-            <span>@kt/admin-ui</span>
-            <span class="text-[10px] bg-purple-500/10 text-purple-500 px-1.5 py-0.5 rounded">v1.3.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">AdminShell, TanStack Table, StatCard, DateFilter, Export CSV/Excel.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-red-500 transition-colors">
-          <div class="text-red-500 font-bold flex items-center justify-between">
-            <span>@kt/invoice-pdf</span>
-            <span class="text-[10px] bg-red-500/10 text-red-500 px-1.5 py-0.5 rounded">v1.0.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">In bill nhiệt K80/K57 cầm tay, hoá đơn bán hàng A4/A5 tiếng Việt, phiếu COD.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-cyan-500 transition-colors">
-          <div class="text-cyan-500 font-bold flex items-center justify-between">
-            <span>@kt/litestream-pitr-demo</span>
-            <span class="text-[10px] bg-cyan-500/10 text-cyan-500 px-1.5 py-0.5 rounded">v1.0.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">Sao lưu WAL từng transaction lên Cloudflare R2 / S3, RPO tiệm cận 0s.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-teal-500 transition-colors">
-          <div class="text-teal-500 font-bold flex items-center justify-between">
-            <span>@kt/shipping-calculator</span>
-            <span class="text-[10px] bg-teal-500/10 text-teal-500 px-1.5 py-0.5 rounded">v1.1.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">Tính cước km bán kính, phụ thu mưa đêm, kết nối AhaMove/GHTK.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-orange-500 transition-colors">
-          <div class="text-orange-500 font-bold flex items-center justify-between">
-            <span>@kt/inventory-alert</span>
-            <span class="text-[10px] bg-orange-500/10 text-orange-500 px-1.5 py-0.5 rounded">v1.0.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">Quản lý lô date ngắn, xuất kho FEFO, cảnh báo tự động khi chạm ngưỡng đỏ.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-pink-500 transition-colors">
-          <div class="text-pink-500 font-bold flex items-center justify-between">
-            <span>@kt/discount-loyalty</span>
-            <span class="text-[10px] bg-pink-500/10 text-pink-500 px-1.5 py-0.5 rounded">v1.2.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">Voucher giảm giá %, tích điểm và 4 hạng thành viên Bạc/Vàng/Kim Cương/VIP.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500 transition-colors">
-          <div class="text-blue-500 font-bold flex items-center justify-between">
-            <span>@kt/zalo-mini-auth</span>
-            <span class="text-[10px] bg-blue-500/10 text-blue-500 px-1.5 py-0.5 rounded">v1.0.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">Login 1 chạm Zalo OAuth, giải mã số điện thoại AES-128-CBC bảo mật cao.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-rose-500 transition-colors">
-          <div class="text-rose-500 font-bold flex items-center justify-between">
-            <span>@kt/storage-uploader</span>
-            <span class="text-[10px] bg-rose-500/10 text-rose-500 px-1.5 py-0.5 rounded">v1.1.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">Nén WebP tự động, chuẩn tỉ lệ 1:1, 4:3, 16:9, upload trực tiếp lên R2/S3.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 transition-colors">
-          <div class="text-indigo-500 font-bold flex items-center justify-between">
-            <span>@kt/lead-crm</span>
-            <span class="text-[10px] bg-indigo-500/10 text-indigo-500 px-1.5 py-0.5 rounded">v1.0.0</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 text-[11px] font-sans mt-1.5">Hứng Lead FB/TikTok Ads, chia sale xoay vòng, đồng bộ Google Sheets realtime.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ROI Calculator Section -->
-    <section id="roi-calculator" class="mb-24">
-      <div class="glass-card rounded-3xl p-8 md:p-10 border-emerald-500/30">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <!-- App 12: Auto Garage -->
+        <div class="craft-card rounded-xl p-5 flex flex-col justify-between group" data-category="logistics">
           <div>
-            <span class="text-xs font-mono uppercase tracking-wider text-emerald-500 font-bold">Lợi Ích Kinh Tế Thực Tế</span>
-            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Bảng Tính Tiết Kiệm Chi Phí Cổng Thanh Toán</h2>
-            <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed">
-              Các cổng thanh toán trung gian truyền thống thường thu từ <strong>1.5% đến 2.5%</strong> trên mỗi giao dịch. Với giải pháp VietQR Napas 247 tự động của chúng tôi, doanh nghiệp của bạn giữ trọn <strong>100% doanh thu</strong> về tài khoản ngân hàng chính chủ.
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded badge-subtle text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                <i data-lucide="wrench" class="w-3.5 h-3.5"></i> Ô Tô / Cứu Hộ
+              </span>
+              <span class="text-[11px] font-mono text-slate-500">Gói 30 - 50 Triệu</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">KT Auto Garage & SOS 1-Chạm</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+              <strong>Nút gọi cứu hộ SOS 1-chạm gửi định vị GPS khẩn cấp</strong>, sổ bảo dưỡng điện tử theo biển số xe (theo dõi lịch sử thay nhớt, má phanh, lốp xe) và in báo giá phụ tùng chi tiết.
             </p>
-            
-            <div class="mt-6 space-y-4">
-              <div>
-                <label class="block text-xs font-mono text-slate-500 mb-1">Doanh số bán lẻ mỗi tháng (VNĐ):</label>
-                <div class="flex items-center gap-3">
-                  <input type="range" id="revenueSlider" min="50" max="1000" step="50" value="200" oninput="calculateSavings()" class="flex-1 accent-emerald-500 cursor-pointer">
-                  <span id="revenueDisplay" class="text-base font-bold font-mono text-emerald-500 w-28 text-right">200 Triệu</span>
-                </div>
-              </div>
+            <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono">
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Cứu Hộ SOS 1-Chạm GPS</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Sổ Bảo Dưỡng Biển Số</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Báo Giá Phụ Tùng</span>
+              <span class="badge-subtle px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">In Phiếu K80</span>
             </div>
           </div>
-
-          <div class="p-6 rounded-2xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-center font-mono">
-            <div class="text-xs text-slate-500">Chi phí bạn tiết kiệm được mỗi năm:</div>
-            <div id="annualSavings" class="text-3xl md:text-4xl font-extrabold text-emerald-500 my-3">48.000.000 ₫</div>
-            <div class="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
-              Tương đương hoàn lại <strong>100% chi phí xây dựng website</strong> chỉ sau 6 - 8 tháng vận hành đầu tiên!
-            </div>
-            <div class="mt-5 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-around text-xs">
-              <div>
-                <div class="text-slate-500">Phí Cổng Ngoài (2%)</div>
-                <div id="monthlyLost" class="font-bold text-red-500 mt-0.5">-4.000.000 ₫/tháng</div>
-              </div>
-              <div class="border-l border-slate-200 dark:border-slate-800 pl-4">
-                <div class="text-slate-500">Giải Pháp VietQR KT</div>
-                <div class="font-bold text-emerald-500 mt-0.5">0 ₫ / Vĩnh Viễn</div>
-              </div>
+          <div class="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col gap-2">
+            <a href="/apps/garage/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Web App Trực Tiếp (Live PWA)
+            </a>
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="openAppDetail('auto-garage', 'live')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Thử Live Phone
+              </button>
+              <button onclick="openAppDetail('auto-garage', 'sim')" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-mono text-[11px] flex items-center gap-1">
+                Simulator <i data-lucide="chevron-right" class="w-3 h-3"></i>
+              </button>
             </div>
           </div>
         </div>
+
       </div>
     </section>
 
     <!-- Pricing Section -->
-    <section id="pricing" class="mb-24">
-      <div class="text-center max-w-xl mx-auto mb-12">
-        <span class="text-xs font-mono uppercase tracking-wider text-emerald-500 font-bold">Báo Giá Minh Bạch</span>
-        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Gói Triển Khai Cho Doanh Nghiệp</h2>
-        <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">Bàn giao toàn bộ mã nguồn, không phát sinh chi phí ẩn, cam kết đúng tiến độ</p>
+    <section id="pricing" class="mb-20">
+      <div class="text-center max-w-xl mx-auto mb-10">
+        <span class="text-xs font-mono uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold">Báo Giá Minh Bạch</span>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Gói Triển Khai Cho Doanh Nghiệp</h2>
+        <p class="text-slate-600 dark:text-slate-400 text-xs md:text-sm mt-2">Bàn giao toàn bộ mã nguồn, cấu hình Docker Container tự vận hành, cam kết không phát sinh chi phí ẩn.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
         <!-- Starter -->
-        <div class="glass-card rounded-2xl p-7 flex flex-col justify-between">
+        <div class="craft-card rounded-xl p-6 flex flex-col justify-between">
           <div>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Gói Khởi Nghiệp</h3>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">Gói Khởi Nghiệp</h3>
             <p class="text-xs text-slate-500 mt-1">Phù hợp shop đơn lẻ, cửa hàng mới mở</p>
-            <div class="text-3xl font-extrabold text-slate-900 dark:text-white my-5">25.000.000 <span class="text-sm font-normal text-slate-500">₫</span></div>
-            <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Web App Mobile-First PWA</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Quét mã VietQR tự động 0% phí</li>
+            <div class="text-2xl font-extrabold text-slate-900 dark:text-white my-4">25.000.000 <span class="text-xs font-normal text-slate-500">VND</span></div>
+            <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-300">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Web App Mobile-First PWA (React 19)</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Quét mã VietQR tự động 0% phí trung gian</li>
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Báo đơn về Telegram chủ shop tức thì</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Bàn giao trong 3 - 5 ngày</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Triển khai nhanh & bàn giao full source code</li>
             </ul>
           </div>
-          <a href="#contact" class="w-full text-center mt-8 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-semibold text-xs transition-colors">
-            Chọn Gói Này
+          <a href="#contact" class="w-full text-center mt-6 py-2 rounded-lg badge-subtle hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-900 dark:text-white font-semibold text-xs transition-colors">
+            Tư Vấn Gói Khởi Nghiệp
           </a>
         </div>
 
         <!-- Pro (Featured) -->
-        <div class="glass-card rounded-2xl p-7 flex flex-col justify-between border-emerald-500/50 relative shadow-xl shadow-emerald-500/10">
-          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-emerald-500 text-black font-mono text-[10px] font-bold uppercase tracking-wider">
-            Được Chọn Nhiều Nhất
+        <div class="craft-card rounded-xl p-6 flex flex-col justify-between border-emerald-500/40 relative">
+          <div class="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-mono text-[10px] font-bold uppercase tracking-wider">
+            ĐƯỢC CHỌN NHIỀU NHẤT
           </div>
           <div>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Gói Chuyên Nghiệp</h3>
-            <p class="text-xs text-slate-500 mt-1">Dành cho Vận Tải, Spa, Nha Khoa, F&B chuỗi</p>
-            <div class="text-3xl font-extrabold text-emerald-500 my-5">40.000.000 <span class="text-sm font-normal text-slate-500">₫</span></div>
-            <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">Gói Chuyên Nghiệp</h3>
+            <p class="text-xs text-slate-500 mt-1">Dành cho Vận Tải, Spa, Sân Bãi, Homestay, F&B</p>
+            <div class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 my-4">40.000.000 <span class="text-xs font-normal text-slate-500">VND</span></div>
+            <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-300">
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Toàn bộ tính năng gói Khởi Nghiệp</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Dashboard Quản Trị @kt/admin-ui</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Dashboard Quản Trị Hệ Thống Chuyên Sâu</li>
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> In bill nhiệt K80/K57 hoặc KDS màn hình bếp</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Định tuyến OSRM hoặc dải lịch hẹn KTV</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Ma trận slot đặt hẹn / định tuyến OSRM</li>
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Sao lưu Litestream PITR tiệm cận 0s</li>
             </ul>
           </div>
-          <a href="#contact" class="w-full text-center mt-8 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs transition-colors shadow-md shadow-emerald-500/20">
+          <a href="#contact" class="w-full text-center mt-6 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs transition-colors">
             Tư Vấn Gói Chuyên Nghiệp
           </a>
         </div>
 
         <!-- Enterprise VIP -->
-        <div class="glass-card rounded-2xl p-7 flex flex-col justify-between">
+        <div class="craft-card rounded-xl p-6 flex flex-col justify-between">
           <div>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Gói Doanh Nghiệp VIP</h3>
-            <p class="text-xs text-slate-500 mt-1">Đầy đủ tự động hóa & CRM phễu Ads</p>
-            <div class="text-3xl font-extrabold text-slate-900 dark:text-white my-5">60.000.000 <span class="text-sm font-normal text-slate-500">₫</span></div>
-            <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">Gói Doanh Nghiệp VIP</h3>
+            <p class="text-xs text-slate-500 mt-1">Tự động hóa toàn diện & CRM phễu Ads đa kênh</p>
+            <div class="text-2xl font-extrabold text-slate-900 dark:text-white my-4">60.000.000 <span class="text-xs font-normal text-slate-500">VND</span></div>
+            <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-300">
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Toàn bộ tính năng gói Chuyên Nghiệp</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Đăng nhập 1 chạm Zalo Mini App</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Phễu hứng Lead Ads + Đồng bộ Sheets</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Tích điểm đổi quà & Voucher VIP</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Hỗ trợ hạ tầng Cloud Contabo riêng biệt</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Đăng nhập 1 chạm Zalo Mini App & xác thực OTP</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Phễu hứng Lead Ads + Đồng bộ Sheets realtime</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Tích điểm đổi quà & Voucher VIP Membership</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Cấu hình Dedicated VPS riêng biệt & CDN Edge</li>
             </ul>
           </div>
-          <a href="#contact" class="w-full text-center mt-8 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-semibold text-xs transition-colors">
+          <a href="#contact" class="w-full text-center mt-6 py-2 rounded-lg badge-subtle hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-900 dark:text-white font-semibold text-xs transition-colors">
             Tư Vấn Gói VIP
           </a>
         </div>
@@ -760,19 +803,19 @@
     </section>
 
     <!-- Contact & Consultation Form -->
-    <section id="contact" class="glass-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border-emerald-500/20">
+    <section id="contact" class="craft-card rounded-2xl p-6 md:p-10 max-w-4xl mx-auto border-emerald-500/20">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div>
-          <span class="text-xs font-mono uppercase tracking-wider text-emerald-500 font-bold">Liên Hệ Trực Tiếp</span>
-          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Khởi Động Dự Án Của Bạn Ngay Hôm Nay</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed">
-            Điền thông tin mô tả nhu cầu, tôi sẽ liên hệ lại trong vòng 30 phút kèm bản demo mẫu và báo giá chi tiết cho ngành hàng của bạn.
+          <span class="text-xs font-mono uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold">Liên Hệ Trực Tiếp</span>
+          <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">Khởi Động Dự Án Của Bạn</h2>
+          <p class="text-slate-600 dark:text-slate-400 text-xs md:text-sm mt-2 leading-relaxed">
+            Điền thông tin mô tả nhu cầu, tôi sẽ liên hệ lại trực tiếp trong vòng 30 phút kèm phân tích giải pháp, demo mẫu và báo giá chi tiết cho ngành hàng của bạn.
           </p>
 
-          <div class="mt-6 space-y-3 font-mono text-xs text-slate-600 dark:text-slate-300">
+          <div class="mt-5 space-y-2.5 font-mono text-xs text-slate-600 dark:text-slate-300">
             <div class="flex items-center gap-2.5">
               <i data-lucide="phone" class="w-4 h-4 text-emerald-500"></i>
-              <span>Hotline / Zalo: <strong class="text-slate-900 dark:text-white">0905.882.xxx (Khang Thịnh)</strong></span>
+              <span>Hotline / Zalo: <strong class="text-slate-900 dark:text-white">0905.882.xxx (Khánh)</strong></span>
             </div>
             <div class="flex items-center gap-2.5">
               <i data-lucide="mail" class="w-4 h-4 text-emerald-500"></i>
@@ -786,34 +829,39 @@
         </div>
 
         <!-- Form -->
-        <form id="leadForm" onsubmit="handleLeadSubmit(event)" class="space-y-4">
+        <form id="leadForm" onsubmit="handleLeadSubmit(event)" class="space-y-3">
           <div>
             <label class="block text-xs font-mono text-slate-700 dark:text-slate-300 mb-1">Họ Và Tên Của Bạn *</label>
-            <input type="text" id="leadName" required placeholder="Ví dụ: Nguyễn Văn Tuấn" class="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors">
+            <input type="text" id="leadName" required placeholder="Ví dụ: Nguyễn Văn Tuấn" class="w-full px-3 py-2 rounded-lg bg-white dark:bg-obsidian-950 border border-slate-300 dark:border-white/[0.08] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors">
           </div>
           <div>
             <label class="block text-xs font-mono text-slate-700 dark:text-slate-300 mb-1">Số Điện Thoại (Zalo) *</label>
-            <input type="tel" id="leadPhone" required placeholder="09xxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors">
+            <input type="tel" id="leadPhone" required placeholder="09xxxxxxxx" class="w-full px-3 py-2 rounded-lg bg-white dark:bg-obsidian-950 border border-slate-300 dark:border-white/[0.08] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors">
           </div>
           <div>
             <label class="block text-xs font-mono text-slate-700 dark:text-slate-300 mb-1">Ngành Hàng Bạn Muốn Làm Web</label>
-            <select id="leadIndustry" class="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors">
+            <select id="leadIndustry" class="w-full px-3 py-2 rounded-lg bg-white dark:bg-obsidian-950 border border-slate-300 dark:border-white/[0.08] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors">
+              <option value="court">Sân Pickleball & Cầu Lông</option>
+              <option value="pet">Khách Sạn & Spa Thú Cưng</option>
+              <option value="stay">Villa & Homestay Nghỉ Dưỡng</option>
+              <option value="spa">Spa & Dưỡng Sinh</option>
+              <option value="dental">Nha Khoa & Phòng Khám</option>
+              <option value="food">Nhà Hàng & Quán Ăn F&B</option>
+              <option value="bakery">Tiệm Bánh Sinh Nhật & Bento</option>
+              <option value="flower">Shop Hoa Tươi & Quà Tặng</option>
+              <option value="fruit">Trái Cây Nhập Khẩu & Giỏ Quà</option>
+              <option value="laundry">Tiệm Giặt Sấy Lấy Liền</option>
               <option value="ride">Vận Tải / Xe Đưa Đón Sân Bay</option>
-              <option value="dental">Nha Khoa / Phòng Khám</option>
-              <option value="spa">Spa / Thẩm Mỹ Viện / Salon</option>
-              <option value="fruit">Cửa Hàng Trái Cây / Giỏ Quà</option>
-              <option value="flower">Shop Hoa Tươi / Quà Tặng</option>
-              <option value="bakery">Tiệm Bánh Sinh Nhật / Bento</option>
-              <option value="food">Nhà Hàng / Quán Ăn / FastFood</option>
+              <option value="garage">Gara Ô Tô & Cứu Hộ SOS</option>
               <option value="other">Ngành Nghề Khác...</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-mono text-slate-700 dark:text-slate-300 mb-1">Ghi Chú Nhu Cầu Cụ Thể</label>
-            <textarea id="leadNote" rows="2" placeholder="Ví dụ: Cần tính năng in bill cầm tay và quét mã VietQR..." class="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors"></textarea>
+            <textarea id="leadNote" rows="2" placeholder="Ví dụ: Cần tính năng in bill cầm tay và quét mã VietQR..." class="w-full px-3 py-2 rounded-lg bg-white dark:bg-obsidian-950 border border-slate-300 dark:border-white/[0.08] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors"></textarea>
           </div>
-          <button type="submit" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
-            <i data-lucide="send" class="w-4 h-4"></i> Gửi Yêu Cầu Tư Vấn & Nhận Demo
+          <button type="submit" class="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs transition-colors flex items-center justify-center gap-2">
+            <i data-lucide="send" class="w-3.5 h-3.5"></i> Gửi Yêu Cầu Tư Vấn & Nhận Demo
           </button>
         </form>
       </div>
@@ -822,114 +870,113 @@
   </main>
 
   <!-- Interactive Live Simulator & PWA Modal -->
-  <div id="appModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="glass-card rounded-2xl max-w-3xl w-full p-6 border-emerald-500/40 relative max-h-[92vh] overflow-y-auto custom-scrollbar flex flex-col">
+  <div id="appModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="craft-card rounded-2xl max-w-3xl w-full p-6 relative max-h-[92vh] overflow-y-auto custom-scrollbar flex flex-col">
       
       <!-- Top Header & Toolbar -->
-      <div class="flex items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-200 dark:border-white/[0.08]">
         <div class="flex items-center gap-3">
-          <div id="modalIconWrap" class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
-            <i id="modalIcon" data-lucide="smartphone" class="w-6 h-6"></i>
+          <div id="modalIconWrap" class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center flex-shrink-0 border border-emerald-500/20">
+            <i id="modalIcon" data-lucide="smartphone" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 id="modalAppTitle" class="text-xl font-bold text-slate-900 dark:text-white leading-tight">App Title</h3>
-            <span id="modalAppPath" class="text-xs font-mono text-emerald-500 font-medium">apps/path</span>
+            <h3 id="modalAppTitle" class="text-base font-bold text-slate-900 dark:text-white leading-tight">App Title</h3>
+            <span id="modalAppPath" class="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-medium">apps/path</span>
           </div>
         </div>
 
         <div class="flex items-center gap-2">
-          <a id="modalToolbarExternalBtn" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all hover:scale-105" title="Mở ứng dụng toàn màn hình trong tab mới">
-            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-            <span class="hidden sm:inline">Mở Toàn Màn Hình (Tab Mới) ↗</span>
-            <span class="sm:hidden">Toàn Màn Hình ↗</span>
+          <a id="modalToolbarExternalBtn" href="#" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-lg badge-subtle hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-800 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors" title="Mở ứng dụng toàn màn hình trong tab mới">
+            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-emerald-500"></i>
+            <span class="hidden sm:inline">Mở Tab Mới ↗</span>
           </a>
-          <button onclick="closeAppModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors" aria-label="Đóng modal">
+          <button onclick="closeAppModal()" class="text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-white/[0.06] transition-colors" aria-label="Đóng modal">
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
       </div>
 
       <!-- Tab Switcher -->
-      <div class="flex items-center gap-2 p-1 bg-slate-900/80 rounded-xl border border-slate-800 mb-5">
-        <button id="modalTabLiveBtn" onclick="switchModalTab('live')" class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 bg-emerald-500 text-slate-950 shadow-md">
-          <i data-lucide="smartphone" class="w-4 h-4"></i>
-          <span>Trải Nghiệm App Trực Tiếp (Live Phone Frame)</span>
+      <div class="flex items-center gap-1 p-1 bg-slate-100 dark:bg-white/[0.04] rounded-lg border border-slate-200 dark:border-white/[0.08] mb-4">
+        <button id="modalTabLiveBtn" onclick="switchModalTab('live')" class="flex-1 py-1.5 px-3 rounded-md text-xs font-bold transition-colors flex items-center justify-center gap-1.5 bg-emerald-500 text-slate-950">
+          <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+          <span>Trải Nghiệm Live Phone</span>
         </button>
-        <button id="modalTabSimBtn" onclick="switchModalTab('sim')" class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200">
-          <i data-lucide="cpu" class="w-4 h-4"></i>
+        <button id="modalTabSimBtn" onclick="switchModalTab('sim')" class="flex-1 py-1.5 px-3 rounded-md text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+          <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
           <span>Kịch Bản Kỹ Thuật (Simulator)</span>
         </button>
       </div>
 
       <!-- Tab Content 1: Live Phone Frame -->
       <div id="modalTabLive" class="flex flex-col items-center">
-        <div class="w-full flex items-center justify-between text-xs text-slate-400 mb-3 px-1">
+        <div class="w-full flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2 px-1">
           <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            <span class="font-mono text-emerald-400 font-semibold">Live Sandbox:</span>
-            <span class="text-slate-300">Tương tác trực tiếp trên giao diện thực tế</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">Live Sandbox:</span>
+            <span>Tương tác trực tiếp trên giao diện thực tế</span>
           </div>
-          <button onclick="reloadModalIframe()" class="flex items-center gap-1.5 text-slate-400 hover:text-emerald-400 transition-colors font-mono text-[11px] px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700">
-            <i data-lucide="refresh-cw" class="w-3 h-3"></i> Tải lại app
+          <button onclick="reloadModalIframe()" class="flex items-center gap-1 text-slate-500 hover:text-emerald-500 transition-colors font-mono text-[11px] px-2 py-0.5 rounded badge-subtle">
+            <i data-lucide="refresh-cw" class="w-3 h-3"></i> Tải lại
           </button>
         </div>
 
         <!-- Phone Mockup Device Container -->
-        <div class="w-[380px] max-w-full h-[580px] rounded-[36px] border-4 border-slate-700/80 bg-slate-950 shadow-2xl relative flex flex-col overflow-hidden ring-1 ring-white/10">
-          <!-- Phone Speaker Notch / Status Bar -->
-          <div class="h-6 bg-slate-900 border-b border-slate-800 flex items-center justify-center relative flex-shrink-0">
-            <div class="w-16 h-3 bg-black rounded-full"></div>
-            <div class="absolute right-3 top-1 flex items-center gap-1 text-[10px] text-slate-400 font-mono">
+        <div class="w-[380px] max-w-full h-[580px] rounded-[28px] border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-obsidian-950 shadow-lg relative flex flex-col overflow-hidden">
+          <!-- Status Bar -->
+          <div class="h-6 bg-slate-100 dark:bg-obsidian-900 border-b border-slate-200 dark:border-white/[0.06] flex items-center justify-between px-4 relative flex-shrink-0">
+            <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">9:41</span>
+            <div class="w-12 h-2.5 bg-slate-300 dark:bg-slate-800 rounded-full"></div>
+            <div class="flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400">
               <i data-lucide="wifi" class="w-3 h-3"></i>
-              <i data-lucide="battery-charging" class="w-3 h-3 text-emerald-400"></i>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             </div>
           </div>
           
           <!-- Embedded Live Iframe -->
-          <iframe id="modalLiveIframe" src="about:blank" title="Live PWA Web App" class="w-full flex-1 border-0 bg-slate-950" loading="lazy"></iframe>
+          <iframe id="modalLiveIframe" src="about:blank" title="Live PWA Web App" class="w-full flex-1 border-0 bg-white dark:bg-obsidian-950" loading="lazy"></iframe>
         </div>
 
-        <p class="text-[11px] text-slate-400 mt-3 text-center">
-          💡 Bạn có thể bấm đặt lịch, chọn món, điền form, xem giỏ hàng và quét mã VietQR thật ngay trên màn hình này.
+        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 text-center font-mono">
+          Bạn có thể bấm chọn dịch vụ, đặt hẹn, quét mã VietQR và kiểm tra tính năng ngay trên mockup này.
         </p>
       </div>
 
       <!-- Tab Content 2: Technical Simulator -->
       <div id="modalTabSim" class="hidden">
-        <!-- Direct Launch PWA Banner -->
-        <div class="mb-5 p-3 rounded-xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-sky-500/15 border border-emerald-500/30 flex flex-wrap items-center justify-between gap-3">
+        <div class="mb-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-            <span class="text-xs font-semibold text-slate-200">
-              <span class="text-emerald-400 font-bold">Live PWA Production:</span> Bản build thực tế sẵn sàng
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="text-xs text-slate-800 dark:text-slate-200 font-mono">
+              <span class="text-emerald-600 dark:text-emerald-400 font-bold">Kịch bản nghiệp vụ:</span> Mô phỏng luồng xử lý và dữ liệu thực tế
             </span>
           </div>
-          <a id="modalLaunchBtn" href="#" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20 whitespace-nowrap transition-all hover:scale-105">
-            <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Mở App Thật Toàn Màn Hình
+          <a id="modalLaunchBtn" href="#" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-md bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center gap-1 transition-colors">
+            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Bản Full
           </a>
         </div>
 
         <!-- Simulator Dynamic Content Area -->
-        <div id="modalSimulatorBody" class="mb-6">
+        <div id="modalSimulatorBody" class="mb-4">
           <!-- Injected via JavaScript -->
         </div>
 
         <!-- Quick Run Command -->
-        <div class="bg-slate-100 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 mb-5 font-mono text-xs">
-          <div class="text-slate-500 mb-1">// Lệnh chạy kiểm thử trên máy phát triển:</div>
-          <div id="modalAppCommand" class="text-emerald-500 font-semibold select-all">cd apps/... && pnpm dev</div>
+        <div class="badge-subtle p-3 rounded-lg border border-slate-200 dark:border-white/[0.08] mb-4 font-mono text-xs">
+          <div class="text-slate-500 dark:text-slate-400 mb-1">// Lệnh chạy kiểm thử trên máy phát triển:</div>
+          <div id="modalAppCommand" class="text-emerald-600 dark:text-emerald-400 font-semibold select-all">cd apps/... && pnpm dev</div>
         </div>
       </div>
 
       <!-- Modal Footer -->
-      <div class="flex flex-wrap gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-slate-800">
-        <a id="modalLiveAppBtn" href="#" target="_blank" rel="noopener noreferrer" class="flex-1 min-w-[220px] py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition-all">
-          <i data-lucide="rocket" class="w-4 h-4"></i> 🚀 Mở Giao Diện Toàn Màn Hình (Live PWA ↗)
+      <div class="flex flex-wrap gap-2 mt-4 pt-3 border-t border-slate-200 dark:border-white/[0.08]">
+        <a id="modalLiveAppBtn" href="#" target="_blank" rel="noopener noreferrer" class="flex-1 min-w-[200px] py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+          <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Mở Toàn Màn Hình (Live PWA)
         </a>
-        <button onclick="copyModalCommand()" class="py-2.5 px-4 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-mono text-xs flex items-center justify-center gap-2 transition-colors">
+        <button onclick="copyModalCommand()" class="py-2 px-3 rounded-lg badge-subtle hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-800 dark:text-slate-200 font-mono text-xs flex items-center justify-center gap-1.5 transition-colors">
           <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Lệnh
         </button>
-        <button onclick="closeAppModal()" class="px-5 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs">
+        <button onclick="closeAppModal()" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-white/[0.1] hover:bg-slate-300 dark:hover:bg-white/[0.15] text-slate-800 dark:text-slate-200 font-semibold text-xs transition-colors">
           Đóng
         </button>
       </div>
@@ -937,9 +984,9 @@
   </div>
 
   <!-- Footer -->
-  <footer class="border-t border-slate-200 dark:border-slate-800/60 py-8 px-6 text-center text-xs font-mono text-slate-500">
-    <div>© 2026 khanhdp.com • Developed by Khang Thinh (Kido) • All Rights Reserved.</div>
-    <div class="mt-1 text-slate-400 dark:text-slate-600">Built with Bun 1.3, Hono v4, React 19, Turborepo & TailwindCSS</div>
+  <footer class="border-t border-slate-200 dark:border-white/[0.08] py-8 px-6 text-center text-xs font-mono text-slate-500">
+    <div>© 2026 khanhdp.com • Dương Phúc Khánh (Kido) • All Rights Reserved.</div>
+    <div class="mt-1 text-slate-400 dark:text-slate-600">Engineered with Bun, Hono v4, React 19, SQLite WAL & TailwindCSS</div>
   </footer>
 
   <script>
@@ -963,208 +1010,157 @@
     }
     initTheme();
 
-    // App Database & Simulator Configurations
+    // Category Filtering
+    function filterCategory(cat) {
+      const cards = document.querySelectorAll('#appsGrid > div');
+      const tabs = document.querySelectorAll('.category-tab');
+      
+      tabs.forEach(tab => {
+        tab.className = 'category-tab px-3 py-1.5 rounded-md font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+      });
+      const activeBtn = document.getElementById('btn-tab-' + cat);
+      if (activeBtn) {
+        activeBtn.className = 'category-tab active px-3 py-1.5 rounded-md font-semibold text-slate-900 dark:text-white bg-white dark:bg-white/[0.1] shadow-sm';
+      }
+
+      cards.forEach(card => {
+        if (cat === 'all' || card.getAttribute('data-category') === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // App Database & Simulator Configurations for all 12 Apps
     const APPS_DATA = {
-      'ride-booking': {
-        title: 'Việt Ride Express',
-        path: 'apps/ride-booking',
-        liveUrl: '/apps/ride/',
-        icon: 'car',
-        color: 'amber',
-        desc: 'Hệ thống đưa đón sân bay 7 chặng, xe liên tỉnh & thuê xe tự lái cao cấp với định tuyến OSRM, tính cước bậc thang, cọc VietQR và radar điều phối tài xế.',
+      'court-booking': {
+        title: 'V-Arena Pickleball & Cầu Lông',
+        path: 'apps/court-booking',
+        liveUrl: '/apps/court/',
+        icon: 'trophy',
         simulatorHtml: `
-          <div class="p-4 rounded-xl bg-slate-950/70 border border-amber-500/30 text-xs font-mono text-slate-200 space-y-3">
-            <div class="flex items-center justify-between text-amber-400 font-bold border-b border-slate-800 pb-2">
-              <span>SIMULATOR: TÍNH CƯỚC OSRM & CỌC CHUYẾN</span>
-              <span class="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded">@kt/geocoding-routing</span>
-            </div>
-            <div>
-              <label class="text-slate-400 block mb-1">Chọn chặng sân bay mẫu:</label>
-              <select id="simRideRoute" onchange="calcRideSim()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
-                <option value="28" data-name="Nội Bài ➔ Hoàn Kiếm, Hà Nội (28 km)">Nội Bài ➔ Hoàn Kiếm, Hà Nội (28 km)</option>
-                <option value="12" data-name="Tân Sơn Nhất ➔ Quận 1, TP.HCM (12 km)">Tân Sơn Nhất ➔ Quận 1, TP.HCM (12 km)</option>
-                <option value="30" data-name="Đà Nẵng ➔ Phố Cổ Hội An (30 km)">Đà Nẵng ➔ Phố Cổ Hội An (30 km)</option>
-                <option value="35" data-name="Cam Ranh ➔ TP. Nha Trang (35 km)">Cam Ranh ➔ TP. Nha Trang (35 km)</option>
-              </select>
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
+            <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
+              <span>SIMULATOR: MA TRẬN KHUNG GIỜ VÀNG & CỌC SÂN</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">Slot Engine</span>
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="text-slate-400 block mb-1">Hạng xe:</label>
-                <select id="simRideCar" onchange="calcRideSim()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
-                  <option value="1.0">4 Chỗ Tiêu Chuẩn (Vios/Accent)</option>
-                  <option value="1.25">7 Chỗ Rộng Rãi (Xpander)</option>
-                  <option value="1.8">VIP Limousine / Carnival</option>
+                <label class="text-slate-400 block mb-1">Chọn loại sân:</label>
+                <select id="simCourtType" onchange="calcCourtSim()" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+                  <option value="150000" data-name="Pickleball Tiêu Chuẩn Trong Nhà">Pickleball Tiêu Chuẩn Trong Nhà</option>
+                  <option value="120000" data-name="Pickleball Ngoài Trời">Pickleball Ngoài Trời</option>
+                  <option value="100000" data-name="Sân Cầu Lông Thảm Yonex">Sân Cầu Lông Thảm Yonex</option>
                 </select>
               </div>
               <div>
-                <label class="text-slate-400 block mb-1">Khung giờ:</label>
-                <select id="simRideTime" onchange="calcRideSim()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
-                  <option value="1.0">Ban ngày (06:00 - 22:00)</option>
-                  <option value="1.2">Đêm muộn / Sáng sớm (+20%)</option>
+                <label class="text-slate-400 block mb-1">Khung giờ đặt:</label>
+                <select id="simCourtTime" onchange="calcCourtSim()" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+                  <option value="1.0">08:00 - 10:00 (Giờ thường)</option>
+                  <option value="1.3">17:00 - 19:00 (Giờ Vàng +30%)</option>
+                  <option value="1.3">19:00 - 21:00 (Giờ Vàng +30%)</option>
                 </select>
               </div>
             </div>
-            <div class="p-3 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
+            <div>
+              <label class="text-slate-400 block mb-1">Thuê dụng cụ kèm theo:</label>
+              <div class="flex gap-4">
+                <label class="flex items-center gap-1.5"><input type="checkbox" id="simCourtRacket" onchange="calcCourtSim()"> Thuê 2 vợt (+40k)</label>
+                <label class="flex items-center gap-1.5"><input type="checkbox" id="simCourtBall" onchange="calcCourtSim()"> Hộp 3 bóng (+50k)</label>
+              </div>
+            </div>
+            <div class="p-2.5 rounded bg-slate-950 border border-slate-800 flex justify-between items-center">
               <div>
-                <div class="text-slate-400">Ước tính cước trọn gói:</div>
-                <div id="simRideTotal" class="text-lg font-bold text-amber-400">320.000 ₫</div>
+                <div class="text-slate-400">Tổng tiền giờ chơi:</div>
+                <div id="simCourtTotal" class="text-base font-bold text-emerald-400">300.000 ₫</div>
               </div>
               <div class="text-right">
-                <div class="text-slate-400">Tiền cọc giữ xe:</div>
-                <div class="text-sm font-bold text-emerald-400">100.000 ₫ (VietQR)</div>
+                <div class="text-slate-400">Tiền cọc giữ sân (VietQR):</div>
+                <div id="simCourtDeposit" class="text-sm font-bold text-white">100.000 ₫</div>
               </div>
             </div>
-            <div class="text-[11px] text-slate-400 flex items-center gap-1.5 text-emerald-400">
-              <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-              Bắn thông báo tài xế tức thì qua Telegram Bot khi khách cọc thành công!
-            </div>
+            <div class="text-[11px] text-emerald-400">✓ Tự động khóa slot trên ma trận, gửi mã QR xác nhận sân vào Zalo khách.</div>
           </div>
         `
       },
-      'dental-clinic': {
-        title: 'Nha Khoa Thẩm Mỹ Ngọc Bích',
-        path: 'apps/dental-clinic',
-        liveUrl: '/apps/dental/',
-        icon: 'stethoscope',
-        color: 'sky',
-        desc: 'Quy trình đặt lịch 4 bước, hồ sơ chuyên khoa bác sĩ CKI, sơ đồ răng 32 vị trí và ghi chú nha chu lâm sàng.',
+      'pet-care': {
+        title: 'Pet Paradise Resort & Spa',
+        path: 'apps/pet-care',
+        liveUrl: '/apps/pet/',
+        icon: 'dog',
         simulatorHtml: `
-          <div class="p-4 rounded-xl bg-slate-950/70 border border-sky-500/30 text-xs font-mono text-slate-200 space-y-3">
-            <div class="flex items-center justify-between text-sky-400 font-bold border-b border-slate-800 pb-2">
-              <span>SIMULATOR: SƠ ĐỒ RĂNG LÂM SÀNG & TIẾP ĐÓN</span>
-              <span class="text-[10px] bg-sky-500/20 px-2 py-0.5 rounded">Clinical Chart</span>
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
+            <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
+              <span>SIMULATOR: ĐẶT PHÒNG KHÁCH SẠN CAMERA & SPA THÚ CƯNG</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">Pet Boarding</span>
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="text-slate-400 block mb-1">Bác sĩ phụ trách:</label>
-                <div class="p-2 bg-slate-900 border border-slate-700 rounded-lg text-white font-semibold">
-                  BS CKI. Nguyễn Minh Tuấn
-                </div>
+                <label class="text-slate-400 block mb-1">Loại thú cưng:</label>
+                <select class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+                  <option>Chó Poodle / Corgi (&lt;10kg)</option>
+                  <option>Chó Alaska / Golden (&gt;20kg)</option>
+                  <option>Mèo Anh Lông Ngắn</option>
+                </select>
               </div>
               <div>
-                <label class="text-slate-400 block mb-1">Vị trí răng khám:</label>
-                <select class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
-                  <option>Răng 18 (Răng khôn hàm trên phải)</option>
-                  <option>Răng 26 (Răng hàm cối lớn thứ 1)</option>
-                  <option>Răng 11, 21 (Răng cửa thẩm mỹ)</option>
-                  <option>Răng 38, 48 (Răng khôn mọc lệch)</option>
+                <label class="text-slate-400 block mb-1">Gói dịch vụ:</label>
+                <select class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+                  <option>Phòng VIP Điều Hòa + Camera 24/7 (250k/ngày)</option>
+                  <option>Combo Spa Tắm & Cắt Tỉa Lông (350k)</option>
+                  <option>Lưu Trú Dài Ngày + Vận Động Sân Cỏ</option>
                 </select>
               </div>
             </div>
-            <div>
-              <label class="text-slate-400 block mb-1">Chẩn đoán lâm sàng & Ghi chú nha chu:</label>
-              <div class="p-2.5 bg-slate-900 rounded-lg border border-slate-800 text-sky-300 text-[11px] leading-relaxed">
-                Túi nha chu sâu 4mm, răng số 38 mọc ngầm góc 45 độ chèn ép răng số 37. Chỉ định chụp CT Cone Beam 3D và nhổ bằng máy sóng siêu âm Piezotome.
-              </div>
+            <div class="p-2.5 rounded bg-slate-950 border border-slate-800 text-[11px] space-y-1">
+              <div class="text-slate-400 font-bold">Sổ Tiêm Điện Tử (Vaccine Pass):</div>
+              <div class="text-emerald-400">✓ Đã tiêm dại (Rabies) • ✓ Đã tiêm 7 bệnh (Parvo, Care) • Tẩy giun: 15/09/2026</div>
             </div>
-            <div class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px]">
-              ✓ Cọc giữ giờ khám 200.000₫ tự động qua VietQR Napas 247, tự gửi mã SMS/Zalo hẹn lịch.
-            </div>
+            <div class="text-[11px] text-emerald-400">✓ Tự động in phiếu K80 khẩu phần ăn riêng và cấp link xem camera trực tiếp cho chủ.</div>
           </div>
         `
       },
-      'bakery-shop': {
-        title: 'Sweet Melody Bakery',
-        path: 'apps/bakery-shop',
-        liveUrl: '/apps/bakery/',
-        icon: 'cake',
-        color: 'amber',
-        desc: 'Bento cake Hàn Quốc & Mousse trái cây. Tùy biến size 14-22cm, cốt bánh, bắt chữ lên mặt bánh live preview và quản lý bếp làm bánh.',
+      'stay-booking': {
+        title: 'Pine Hill Retreat Villa & Homestay',
+        path: 'apps/stay-booking',
+        liveUrl: '/apps/stay/',
+        icon: 'home',
         simulatorHtml: `
-          <div class="p-4 rounded-xl bg-slate-950/70 border border-amber-500/30 text-xs font-mono text-slate-200 space-y-3">
-            <div class="flex items-center justify-between text-amber-400 font-bold border-b border-slate-800 pb-2">
-              <span>LIVE CAKE STUDIO: BẮT CHỮ LÊN MẶT BÁNH</span>
-              <span class="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded">Live Preview</span>
-            </div>
-            <div>
-              <label class="text-slate-400 block mb-1">Nhập chữ muốn thợ bắt lên bánh:</label>
-              <input type="text" id="simCakeText" value="Happy Birthday Kido 💕" oninput="updateCakeText()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-amber-300 font-bold">
-            </div>
-            <!-- Live preview plate -->
-            <div class="p-6 rounded-2xl bg-gradient-to-tr from-pink-900/30 via-amber-900/20 to-slate-900 border border-pink-500/30 text-center relative overflow-hidden">
-              <div class="w-36 h-36 mx-auto rounded-full bg-amber-100/10 border-4 border-amber-200/30 flex items-center justify-center p-3 shadow-inner">
-                <span id="simCakeDisplay" class="font-serif italic text-pink-300 text-sm font-bold tracking-wide">
-                  Happy Birthday Kido 💕
-                </span>
-              </div>
-              <div class="text-[11px] text-slate-400 mt-3">Mô phỏng mặt bánh Bento Pastel size 16cm</div>
-            </div>
-            <div class="flex justify-between text-[11px] text-slate-400">
-              <span>✓ Tự động in bill bếp K80 kèm ghi chú chữ nắn nót</span>
-              <span class="text-amber-400 font-bold">Baker Board 6 Bước</span>
-            </div>
-          </div>
-        `
-      },
-      'flower-shop': {
-        title: 'L’Amour Rose Flower Studio',
-        path: 'apps/flower-shop',
-        liveUrl: '/apps/flower/',
-        icon: 'flower-2',
-        color: 'rose',
-        desc: 'Shop hoa tươi nghệ thuật, Live Greeting Card viết thiệp chúc mừng thời gian thực, bàn thợ cắm hoa và giao nhanh 2h.',
-        simulatorHtml: `
-          <div class="p-4 rounded-xl bg-slate-950/70 border border-rose-500/30 text-xs font-mono text-slate-200 space-y-3">
-            <div class="flex items-center justify-between text-rose-400 font-bold border-b border-slate-800 pb-2">
-              <span>LIVE GREETING CARD: VIẾT THIỆP REALTIME</span>
-              <span class="text-[10px] bg-rose-500/20 px-2 py-0.5 rounded">In Thiệp Miễn Phí</span>
-            </div>
-            <div>
-              <label class="text-slate-400 block mb-1">Lời chúc viết trên thiệp hoa:</label>
-              <input type="text" id="simFlowerText" value="Chúc em luôn rạng rỡ và hạnh phúc như đóa hồng này!" oninput="updateFlowerText()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-rose-300">
-            </div>
-            <!-- Vintage Card Preview -->
-            <div class="p-5 rounded-xl bg-amber-950/30 border border-amber-500/30 text-center font-serif text-amber-200">
-              <div class="text-[10px] uppercase font-mono tracking-widest text-amber-400/70 mb-1">✦ L'Amour Studio Greeting Card ✦</div>
-              <p id="simFlowerDisplay" class="italic text-sm py-2">
-                "Chúc em luôn rạng rỡ và hạnh phúc như đóa hồng này!"
-              </p>
-              <div class="text-[10px] font-mono text-slate-400 mt-1">— Kèm bó hoa Ecuador Red Deluxe —</div>
-            </div>
-            <div class="text-[11px] text-emerald-400 flex items-center gap-1.5">
-              <i data-lucide="check" class="w-3.5 h-3.5"></i>
-              Giao hỏa tốc 2H có chụp hình trước khi giao cho khách xác nhận!
-            </div>
-          </div>
-        `
-      },
-      'fruit-store': {
-        title: 'Fresh Fruit & Giỏ Quà VIP',
-        path: 'apps/fruit-store',
-        liveUrl: '/apps/fruit/',
-        icon: 'apple',
-        color: 'emerald',
-        desc: 'Trái cây nhập khẩu bán theo kg với bước nhảy 0.5kg, freeship 500k, giỏ hàng Drawer và quét VietQR tự động.',
-        simulatorHtml: `
-          <div class="p-4 rounded-xl bg-slate-950/70 border border-emerald-500/30 text-xs font-mono text-slate-200 space-y-3">
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
             <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
-              <span>BƯỚC NHẢY 0.5KG & FREESHIP 500K</span>
-              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">FEFO Inventory</span>
+              <span>SIMULATOR: DIRECT BOOKING 0% PHÍ SÀN & PIN SMART LOCK</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">0% OTA Fee</span>
             </div>
-            <div class="p-3 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
+            <div class="grid grid-cols-2 gap-3">
               <div>
-                <div class="text-white font-bold text-sm">Cherry Đỏ Mỹ Size 9.0</div>
-                <div class="text-slate-400 text-[11px]">360.000 ₫ / kg</div>
+                <label class="text-slate-400 block mb-1">Căn Villa lựa chọn:</label>
+                <select id="simStayVilla" onchange="calcStaySim()" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+                  <option value="2400000">Villa Pine Hill Panorama (2.400.000₫/đêm)</option>
+                  <option value="1600000">Bungalow Rừng Thông (1.600.000₫/đêm)</option>
+                  <option value="3500000">Villa Nguyên Căn Hồ Bơi (3.500.000₫/đêm)</option>
+                </select>
               </div>
-              <div class="flex items-center gap-2">
-                <button onclick="changeFruitWeight(-0.5)" class="w-7 h-7 rounded bg-slate-800 text-white font-bold text-sm hover:bg-slate-700">-</button>
-                <span id="fruitWeight" class="text-emerald-400 font-bold w-12 text-center">1.5 kg</span>
-                <button onclick="changeFruitWeight(0.5)" class="w-7 h-7 rounded bg-slate-800 text-white font-bold text-sm hover:bg-slate-700">+</button>
-              </div>
-            </div>
-            <div>
-              <div class="flex justify-between text-[11px] mb-1">
-                <span class="text-slate-400">Tiến trình đạt Freeship 500k:</span>
-                <span id="freeshipStatus" class="text-emerald-400 font-bold">Đã đạt Freeship! 🎉</span>
-              </div>
-              <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                <div id="freeshipBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 100%;"></div>
+              <div>
+                <label class="text-slate-400 block mb-1">Số đêm lưu trú:</label>
+                <select id="simStayNights" onchange="calcStaySim()" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+                  <option value="1">1 Đêm</option>
+                  <option value="2" selected>2 Đêm (Cuối tuần)</option>
+                  <option value="3">3 Đêm (+ Giảm 10%)</option>
+                </select>
               </div>
             </div>
-            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 flex justify-between font-bold">
-              <span>Tổng tiền thanh toán:</span>
-              <span id="fruitTotal" class="text-emerald-400">540.000 ₫</span>
+            <div class="p-2.5 rounded bg-slate-950 border border-slate-800 flex justify-between items-center">
+              <div>
+                <div class="text-slate-400">Giá đặt trực tiếp (Tiết kiệm 18% so với OTA):</div>
+                <div id="simStayTotal" class="text-base font-bold text-emerald-400">4.800.000 ₫</div>
+              </div>
+              <div class="text-right">
+                <div class="text-slate-400">Mã Smart Lock tự động:</div>
+                <div class="text-sm font-bold text-white font-mono">PIN: #482910</div>
+              </div>
             </div>
+            <div class="text-[11px] text-emerald-400">✓ Tiết kiệm 864.000₫ phí sàn cho chủ nhà. Tự gửi bản đồ Welcome Guide qua SMS.</div>
           </div>
         `
       },
@@ -1173,20 +1169,18 @@
         path: 'apps/spa-booking',
         liveUrl: '/apps/spa/',
         icon: 'sparkles',
-        color: 'amber',
-        desc: 'Thiết kế tone Champagne Gold quý phái. Đặt lịch theo chuyên viên hoặc tự động, dải băng 14 ngày và cọc VietQR 100k giữ phòng.',
         simulatorHtml: `
-          <div class="p-4 rounded-xl bg-slate-950/70 border border-amber-500/30 text-xs font-mono text-slate-200 space-y-3">
-            <div class="flex items-center justify-between text-amber-400 font-bold border-b border-slate-800 pb-2">
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
+            <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
               <span>CHỌN KỸ THUẬT VIÊN & DẢI SLOT TRỐNG</span>
-              <span class="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded">Champagne Gold</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">No-Show Reduction</span>
             </div>
             <div class="grid grid-cols-2 gap-2 text-[11px]">
-              <div class="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300">
+              <div class="p-2 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">
                 <div class="font-bold">KTV Thảo Vy ★★★★★</div>
                 <div class="text-[10px] text-slate-400">Chuyên sâu vai gáy cổ</div>
               </div>
-              <div class="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300">
+              <div class="p-2 rounded bg-slate-950 border border-slate-800 text-slate-300">
                 <div class="font-bold">KTV Lan Anh ★★★★★</div>
                 <div class="text-[10px] text-slate-400">Dưỡng sinh gội đầu thảo dược</div>
               </div>
@@ -1194,16 +1188,50 @@
             <div>
               <label class="text-slate-400 block mb-1">Khung giờ còn trống hôm nay:</label>
               <div class="flex flex-wrap gap-1.5">
-                <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-500 line-through">09:00</span>
-                <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-500 line-through">11:00</span>
-                <span class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold">14:30 (Trống)</span>
-                <span class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold">17:00 (Trống)</span>
-                <span class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold">19:30 (Trống)</span>
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-500 line-through">09:00</span>
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-500 line-through">11:00</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold">14:30 (Trống)</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold">17:00 (Trống)</span>
               </div>
             </div>
-            <div class="p-2 rounded bg-slate-900 border border-slate-800 text-[11px] text-emerald-400">
-              ✓ Cọc giữ chỗ 100.000₫ tự động trừ thẳng vào hoá đơn khi đến spa.
+            <div class="text-[11px] text-emerald-400">✓ Cọc giữ chỗ 100.000₫ VietQR trừ thẳng vào hoá đơn, chống bùng lịch 90%.</div>
+          </div>
+        `
+      },
+      'dental-clinic': {
+        title: 'Nha Khoa Thẩm Mỹ Ngọc Bích',
+        path: 'apps/dental-clinic',
+        liveUrl: '/apps/dental/',
+        icon: 'stethoscope',
+        simulatorHtml: `
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
+            <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
+              <span>SƠ ĐỒ RĂNG LÂM SÀNG & TIẾP ĐÓN</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">Clinical Chart</span>
             </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-slate-400 block mb-1">Bác sĩ phụ trách:</label>
+                <div class="p-2 bg-slate-950 border border-slate-700 rounded text-white font-semibold">
+                  BS CKI. Nguyễn Minh Tuấn
+                </div>
+              </div>
+              <div>
+                <label class="text-slate-400 block mb-1">Vị trí răng khám:</label>
+                <select class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+                  <option>Răng 18 (Răng khôn hàm trên phải)</option>
+                  <option>Răng 26 (Răng hàm cối lớn thứ 1)</option>
+                  <option>Răng 11, 21 (Răng cửa thẩm mỹ)</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Chẩn đoán lâm sàng & Ghi chú:</label>
+              <div class="p-2 bg-slate-950 rounded border border-slate-800 text-slate-300 text-[11px]">
+                Túi nha chu sâu 4mm, răng 38 mọc lệch chèn ép. Chỉ định chụp CT Cone Beam 3D và nhổ sóng siêu âm Piezotome.
+              </div>
+            </div>
+            <div class="text-[11px] text-emerald-400">✓ Cọc 200.000₫ tự động qua VietQR Napas 247, tự gửi mã xác nhận hẹn lịch.</div>
           </div>
         `
       },
@@ -1212,19 +1240,16 @@
         path: 'apps/fast-food',
         liveUrl: '/apps/fastfood/',
         icon: 'utensils',
-        color: 'red',
-        desc: 'Order món ăn trực tuyến tốc độ cao, combo gà rán burger giòn rụm, tích hợp Kitchen Display System (KDS) và in bill bếp K80.',
         simulatorHtml: `
-          <div class="p-4 rounded-xl bg-slate-950/70 border border-red-500/30 text-xs font-mono text-slate-200 space-y-3">
-            <div class="flex items-center justify-between text-red-400 font-bold border-b border-slate-800 pb-2">
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
+            <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
               <span>KITCHEN DISPLAY SYSTEM (KDS) BẾP ĐIỆN TỬ</span>
-              <span class="text-[10px] bg-red-500/20 px-2 py-0.5 rounded">Drizzle ORM</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">KDS Realtime</span>
             </div>
-            <!-- Mock KDS Ticket -->
-            <div class="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+            <div class="p-2.5 rounded bg-slate-950 border border-slate-800 space-y-2">
               <div class="flex justify-between items-center text-slate-300">
                 <span class="font-bold text-white">Đơn #FF-8821 (Mang về)</span>
-                <span class="text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded text-[10px]">⏱ Đang làm (3 phút)</span>
+                <span class="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">⏱ Đang làm (3 phút)</span>
               </div>
               <ul class="text-[11px] text-slate-300 space-y-1 list-disc list-inside">
                 <li>2x Burger Bò Phô Mai Tan Chảy</li>
@@ -1232,17 +1257,223 @@
                 <li>2x Trà Sữa Trân Châu Size L (50% đường)</li>
               </ul>
               <div class="pt-2 border-t border-slate-800 flex gap-2">
-                <button class="flex-1 py-1.5 rounded bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-[11px] transition-colors">
-                  Bấm Hoàn Thành Món
+                <button class="flex-1 py-1 rounded bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-[11px]">
+                  Hoàn Thành Món
                 </button>
-                <button class="px-3 py-1.5 rounded bg-slate-800 text-slate-300 text-[11px]">
+                <button class="px-2.5 py-1 rounded badge-subtle text-slate-300 text-[11px]">
                   In Lại Bill
                 </button>
               </div>
             </div>
-            <div class="text-[11px] text-slate-400">
-              ✓ Đầu bếp chạm màn hình để đổi trạng thái đơn tức thì cho thu ngân & shipper!
+            <div class="text-[11px] text-emerald-400">✓ Đầu bếp chạm màn hình đổi trạng thái tức thì cho thu ngân & shipper.</div>
+          </div>
+        `
+      },
+      'bakery-shop': {
+        title: 'Sweet Melody Bakery',
+        path: 'apps/bakery-shop',
+        liveUrl: '/apps/bakery/',
+        icon: 'cake',
+        simulatorHtml: `
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
+            <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
+              <span>LIVE CAKE STUDIO: BẮT CHỮ LÊN MẶT BÁNH</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">Live Preview</span>
             </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Nhập chữ muốn thợ bắt lên bánh:</label>
+              <input type="text" id="simCakeText" value="Happy Birthday Kido" oninput="updateCakeText()" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white font-bold">
+            </div>
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-center">
+              <div class="w-28 h-28 mx-auto rounded-full bg-slate-800 border-2 border-emerald-500/30 flex items-center justify-center p-2">
+                <span id="simCakeDisplay" class="font-serif italic text-emerald-300 text-xs font-bold">
+                  Happy Birthday Kido
+                </span>
+              </div>
+              <div class="text-[10px] text-slate-400 mt-2">Mô phỏng mặt bánh Bento Pastel size 16cm</div>
+            </div>
+            <div class="text-[11px] text-emerald-400">✓ Tự động in bill bếp K80 kèm ghi chú chữ nắn nót, không lo thợ viết sai.</div>
+          </div>
+        `
+      },
+      'flower-shop': {
+        title: 'L’Amour Rose Flower Studio',
+        path: 'apps/flower-shop',
+        liveUrl: '/apps/flower/',
+        icon: 'flower',
+        simulatorHtml: `
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
+            <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
+              <span>LIVE GREETING CARD: VIẾT THIỆP REALTIME</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">In Thiệp Miễn Phí</span>
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Lời chúc viết trên thiệp hoa:</label>
+              <input type="text" id="simFlowerText" value="Chúc bạn luôn rạng rỡ và thành công!" oninput="updateFlowerText()" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+            </div>
+            <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 text-center font-serif text-slate-200">
+              <div class="text-[10px] uppercase font-mono tracking-widest text-emerald-500 mb-1">L'Amour Greeting Card</div>
+              <p id="simFlowerDisplay" class="italic text-xs py-1">
+                "Chúc bạn luôn rạng rỡ và thành công!"
+              </p>
+            </div>
+            <div class="text-[11px] text-emerald-400">✓ Giao hỏa tốc 2H có chụp hình trước khi giao cho khách xác nhận.</div>
+          </div>
+        `
+      },
+      'fruit-store': {
+        title: 'Fresh Fruit & Giỏ Quà VIP',
+        path: 'apps/fruit-store',
+        liveUrl: '/apps/fruit/',
+        icon: 'shopping-bag',
+        simulatorHtml: `
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
+            <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
+              <span>BƯỚC NHẢY 0.5KG & FREESHIP 500K</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">FEFO Inventory</span>
+            </div>
+            <div class="p-2.5 rounded bg-slate-950 border border-slate-800 flex items-center justify-between">
+              <div>
+                <div class="text-white font-bold text-xs">Cherry Đỏ Mỹ Size 9.0</div>
+                <div class="text-slate-400 text-[10px]">360.000 ₫ / kg</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="changeFruitWeight(-0.5)" class="w-6 h-6 rounded bg-slate-800 text-white font-bold text-xs">-</button>
+                <span id="fruitWeight" class="text-emerald-400 font-bold w-12 text-center text-xs">1.5 kg</span>
+                <button onclick="changeFruitWeight(0.5)" class="w-6 h-6 rounded bg-slate-800 text-white font-bold text-xs">+</button>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px] mb-1">
+                <span class="text-slate-400">Tiến trình đạt Freeship 500k:</span>
+                <span id="freeshipStatus" class="text-emerald-400 font-bold">Đã đạt Freeship!</span>
+              </div>
+              <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                <div id="freeshipBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 100%;"></div>
+              </div>
+            </div>
+            <div class="p-2 rounded bg-slate-950 border border-slate-800 flex justify-between font-bold text-xs">
+              <span>Tổng tiền thanh toán:</span>
+              <span id="fruitTotal" class="text-emerald-400">540.000 ₫</span>
+            </div>
+          </div>
+        `
+      },
+      'laundry-hub': {
+        title: 'LaundryHub Giặt Sấy Lấy Liền',
+        path: 'apps/laundry-hub',
+        liveUrl: '/apps/laundry/',
+        icon: 'shirt',
+        simulatorHtml: `
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
+            <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
+              <span>SIMULATOR: TÍNH CƯỚC & ĐỊNH DANH MÃ VẠCH TÚI ĐỒ</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">K80 Barcode</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-slate-400 block mb-1">Số kg giặt sấy sấy thơm:</label>
+                <input type="number" id="simLaundryKg" value="5" min="1" onchange="calcLaundrySim()" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+              </div>
+              <div>
+                <label class="text-slate-400 block mb-1">Áo vest / Dạ giặt hấp (chiếc):</label>
+                <input type="number" id="simLaundrySuit" value="1" min="0" onchange="calcLaundrySim()" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+              </div>
+            </div>
+            <div class="p-2.5 rounded bg-slate-950 border border-slate-800 flex justify-between items-center">
+              <div>
+                <div class="text-slate-400">Tổng phí thanh toán:</div>
+                <div id="simLaundryTotal" class="text-base font-bold text-emerald-400">170.000 ₫</div>
+              </div>
+              <div class="text-right">
+                <div class="text-slate-400">Mã Tag dán túi K80:</div>
+                <div class="text-xs font-bold text-white font-mono">TAG: #LH-9921</div>
+              </div>
+            </div>
+            <div class="text-[11px] text-emerald-400">✓ Giữ đúng mã định danh, chống thất lạc 100%, tự gửi SMS báo đồ đã giặt xong.</div>
+          </div>
+        `
+      },
+      'ride-booking': {
+        title: 'Việt Ride Express',
+        path: 'apps/ride-booking',
+        liveUrl: '/apps/ride/',
+        icon: 'car',
+        simulatorHtml: `
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
+            <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
+              <span>SIMULATOR: TÍNH CƯỚC OSRM & CỌC CHUYẾN</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">Routing Engine</span>
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Chọn chặng sân bay:</label>
+              <select id="simRideRoute" onchange="calcRideSim()" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+                <option value="28">Nội Bài ➔ Hoàn Kiếm, Hà Nội (28 km)</option>
+                <option value="12">Tân Sơn Nhất ➔ Quận 1, TP.HCM (12 km)</option>
+                <option value="30">Đà Nẵng ➔ Phố Cổ Hội An (30 km)</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-slate-400 block mb-1">Hạng xe:</label>
+                <select id="simRideCar" onchange="calcRideSim()" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+                  <option value="1.0">4 Chỗ (Vios/Accent)</option>
+                  <option value="1.25">7 Chỗ (Xpander)</option>
+                  <option value="1.8">VIP Limousine</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-slate-400 block mb-1">Khung giờ:</label>
+                <select id="simRideTime" onchange="calcRideSim()" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-white">
+                  <option value="1.0">Ban ngày (06:00 - 22:00)</option>
+                  <option value="1.2">Đêm muộn / Sáng sớm (+20%)</option>
+                </select>
+              </div>
+            </div>
+            <div class="p-2.5 rounded bg-slate-950 border border-slate-800 flex justify-between items-center">
+              <div>
+                <div class="text-slate-400">Ước tính cước trọn gói:</div>
+                <div id="simRideTotal" class="text-base font-bold text-emerald-400">320.000 ₫</div>
+              </div>
+              <div class="text-right">
+                <div class="text-slate-400">Cọc giữ xe VietQR:</div>
+                <div class="text-xs font-bold text-white">100.000 ₫</div>
+              </div>
+            </div>
+            <div class="text-[11px] text-emerald-400">✓ Điều phối radar tài xế gần nhất qua Telegram Bot ngay khi khách cọc.</div>
+          </div>
+        `
+      },
+      'auto-garage': {
+        title: 'KT Auto Garage & SOS 1-Chạm',
+        path: 'apps/auto-garage',
+        liveUrl: '/apps/garage/',
+        icon: 'wrench',
+        simulatorHtml: `
+          <div class="p-4 rounded-lg bg-slate-900 border border-emerald-500/20 text-xs font-mono text-slate-200 space-y-3">
+            <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-slate-800 pb-2">
+              <span>SIMULATOR: CỨU HỘ SOS 1-CHẠM & SỔ BẢO DƯỠNG ĐIỆN TỬ</span>
+              <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">SOS Dispatch</span>
+            </div>
+            <div class="p-3 rounded bg-red-950/40 border border-red-500/30 flex items-center justify-between">
+              <div>
+                <div class="text-red-400 font-bold text-xs">CỨU HỘ KHẨN CẤP SOS 24/7</div>
+                <div class="text-[11px] text-slate-300">Tọa độ GPS: 16.0544° N, 108.2022° E (Cầu Rồng)</div>
+              </div>
+              <button onclick="alert('Đã phát tín hiệu cứu hộ! Đội xe cứu trợ Garage đang di chuyển đến vị trí của bạn trong 12 phút.')" class="px-3 py-1.5 rounded bg-red-600 hover:bg-red-500 text-white font-bold text-xs">
+                Bấm SOS 1-Chạm
+              </button>
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Tra cứu biển số xe bảo dưỡng:</label>
+              <div class="flex gap-2">
+                <input type="text" value="43A-888.99" class="bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-xs w-32 uppercase text-center font-bold">
+                <div class="text-[11px] text-slate-300 flex-1 p-1.5 bg-slate-950 rounded border border-slate-800">
+                  Mazda CX-5 • ODO: 35.000km • Lần bảo dưỡng gần nhất: 10/08/2026 (Thay dầu + Lọc gió)
+                </div>
+              </div>
+            </div>
+            <div class="text-[11px] text-emerald-400">✓ Tự động gửi tin nhắn Zalo nhắc lịch thay nhớt định kỳ và kiểm định xe.</div>
           </div>
         `
       }
@@ -1261,14 +1492,14 @@
       if (!liveBtn || !simBtn || !liveTab || !simTab) return;
 
       if (tab === 'live') {
-        liveBtn.className = 'flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 bg-emerald-500 text-slate-950 shadow-md';
-        simBtn.className = 'flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200';
+        liveBtn.className = 'flex-1 py-1.5 px-3 rounded-md text-xs font-bold transition-colors flex items-center justify-center gap-1.5 bg-emerald-500 text-slate-950';
+        simBtn.className = 'flex-1 py-1.5 px-3 rounded-md text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
         liveTab.classList.remove('hidden');
         liveTab.classList.add('flex');
         simTab.classList.add('hidden');
       } else {
-        simBtn.className = 'flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 bg-emerald-500 text-slate-950 shadow-md';
-        liveBtn.className = 'flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200';
+        simBtn.className = 'flex-1 py-1.5 px-3 rounded-md text-xs font-bold transition-colors flex items-center justify-center gap-1.5 bg-emerald-500 text-slate-950';
+        liveBtn.className = 'flex-1 py-1.5 px-3 rounded-md text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
         simTab.classList.remove('hidden');
         liveTab.classList.add('hidden');
         liveTab.classList.remove('flex');
@@ -1283,7 +1514,6 @@
       }
     }
 
-    // Modal Control
     function openAppDetail(key, defaultTab = 'live') {
       const app = APPS_DATA[key];
       if (!app) return;
@@ -1291,7 +1521,7 @@
 
       document.getElementById('modalAppTitle').innerText = app.title;
       document.getElementById('modalAppPath').innerText = app.path;
-      document.getElementById('modalAppCommand').innerText = `cd /Users/kido/Downloads/kt-porfolio/${app.path} && pnpm dev`;
+      document.getElementById('modalAppCommand').innerText = `cd ${app.path} && pnpm dev`;
       document.getElementById('modalSimulatorBody').innerHTML = app.simulatorHtml;
 
       const toolbarBtn = document.getElementById('modalToolbarExternalBtn');
@@ -1308,23 +1538,9 @@
         iframe.src = app.liveUrl || 'about:blank';
       }
 
-      const colorMap = {
-        amber: 'bg-amber-500/20 text-amber-400',
-        sky: 'bg-sky-500/20 text-sky-400',
-        rose: 'bg-rose-500/20 text-rose-400',
-        emerald: 'bg-emerald-500/20 text-emerald-400',
-        red: 'bg-red-500/20 text-red-400',
-        purple: 'bg-purple-500/20 text-purple-400'
-      };
-      const wrapColor = colorMap[app.color] || 'bg-emerald-500/20 text-emerald-400';
       const iconWrap = document.getElementById('modalIconWrap');
       if (iconWrap) {
-        iconWrap.className = `w-11 h-11 rounded-xl ${wrapColor} flex items-center justify-center flex-shrink-0`;
-        iconWrap.innerHTML = `<i data-lucide="${app.icon || 'smartphone'}" class="w-6 h-6"></i>`;
-      }
-
-      if (key === 'fruit-store') {
-        currentWeight = 1.5;
+        iconWrap.innerHTML = `<i data-lucide="${app.icon || 'smartphone'}" class="w-5 h-5"></i>`;
       }
 
       switchModalTab(defaultTab);
@@ -1333,28 +1549,27 @@
       document.getElementById('appModal').classList.add('flex');
       lucide.createIcons();
 
-      if (key === 'ride-booking') {
-        calcRideSim();
-      }
+      if (key === 'ride-booking') calcRideSim();
+      if (key === 'court-booking') calcCourtSim();
+      if (key === 'stay-booking') calcStaySim();
+      if (key === 'laundry-hub') calcLaundrySim();
     }
 
     function closeAppModal() {
       document.getElementById('appModal').classList.remove('flex');
       document.getElementById('appModal').classList.add('hidden');
       const iframe = document.getElementById('modalLiveIframe');
-      if (iframe) {
-        iframe.src = 'about:blank';
-      }
+      if (iframe) iframe.src = 'about:blank';
       currentModalKey = null;
     }
 
     function copyModalCommand() {
       const cmd = document.getElementById('modalAppCommand').innerText;
       navigator.clipboard.writeText(cmd);
-      alert('Đã copy lệnh chạy vào clipboard!');
+      alert('Đã sao chép lệnh chạy vào clipboard!');
     }
 
-    // Modal Event Listeners (Backdrop click & Escape key)
+    // Modal Event Listeners
     const modalEl = document.getElementById('appModal');
     if (modalEl) {
       modalEl.addEventListener('click', (e) => {
@@ -1367,75 +1582,90 @@
       }
     });
 
-    // Ride Booking Simulator Logic
+    // Simulators Logic
     function calcRideSim() {
-      const km = parseFloat(document.getElementById('simRideRoute').value) || 28;
-      const carMult = parseFloat(document.getElementById('simRideCar').value) || 1.0;
-      const timeMult = parseFloat(document.getElementById('simRideTime').value) || 1.0;
-      
-      const baseFare = 30000;
-      const perKm = 10000;
-      let total = (baseFare + km * perKm) * carMult * timeMult;
-      total = Math.round(total / 10000) * 10000;
-
-      document.getElementById('simRideTotal').innerText = total.toLocaleString('vi-VN') + ' ₫';
+      const km = parseFloat(document.getElementById('simRideRoute')?.value) || 28;
+      const carMult = parseFloat(document.getElementById('simRideCar')?.value) || 1.0;
+      const timeMult = parseFloat(document.getElementById('simRideTime')?.value) || 1.0;
+      const total = Math.round((30000 + km * 10000) * carMult * timeMult / 10000) * 10000;
+      const el = document.getElementById('simRideTotal');
+      if (el) el.innerText = total.toLocaleString('vi-VN') + ' ₫';
     }
 
-    // Bakery Studio Logic
+    function calcCourtSim() {
+      const base = parseFloat(document.getElementById('simCourtType')?.value) || 150000;
+      const mult = parseFloat(document.getElementById('simCourtTime')?.value) || 1.0;
+      const racket = document.getElementById('simCourtRacket')?.checked ? 40000 : 0;
+      const ball = document.getElementById('simCourtBall')?.checked ? 50000 : 0;
+      const total = Math.round((base * 2 * mult + racket + ball) / 10000) * 10000;
+      const el = document.getElementById('simCourtTotal');
+      if (el) el.innerText = total.toLocaleString('vi-VN') + ' ₫';
+      const depEl = document.getElementById('simCourtDeposit');
+      if (depEl) depEl.innerText = (Math.round(total * 0.3 / 10000) * 10000).toLocaleString('vi-VN') + ' ₫';
+    }
+
+    function calcStaySim() {
+      const price = parseFloat(document.getElementById('simStayVilla')?.value) || 2400000;
+      const nights = parseFloat(document.getElementById('simStayNights')?.value) || 2;
+      const discount = nights >= 3 ? 0.9 : 1.0;
+      const total = Math.round(price * nights * discount);
+      const el = document.getElementById('simStayTotal');
+      if (el) el.innerText = total.toLocaleString('vi-VN') + ' ₫';
+    }
+
+    function calcLaundrySim() {
+      const kg = parseFloat(document.getElementById('simLaundryKg')?.value) || 5;
+      const suit = parseFloat(document.getElementById('simLaundrySuit')?.value) || 1;
+      const total = kg * 20000 + suit * 70000;
+      const el = document.getElementById('simLaundryTotal');
+      if (el) el.innerText = total.toLocaleString('vi-VN') + ' ₫';
+    }
+
     function updateCakeText() {
-      const txt = document.getElementById('simCakeText').value || 'Happy Birthday';
-      document.getElementById('simCakeDisplay').innerText = txt;
+      const txt = document.getElementById('simCakeText')?.value || 'Happy Birthday';
+      const el = document.getElementById('simCakeDisplay');
+      if (el) el.innerText = txt;
     }
 
-    // Flower Studio Logic
     function updateFlowerText() {
-      const txt = document.getElementById('simFlowerText').value || 'Lời chúc ấm áp!';
-      document.getElementById('simFlowerDisplay').innerText = `"${txt}"`;
+      const txt = document.getElementById('simFlowerText')?.value || 'Lời chúc ấm áp!';
+      const el = document.getElementById('simFlowerDisplay');
+      if (el) el.innerText = `"${txt}"`;
     }
 
-    // Fruit Store Logic
     let currentWeight = 1.5;
-    const pricePerKg = 360000;
     function changeFruitWeight(delta) {
       currentWeight = Math.max(0.5, currentWeight + delta);
-      document.getElementById('fruitWeight').innerText = currentWeight.toFixed(1) + ' kg';
-      const total = currentWeight * pricePerKg;
-      document.getElementById('fruitTotal').innerText = total.toLocaleString('vi-VN') + ' ₫';
+      const wtEl = document.getElementById('fruitWeight');
+      if (wtEl) wtEl.innerText = currentWeight.toFixed(1) + ' kg';
+      const total = currentWeight * 360000;
+      const totalEl = document.getElementById('fruitTotal');
+      if (totalEl) totalEl.innerText = total.toLocaleString('vi-VN') + ' ₫';
 
       const bar = document.getElementById('freeshipBar');
       const status = document.getElementById('freeshipStatus');
-      const pct = Math.min(100, Math.round((total / 500000) * 100));
-      bar.style.width = pct + '%';
-      if (total >= 500000) {
-        status.innerText = 'Đã đạt Freeship! 🎉';
-        status.className = 'text-emerald-400 font-bold';
-      } else {
-        const remaining = 500000 - total;
-        status.innerText = `Mua thêm ${remaining.toLocaleString('vi-VN')}₫ để Freeship`;
-        status.className = 'text-amber-400 font-bold';
+      if (bar && status) {
+        const pct = Math.min(100, Math.round((total / 500000) * 100));
+        bar.style.width = pct + '%';
+        if (total >= 500000) {
+          status.innerText = 'Đã đạt Freeship!';
+          status.className = 'text-emerald-400 font-bold';
+        } else {
+          status.innerText = `Còn thiếu ${(500000 - total).toLocaleString('vi-VN')}₫`;
+          status.className = 'text-slate-400 font-bold';
+        }
       }
     }
 
-    // ROI Calculator
-    function calculateSavings() {
-      const rev = parseInt(document.getElementById('revenueSlider').value) || 200;
-      document.getElementById('revenueDisplay').innerText = rev + ' Triệu';
-      
-      const monthlyFee = rev * 1000000 * 0.02; // 2%
-      const annualSavings = monthlyFee * 12;
-
-      document.getElementById('annualSavings').innerText = annualSavings.toLocaleString('vi-VN') + ' ₫';
-      document.getElementById('monthlyLost').innerText = '-' + (monthlyFee / 1000000).toFixed(1) + ' Triệu ₫/tháng';
-    }
-
-    // Lead Form Handler
     function handleLeadSubmit(e) {
       e.preventDefault();
       const name = document.getElementById('leadName').value;
       const phone = document.getElementById('leadPhone').value;
       const industry = document.getElementById('leadIndustry').value;
 
-      alert(`Cảm ơn anh/chị ${name} (${phone})!\n\nYêu cầu tư vấn làm web giải pháp ${industry.toUpperCase()} đã được gửi đến Khang Thịnh.\nTôi sẽ gửi bản demo và liên hệ lại ngay qua Zalo trong 30 phút!`);
+      alert(`Cảm ơn anh/chị ${name} (${phone})!
+Yêu cầu tư vấn làm web giải pháp ${industry.toUpperCase()} đã được gửi đến Khánh.
+Tôi sẽ liên hệ lại trực tiếp qua Zalo trong 30 phút.`);
       e.target.reset();
     }
 

@@ -72,6 +72,46 @@
     {
       "source": "/apps/fastfood/:match*",
       "destination": "/apps/fastfood/index.html"
+    },
+    {
+      "source": "/apps/court",
+      "destination": "/apps/court/index.html"
+    },
+    {
+      "source": "/apps/court/:match*",
+      "destination": "/apps/court/index.html"
+    },
+    {
+      "source": "/apps/pet",
+      "destination": "/apps/pet/index.html"
+    },
+    {
+      "source": "/apps/pet/:match*",
+      "destination": "/apps/pet/index.html"
+    },
+    {
+      "source": "/apps/stay",
+      "destination": "/apps/stay/index.html"
+    },
+    {
+      "source": "/apps/stay/:match*",
+      "destination": "/apps/stay/index.html"
+    },
+    {
+      "source": "/apps/laundry",
+      "destination": "/apps/laundry/index.html"
+    },
+    {
+      "source": "/apps/laundry/:match*",
+      "destination": "/apps/laundry/index.html"
+    },
+    {
+      "source": "/apps/garage",
+      "destination": "/apps/garage/index.html"
+    },
+    {
+      "source": "/apps/garage/:match*",
+      "destination": "/apps/garage/index.html"
     }
   ],
   "headers": [
