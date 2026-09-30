@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khang Thinh (Kido) — SME Web Apps & Micro-SaaS Showcase</title>
+  <meta name="description" content="Hệ sinh thái Web App Mobile-First PWA chuyên biệt cho doanh nghiệp SME: Spa, Nha Khoa, F&B, Trái Cây, Hoa Tươi, Tiệm Bánh. Tự động hóa thanh toán VietQR 0% phí.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#22c55e',
+              600: '#16a34a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #07090e;
+      color: #f1f5f9;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(34, 197, 94, 0.05) 0%, transparent 35%),
+        radial-gradient(circle at 85% 65%, rgba(56, 189, 248, 0.05) 0%, transparent 40%);
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card:hover {
+      border-color: rgba(34, 197, 94, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.5);
+    }
+    .badge-gradient {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(56, 189, 248, 0.15) 100%);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-black">
+
+  <!-- Top Announcement Bar -->
+  <div class="w-full bg-emerald-950/40 border-b border-emerald-500/20 py-2 px-4 text-center text-xs font-mono text-emerald-400">
+    ⚡ 100% Web App tích hợp thanh toán VietQR Napas 247 tự khớp tiền trong 3 giây • 0% Phí Cổng Trung Gian
+  </div>
+
+  <!-- Navigation -->
+  <nav class="max-w-7xl mx-auto w-full px-6 py-5 flex items-center justify-between border-b border-slate-800/60">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-bold text-black shadow-lg shadow-emerald-500/20">
+        KT
+      </div>
+      <div>
+        <a href="/" class="text-base font-bold text-white tracking-tight hover:text-emerald-400 transition-colors">khanhdp.com</a>
+        <span class="text-xs text-slate-500 block font-mono">SME Solutions Studio</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="#apps" class="text-xs md:text-sm text-slate-300 hover:text-white transition-colors">Sản Phẩm</a>
+      <a href="#packages" class="text-xs md:text-sm text-slate-300 hover:text-white transition-colors">Core Packages</a>
+      <a href="#pricing" class="text-xs md:text-sm text-slate-300 hover:text-white transition-colors">Báo Giá</a>
+      <a href="#contact" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-xs md:text-sm transition-all shadow-md shadow-emerald-500/20">
+        Tư Vấn Ngay
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <main class="max-w-7xl mx-auto w-full px-6 pt-12 pb-20 flex-1">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-gradient text-emerald-400 text-xs font-mono font-medium mb-5">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Hệ Sinh Thái Web App Mobile-First 2026
+      </div>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+        Đột Phá Doanh Thu Cho <br>
+        <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">Doanh Nghiệp SME Việt Nam</span>
+      </h1>
+      <p class="text-slate-400 text-base md:text-lg leading-relaxed">
+        Bộ giải pháp Web App chuyên ngành bàn giao trọn gói trong 3 - 5 ngày: <br class="hidden md:inline">
+        Tối ưu tuyệt đối cho người dùng di động (PWA), quét VietQR tự động, thông báo Telegram bot tức thì và màn hình quản trị trực quan.
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
+        <a href="#apps" class="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/25">
+          <i data-lucide="eye" class="w-4 h-4"></i> Trải Nghiệm 6 Ứng Dụng Mẫu
+        </a>
+        <a href="#contact" class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-sm transition-all flex items-center gap-2">
+          <i data-lucide="calculator" class="w-4 h-4"></i> Nhận Báo Giá Dự Án
+        </a>
+      </div>
+
+      <!-- Trust Metrics -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 pt-8 border-t border-slate-800/80 font-mono text-left">
+        <div class="p-3">
+          <div class="text-2xl font-bold text-white">0% PHÍ</div>
+          <div class="text-xs text-slate-500 mt-1">Cổng thanh toán trung gian</div>
+        </div>
+        <div class="p-3">
+          <div class="text-2xl font-bold text-emerald-400">&lt; 3 GIÂY</div>
+          <div class="text-xs text-slate-500 mt-1">Khớp lệnh VietQR Napas 247</div>
+        </div>
+        <div class="p-3">
+          <div class="text-2xl font-bold text-cyan-400">100% PWA</div>
+          <div class="text-xs text-slate-500 mt-1">Cài đặt trực tiếp như App Native</div>
+        </div>
+        <div class="p-3">
+          <div class="text-2xl font-bold text-amber-400">3-5 NGÀY</div>
+          <div class="text-xs text-slate-500 mt-1">Thời gian triển khai & bàn giao</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 Showcase Apps Grid -->
+    <section id="apps" class="mb-24">
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-10 pb-4 border-b border-slate-800">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Portfolio</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">6 Ứng Dụng Chuyên Ngành Thực Tế</h2>
+        </div>
+        <div class="text-xs font-mono text-slate-400">
+          Chạm vào từng ứng dụng để xem chi tiết nghiệp vụ và thử nghiệm trực tiếp
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- App 1: Dental Clinic -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
+                <i data-lucide="stethoscope" class="w-3.5 h-3.5"></i> Nha Khoa / Y Tế
+              </span>
+              <span class="text-xs font-mono text-slate-400">Gói 35 - 55 Triệu</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-sky-400 transition-colors">Nha Khoa Thẩm Mỹ Ngọc Bích</h3>
+            <p class="text-slate-400 text-xs mt-2 leading-relaxed">
+              Đặt lịch khám 4 bước, hồ sơ chuyên khoa bác sĩ CKI, cọc VietQR giữ lịch, màn hình tiếp đón và <strong>ghi chú nha chu lâm sàng</strong> chuyên sâu.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-300">
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Hono v4</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">React 19 PWA</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Cọc VietQR</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Khám Nha Chu</span>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between">
+            <span class="text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Sẵn sàng demo
+            </span>
+            <button onclick="openDemoModal('Nha Khoa Thẩm Mỹ Ngọc Bích', 'Niềng răng, bọc sứ, nhổ răng khôn, đặt lịch bác sĩ chuyên khoa & ghi chú nha chu', 'apps/dental-clinic', 'http://localhost:3006')" class="text-xs text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1">
+              Xem Chi Tiết <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- App 2: Bakery Shop -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
+                <i data-lucide="cake" class="w-3.5 h-3.5"></i> Tiệm Bánh / Bakery
+              </span>
+              <span class="text-xs font-mono text-slate-400">Gói 25 - 45 Triệu</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-amber-400 transition-colors">Sweet Melody Bakery</h3>
+            <p class="text-slate-400 text-xs mt-2 leading-relaxed">
+              Bento cake Hàn Quốc & Mousse trái cây. Tùy biến size 14-22cm, cốt bánh, <strong>ghi chữ mặt bánh trực quan thời gian thực</strong>, bếp làm bánh 6 bước.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-300">
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Live Cake Studio</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Ghi Chữ Lên Bánh</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Giữ Thẳng Hộp</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Baker Board</span>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between">
+            <span class="text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Sẵn sàng demo
+            </span>
+            <button onclick="openDemoModal('Sweet Melody Bakery', 'Tùy biến kích thước, vị kem, bắt chữ lên mặt bánh live preview và quản lý bếp làm bánh', 'apps/bakery-shop', 'http://localhost:3006')" class="text-xs text-amber-400 hover:text-amber-300 font-semibold flex items-center gap-1">
+              Xem Chi Tiết <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- App 3: Flower Shop -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
+                <i data-lucide="flower-2" class="w-3.5 h-3.5"></i> Hoa Tươi / Quà Tặng
+              </span>
+              <span class="text-xs font-mono text-slate-400">Gói 25 - 40 Triệu</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-rose-400 transition-colors">L’Amour Rose Flower Studio</h3>
+            <p class="text-slate-400 text-xs mt-2 leading-relaxed">
+              Bó hoa tình yêu, khai trương, sinh nhật. Tùy chọn size & giấy gói, <strong>Live Greeting Card xem trước thiệp chúc mừng</strong>, bàn thợ cắm hoa.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-300">
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">In Thiệp Miễn Phí</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Giao Hỏa Tốc 2H</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Thợ Cắm Hoa Board</span>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between">
+            <span class="text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Sẵn sàng demo
+            </span>
+            <button onclick="openDemoModal('L’Amour Rose Flower', 'Chọn loại hoa, màu giấy gói, viết thiệp chúc mừng thời gian thực và quản lý đơn cắm hoa', 'apps/flower-shop', 'http://localhost:3005')" class="text-xs text-rose-400 hover:text-rose-300 font-semibold flex items-center gap-1">
+              Xem Chi Tiết <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- App 4: Fruit Store -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
+                <i data-lucide="apple" class="w-3.5 h-3.5"></i> Trái Cây & Nông Sản
+              </span>
+              <span class="text-xs font-mono text-slate-400">Gói 25 - 45 Triệu</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">Fresh Fruit & Giỏ Quà VIP</h3>
+            <p class="text-slate-400 text-xs mt-2 leading-relaxed">
+              Trái cây nhập khẩu & giỏ quà biếu. <strong>Mua theo kg với bước nhảy 0.5kg</strong>, freeship 500k, chọn khung giờ giao tươi, giả lập thanh toán VietQR.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-300">
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Bước Nhảy 0.5kg</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Freeship 500k</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Giỏ Hàng Drawer</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">VietQR Auto</span>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between">
+            <span class="text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Sẵn sàng demo
+            </span>
+            <button onclick="openDemoModal('Fresh Fruit Store', 'Trái cây bán theo kg, giỏ quà biếu, tính phí ship linh hoạt và thanh toán quét mã QR', 'apps/fruit-store', 'http://localhost:5173')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1">
+              Xem Chi Tiết <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- App 5: Spa Booking -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Spa / Thẩm Mỹ Viện
+              </span>
+              <span class="text-xs font-mono text-slate-400">Gói 30 - 50 Triệu</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-amber-300 transition-colors">An Yên Luxury Spa & Salon</h3>
+            <p class="text-slate-400 text-xs mt-2 leading-relaxed">
+              Thiết kế Champagne Gold quý phái. Đặt lịch theo chuyên viên hoặc tự động, dải băng 14 ngày, <strong>tính toán slot trống theo thời gian thực</strong>, cọc VietQR.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-300">
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Chọn KTV</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Dải Slot 14 Ngày</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Cọc 100k</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Bàn Tiếp Đón</span>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between">
+            <span class="text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Sẵn sàng demo
+            </span>
+            <button onclick="openDemoModal('An Yên Luxury Spa', 'Đặt lịch làm đẹp, chọn kỹ thuật viên, dải băng chọn giờ thông minh và cọc VietQR', 'apps/spa-booking', 'http://localhost:5173')" class="text-xs text-amber-300 hover:text-amber-200 font-semibold flex items-center gap-1">
+              Xem Chi Tiết <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- App 6: FastFood Express -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded-md bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-mono font-medium flex items-center gap-1.5">
+                <i data-lucide="utensils" class="w-3.5 h-3.5"></i> F&B / Quán Ăn
+              </span>
+              <span class="text-xs font-mono text-slate-400">Gói 25 - 45 Triệu</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-red-400 transition-colors">FastFood Express Food Order</h3>
+            <p class="text-slate-400 text-xs mt-2 leading-relaxed">
+              Order món ăn trực tuyến tốc độ cao, combo gà rán burger giòn rụm, tích hợp <strong>Kitchen Display System (KDS)</strong> cho đầu bếp xử lý đơn tức thì.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-300">
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Order Tốc Độ Cao</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">KDS Màn Hình Bếp</span>
+              <span class="bg-slate-800/80 px-2 py-0.5 rounded">Drizzle ORM</span>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between">
+            <span class="text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Sẵn sàng demo
+            </span>
+            <button onclick="openDemoModal('FastFood Express', 'Đặt món gà rán, burger, giỏ hàng siêu tốc và hệ thống màn hình bếp KDS', 'apps/fast-food', 'http://localhost:3000')" class="text-xs text-red-400 hover:text-red-300 font-semibold flex items-center gap-1">
+              Xem Chi Tiết <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 10 Core Packages Section -->
+    <section id="packages" class="mb-24">
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-10 pb-4 border-b border-slate-800">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Engineering Arsenal</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">10 Core Packages Tái Sử Dụng 100%</h2>
+        </div>
+        <div class="text-xs font-mono text-slate-400">
+          Xây dựng bằng TypeScript strict mode, xuất chuẩn kép ESM/CJS và full DTS
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 font-mono text-xs">
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-emerald-400 font-bold">@kt/payment-vietqr</div>
+          <p class="text-slate-400 text-[11px] font-sans mt-1">EMVCo Napas 247, SePay/PayOS Webhook, 0% phí.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-sky-400 font-bold">@kt/notify</div>
+          <p class="text-slate-400 text-[11px] font-sans mt-1">Telegram Bot API & Zalo thông báo đơn/lịch tức thì.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-purple-400 font-bold">@kt/admin-ui</div>
+          <p class="text-slate-400 text-[11px] font-sans mt-1">AdminShell, TanStack Table, StatCard, DateFilter.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-amber-400 font-bold">@kt/invoice-pdf</div>
+          <p class="text-slate-400 text-[11px] font-sans mt-1">In bill nhiệt K80/K57, hoá đơn A4/A5 tiếng Việt, COD.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-teal-400 font-bold">@kt/shipping-calculator</div>
+          <p class="text-slate-400 text-[11px] font-sans mt-1">Haversine km, giá bậc thang, phụ thu mưa/đêm, AhaMove.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-orange-400 font-bold">@kt/inventory-alert</div>
+          <p class="text-slate-400 text-[11px] font-sans mt-1">Lô date ngắn, xuất kho FEFO, cảnh báo hết hàng.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-pink-400 font-bold">@kt/discount-loyalty</div>
+          <p class="text-slate-400 text-[11px] font-sans mt-1">Voucher giảm giá %, tích điểm và 4 hạng thành viên.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-blue-400 font-bold">@kt/zalo-mini-auth</div>
+          <p class="text-slate-400 text-[11px] font-sans mt-1">Login 1 chạm Zalo OAuth, giải mã SĐT AES-128-CBC.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-rose-400 font-bold">@kt/storage-uploader</div>
+          <p class="text-slate-400 text-[11px] font-sans mt-1">Nén WebP, tỉ lệ 1:1/4:3/16:9, Cloudinary & Cloudflare R2.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-indigo-400 font-bold">@kt/lead-crm</div>
+          <p class="text-slate-400 text-[11px] font-sans mt-1">Hứng Lead Ads FB/TikTok, chia sale, sync Google Sheets.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="mb-24">
+      <div class="text-center max-w-xl mx-auto mb-12">
+        <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Báo Giá Minh Bạch</span>
+        <h2 class="text-3xl font-bold text-white mt-1">Gói Triển Khai Cho Doanh Nghiệp</h2>
+        <p class="text-slate-400 text-sm mt-2">Bàn giao toàn bộ mã nguồn, không phát sinh chi phí ẩn, cam kết đúng tiến độ</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <!-- Starter -->
+        <div class="glass-card rounded-2xl p-7 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white">Gói Khởi Nghiệp</h3>
+            <p class="text-xs text-slate-400 mt-1">Phù hợp shop đơn lẻ, cửa hàng mới mở</p>
+            <div class="text-3xl font-extrabold text-white my-5">25.000.000 <span class="text-sm font-normal text-slate-400">₫</span></div>
+            <ul class="space-y-2.5 text-xs text-slate-300">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Web App Mobile-First PWA</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Quét mã VietQR tự động 0% phí</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Báo đơn về Telegram chủ shop</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Bàn giao trong 3 - 5 ngày</li>
+            </ul>
+          </div>
+          <a href="#contact" class="w-full text-center mt-8 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs transition-colors">
+            Chọn Gói Này
+          </a>
+        </div>
+
+        <!-- Pro (Featured) -->
+        <div class="glass-card rounded-2xl p-7 flex flex-col justify-between border-emerald-500/40 relative shadow-xl shadow-emerald-950/30">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-emerald-500 text-black font-mono text-[10px] font-bold uppercase tracking-wider">
+            Được Chọn Nhiều Nhất
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white">Gói Chuyên Nghiệp</h3>
+            <p class="text-xs text-slate-400 mt-1">Dành cho Spa, Nha Khoa, F&B chuỗi</p>
+            <div class="text-3xl font-extrabold text-emerald-400 my-5">40.000.000 <span class="text-sm font-normal text-slate-400">₫</span></div>
+            <ul class="space-y-2.5 text-xs text-slate-300">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Toàn bộ tính năng gói Khởi Nghiệp</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Dashboard Quản Trị @kt/admin-ui</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Hóa đơn & In bill nhiệt K80 cầm tay</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Quản lý lô date tươi & Cảnh báo tồn</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Tính cước ship km tự động AhaMove</li>
+            </ul>
+          </div>
+          <a href="#contact" class="w-full text-center mt-8 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs transition-colors shadow-md shadow-emerald-500/20">
+            Tư Vấn Gói Chuyên Nghiệp
+          </a>
+        </div>
+
+        <!-- Enterprise VIP -->
+        <div class="glass-card rounded-2xl p-7 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white">Gói Doanh Nghiệp VIP</h3>
+            <p class="text-xs text-slate-400 mt-1">Đầy đủ tự động hóa & CRM phễu Ads</p>
+            <div class="text-3xl font-extrabold text-white my-5">60.000.000 <span class="text-sm font-normal text-slate-400">₫</span></div>
+            <ul class="space-y-2.5 text-xs text-slate-300">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Toàn bộ tính năng gói Chuyên Nghiệp</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Đăng nhập 1 chạm Zalo Mini App</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Phễu hứng Lead Ads + Đồng bộ Sheets</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Tích điểm đổi quà & Voucher VIP</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Bảo hành kỹ thuật 12 tháng</li>
+            </ul>
+          </div>
+          <a href="#contact" class="w-full text-center mt-8 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs transition-colors">
+            Tư Vấn Gói VIP
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact & Consultation Form (Powered by @kt/lead-crm logic) -->
+    <section id="contact" class="glass-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border-emerald-500/20">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Liên Hệ Trực Tiếp</span>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-1">Khởi Động Dự Án Của Bạn Ngay Hôm Nay</h2>
+          <p class="text-slate-400 text-sm mt-3 leading-relaxed">
+            Điền thông tin mô tả nhu cầu, tôi sẽ liên hệ lại trong vòng 30 phút kèm bản demo mẫu và báo giá chi tiết cho ngành hàng của bạn.
+          </p>
+
+          <div class="mt-6 space-y-3 font-mono text-xs text-slate-300">
+            <div class="flex items-center gap-2.5">
+              <i data-lucide="phone" class="w-4 h-4 text-emerald-400"></i>
+              <span>Hotline / Zalo: <strong class="text-white">09xx.xxx.xxx</strong></span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <i data-lucide="mail" class="w-4 h-4 text-emerald-400"></i>
+              <span>Email: <strong class="text-white">contact@khanhdp.com</strong></span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <i data-lucide="map-pin" class="w-4 h-4 text-emerald-400"></i>
+              <span>TP. Hồ Chí Minh / Đà Nẵng / Hà Nội</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form id="leadForm" onsubmit="handleLeadSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-mono text-slate-300 mb-1">Họ Và Tên Của Bạn *</label>
+            <input type="text" id="leadName" required placeholder="Ví dụ: Nguyễn Văn Tuấn" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors">
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-slate-300 mb-1">Số Điện Thoại (Zalo) *</label>
+            <input type="tel" id="leadPhone" required placeholder="09xxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors">
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-slate-300 mb-1">Ngành Hàng Bạn Muốn Làm Web</label>
+            <select id="leadIndustry" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors">
+              <option value="dental">Nha Khoa / Phòng Khám</option>
+              <option value="spa">Spa / Thẩm Mỹ Viện / Salon</option>
+              <option value="fruit">Cửa Hàng Trái Cây / Giỏ Quà</option>
+              <option value="flower">Shop Hoa Tươi / Quà Tặng</option>
+              <option value="bakery">Tiệm Bánh Sinh Nhật / Bakery</option>
+              <option value="food">Nhà Hàng / Quán Ăn / FastFood</option>
+              <option value="other">Ngành Nghề Khác...</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-slate-300 mb-1">Ghi Chú Nhu Cầu Cụ Thể</label>
+            <textarea id="leadNote" rows="2" placeholder="Ví dụ: Cần tính năng in bill cầm tay và quét mã VietQR..." class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors"></textarea>
+          </div>
+          <button type="submit" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
+            <i data-lucide="send" class="w-4 h-4"></i> Gửi Yêu Cầu Tư Vấn & Nhận Demo
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Interactive Demo Modal -->
+  <div id="demoModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-lg w-full p-6 border-emerald-500/30 relative">
+      <button onclick="closeDemoModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+          <i data-lucide="smartphone" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 id="modalTitle" class="text-lg font-bold text-white">App Title</h3>
+          <span id="modalPath" class="text-xs font-mono text-emerald-400">apps/demo</span>
+        </div>
+      </div>
+      <p id="modalDesc" class="text-xs text-slate-300 mb-6 leading-relaxed">Description goes here</p>
+
+      <!-- Run Command Help -->
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 mb-5 font-mono text-xs">
+        <div class="text-slate-500 mb-1">// Lệnh chạy thử trên máy:</div>
+        <div id="modalCommand" class="text-emerald-400 select-all">cd apps/... && pnpm dev</div>
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="copyCommand()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs flex items-center justify-center gap-2 transition-colors">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Lệnh Chạy
+        </button>
+        <button onclick="closeDemoModal()" class="px-5 py-2.5 rounded-xl bg-emerald-500 text-black font-semibold text-xs">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/60 py-8 px-6 text-center text-xs font-mono text-slate-500">
+    <div>© 2026 khanhdp.com • Developed by Khang Thinh (Kido) • All Rights Reserved.</div>
+    <div class="mt-1 text-slate-600">Built with Hono v4, React 19, Turborepo & TailwindCSS</div>
+  </footer>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Modal Control
+    function openDemoModal(title, desc, path, url) {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalDesc').innerText = desc;
+      document.getElementById('modalPath').innerText = path;
+      document.getElementById('modalCommand').innerText = `cd /Users/kido/kt-porfolio/${path} && pnpm dev`;
+      document.getElementById('demoModal').classList.remove('hidden');
+      document.getElementById('demoModal').classList.add('flex');
+    }
+
+    function closeDemoModal() {
+      document.getElementById('demoModal').classList.remove('flex');
+      document.getElementById('demoModal').classList.add('hidden');
+    }
+
+    function copyCommand() {
+      const cmd = document.getElementById('modalCommand').innerText;
+      navigator.clipboard.writeText(cmd);
+      alert('Đã copy lệnh chạy vào clipboard!');
+    }
+
+    // Lead Form Handler
+    function handleLeadSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('leadName').value;
+      const phone = document.getElementById('leadPhone').value;
+      const industry = document.getElementById('leadIndustry').value;
+      const note = document.getElementById('leadNote').value;
+
+      alert(`Cảm ơn anh/chị ${name} (${phone})!\nYêu cầu tư vấn làm web ngành ${industry.toUpperCase()} đã được gửi thành công. Chúng tôi sẽ phản hồi ngay qua Zalo!`);
+      e.target.reset();
+    }
+  </script>
+</body>
+</html>
