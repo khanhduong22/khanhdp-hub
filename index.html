@@ -119,6 +119,10 @@
           <a href="#work" class="hover:text-zinc-200 transition-colors">02.Systems</a>
           <a href="#lab" class="hover:text-zinc-200 transition-colors">03.Fleet</a>
           <a href="#signal" class="hover:text-zinc-200 transition-colors">04.Signal</a>
+          <a href="/portfolio" class="px-2.5 py-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all font-semibold flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            SME Portfolio
+          </a>
         </div>
 
         <div class="h-3 w-[1px] bg-white/10 hidden sm:block"></div>
@@ -943,6 +947,10 @@
         </button>
 
         <div class="px-2 pt-2 py-1 text-[10px] text-zinc-500 uppercase tracking-widest border-t border-white/[0.06] mt-1">Actions</div>
+        <button class="cmd-item w-full flex items-center justify-between px-3 py-2 rounded text-zinc-300 hover:bg-white/[0.08] hover:text-white transition-colors" data-action="portfolio">
+          <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 05 / SME Web Apps & Micro-SaaS Ecosystem</span>
+          <span class="text-zinc-500">/portfolio ↗</span>
+        </button>
         <button class="cmd-item w-full flex items-center justify-between px-3 py-2 rounded text-zinc-300 hover:bg-white/[0.08] hover:text-white transition-colors" data-action="copy-email">
           <span>Copy Email Address</span>
           <span class="text-zinc-500">phuckhanh22@gmail.com</span>
@@ -1227,6 +1235,8 @@
           document.getElementById('lab').scrollIntoView({ behavior: 'smooth' });
         } else if (action === 'signal') {
           document.getElementById('signal').scrollIntoView({ behavior: 'smooth' });
+        } else if (action === 'portfolio') {
+          window.location.href = '/portfolio';
         } else if (action === 'copy-email') {
           copyEmail();
         } else if (action === 'github') {
