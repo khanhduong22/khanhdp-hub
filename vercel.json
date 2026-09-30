@@ -112,6 +112,38 @@
     {
       "source": "/apps/garage/:match*",
       "destination": "/apps/garage/index.html"
+    },
+    {
+      "source": "/apps/kitchen",
+      "destination": "/apps/kitchen/index.html"
+    },
+    {
+      "source": "/apps/kitchen/:match*",
+      "destination": "/apps/kitchen/index.html"
+    },
+    {
+      "source": "/apps/fleet",
+      "destination": "/apps/fleet/index.html"
+    },
+    {
+      "source": "/apps/fleet/:match*",
+      "destination": "/apps/fleet/index.html"
+    },
+    {
+      "source": "/apps/b2b",
+      "destination": "/apps/b2b/index.html"
+    },
+    {
+      "source": "/apps/b2b/:match*",
+      "destination": "/apps/b2b/index.html"
+    },
+    {
+      "source": "/apps/food",
+      "destination": "/apps/fastfood/index.html"
+    },
+    {
+      "source": "/apps/food/:match*",
+      "destination": "/apps/fastfood/index.html"
     }
   ],
   "headers": [
