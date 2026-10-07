@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="12" fill="#0B0D13"/>
+  <rect x="1" y="1" width="46" height="46" rx="11" stroke="#6366F1" stroke-opacity="0.3" stroke-width="1"/>
+  <!-- Central Diamond / Node -->
+  <path d="M24 10L36 17L24 24L12 17L24 10Z" fill="#6366F1" fill-opacity="0.2" stroke="#818CF8" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M12 21.5V29.5C12 29.5 16 34 24 34C32 34 36 29.5 36 29.5V21.5" stroke="#6366F1" stroke-width="2" stroke-linecap="round"/>
+  <path d="M36 17V33" stroke="#818CF8" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="36" cy="34" r="2.5" fill="#38BDF8"/>
+  <circle cx="24" cy="24" r="2" fill="#FFFFFF"/>
+</svg>

@@ -58,22 +58,22 @@
       "desc": "Handy collection of developer utilities: JWT debugger, regex tester, hash generator, base64."
     },
     {
-      "id": "p2p",
-      "name": "P2P Tracker",
-      "subdomain": "p2p.khanhdp.com",
-      "url": "https://p2p.khanhdp.com",
-      "category": "FinTech & Data",
-      "badge": "Automated",
-      "desc": "Real-time P2P market scraping, liquidity depth monitoring, and arbitrage spread tracking."
-    },
-    {
       "id": "finance",
-      "name": "Personal Finance",
+      "name": "Finance & Market Intelligence",
       "subdomain": "finance.khanhdp.com",
       "url": "https://finance.khanhdp.com",
       "category": "FinTech & Data",
-      "badge": "Private",
-      "desc": "Quantitative asset tracking, capital allocation, and portfolio rebalancing intelligence."
+      "badge": "Real-time SSE",
+      "desc": "Multi-asset market scraping (BTC, Gold SJC, Fuel, FX), TimescaleDB analytics, and Server-Sent Events live ticker streaming."
+    },
+    {
+      "id": "monitor",
+      "name": "Vietnam Monitor",
+      "subdomain": "monitor.khanhdp.com",
+      "url": "https://monitor.khanhdp.com",
+      "category": "FinTech & Data",
+      "badge": "Live System",
+      "desc": "Real-time Vietnam macroeconomic & financial intelligence dashboard with 20 interactive telemetry panels."
     },
     {
       "id": "12weeks",
@@ -139,12 +139,30 @@
       "desc": "Real-time streaming logs viewer across all running Docker containers on Contabo VPS."
     },
     {
+      "id": "beszel",
+      "name": "Beszel Telemetry Hub",
+      "subdomain": "beszel.khanhdp.com",
+      "url": "https://beszel.khanhdp.com",
+      "category": "Cloud & Observability",
+      "badge": "Telemetry",
+      "desc": "Lightweight CPU/RAM/Disk metrics, Docker container telemetry, and node latency monitoring."
+    },
+    {
+      "id": "vantoi",
+      "name": "Văn Tới Calisthenics",
+      "subdomain": "vantoi.khanhdp.com",
+      "url": "https://vantoi.khanhdp.com",
+      "category": "Production Apps",
+      "badge": "Production",
+      "desc": "Full-stack fitness platform for Văn Tới Calisthenics with course booking, video tutorials, and user portals."
+    },
+    {
       "id": "sonar",
       "name": "SonarQube Quality",
       "subdomain": "sonar.khanhdp.com",
       "url": "https://sonar.khanhdp.com",
       "category": "Quality & Security",
-      "badge": "CI/CD Gate",
+      "badge": "On-Demand",
       "desc": "Automated code smell inspection, vulnerability audit, and test coverage quality gate."
     }
   ],

@@ -138,6 +138,30 @@
       "destination": "/apps/b2b/index.html"
     },
     {
+      "source": "/apps/event",
+      "destination": "/apps/event/index.html"
+    },
+    {
+      "source": "/apps/event/:match*",
+      "destination": "/apps/event/index.html"
+    },
+    {
+      "source": "/apps/reels",
+      "destination": "/apps/reels/index.html"
+    },
+    {
+      "source": "/apps/reels/:match*",
+      "destination": "/apps/reels/index.html"
+    },
+    {
+      "source": "/apps/academy",
+      "destination": "/apps/academy/index.html"
+    },
+    {
+      "source": "/apps/academy/:match*",
+      "destination": "/apps/academy/index.html"
+    },
+    {
       "source": "/apps/food",
       "destination": "/apps/fastfood/index.html"
     },
