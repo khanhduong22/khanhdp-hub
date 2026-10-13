@@ -18,6 +18,14 @@
       "destination": "/portfolio.html"
     },
     {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/bio",
+      "destination": "/about.html"
+    },
+    {
       "source": "/apps/ride",
       "destination": "/apps/ride/index.html"
     },
