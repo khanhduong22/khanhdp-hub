@@ -1,0 +1,14 @@
+{
+  "name": "khanhdp-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dương Phúc Khánh (Kido) - Personal Brand & Engineering Hub",
+  "scripts": {
+    "build:css": "npx -y --package=tailwindcss@3.4.17 tailwindcss -c ./tailwind.index.config.js -i ./input.css -o ./index.min.css --minify && npx -y --package=tailwindcss@3.4.17 tailwindcss -c ./tailwind.portfolio.config.js -i ./input.css -o ./portfolio.min.css --minify",
+    "audit:mobile": "npx -y lighthouse http://127.0.0.1:3333/ --chrome-flags='--headless=new --no-sandbox' --view",
+    "audit:live": "npx -y lighthouse https://khanhdp.com --chrome-flags='--headless=new --no-sandbox' --view"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

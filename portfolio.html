@@ -10,49 +10,20 @@
   <meta property="og:image" content="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F59E0B'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg>">
   
-  <!-- Tailwind CSS & Fonts -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Preload & Async Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+  </noscript>
 
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          colors: {
-            obsidian: {
-              950: '#07080B',
-              900: '#0E1015',
-              850: '#111318',
-              800: '#161922',
-              700: '#222736',
-              600: '#32394D',
-            },
-            amber: {
-              400: '#FBBF24',
-              500: '#F59E0B',
-              600: '#D97706',
-              700: '#B45309',
-            },
-            burgundy: {
-              950: '#160208',
-              900: '#230B14',
-              850: '#2A0E19',
-              800: '#3E1424',
-              700: '#5C1A35',
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <!-- Lucide Icons (Deferred to avoid render blocking) -->
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+
+  <!-- Pre-compiled Minified Production CSS (Zero Runtime JIT Overhead) -->
+  <link rel="stylesheet" href="/portfolio.min.css">
 
   <style>
     * {
@@ -3303,8 +3274,15 @@ Lead Architect sẽ liên hệ lại trực tiếp qua Zalo trong 30 phút.`);
     setInterval(updatePhoneClock, 1000);
     updatePhoneClock();
 
-    // Initialize Lucide Icons
-    lucide.createIcons();
+    // Initialize Lucide Icons safely with deferred script loading
+    function initIcons() {
+      if (window.lucide && window.lucide.createIcons) {
+        window.lucide.createIcons();
+      } else {
+        setTimeout(initIcons, 50);
+      }
+    }
+    initIcons();
   </script>
 </body>
 </html>
