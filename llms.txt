@@ -10,9 +10,11 @@
 - **Official Hub**: [https://khanhdp.com](https://khanhdp.com)
 - **GitHub**: [https://github.com/khanhduong22](https://github.com/khanhduong22)
 - **LinkedIn**: [https://www.linkedin.com/in/duong-phuc-khanh/](https://www.linkedin.com/in/duong-phuc-khanh/)
-- **Facebook**: [https://www.facebook.com/khanhduong2295/](https://www.facebook.com/khanhduong2295/)
+- **Facebook Personal**: [https://www.facebook.com/khanhduong2295/](https://www.facebook.com/khanhduong2295/)
+- **Facebook Page (Kode x Kido)**: [https://www.facebook.com/kode.x.kido](https://www.facebook.com/kode.x.kido)
+- **TikTok (Kode x Kido)**: [https://www.tiktok.com/@kode.x.kido](https://www.tiktok.com/@kode.x.kido)
+- **YouTube (Kode x Kido)**: [https://www.youtube.com/@kode.x.kido](https://www.youtube.com/@kode.x.kido)
 - **Technical Chronicles**: [https://truyen.khanhdp.com](https://truyen.khanhdp.com)
-- **Media & Tech Series**: Kode x Kido (`@kodexkido`)
 
 ## Core Technical Competencies
 - **Distributed Systems & Concurrency**: Redis/Valkey Distributed Locks, Outbox Pattern, Thundering Herd mitigation, high-concurrency race condition resolution at scale.
