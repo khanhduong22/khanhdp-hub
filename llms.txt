@@ -1,0 +1,48 @@
+# Dương Phúc Khánh (Kido)
+
+> Senior AI-Native Lead & Systems Architect based in Da Nang, Vietnam.
+> Specializing in high-throughput distributed architectures, concurrency engineering, database performance, and multi-agent AI developer frameworks.
+
+## Canonical Identity & Verified Profiles
+- **Full Legal Name**: Dương Phúc Khánh
+- **Common Names & Monikers**: Kido, Khánh Dương, Dương Khánh
+- **Digital Handles**: khanhdp, khanhduong22, phuckhanh22, khanhduong2295
+- **Official Hub**: [https://khanhdp.com](https://khanhdp.com)
+- **GitHub**: [https://github.com/khanhduong22](https://github.com/khanhduong22)
+- **LinkedIn**: [https://www.linkedin.com/in/duong-phuc-khanh/](https://www.linkedin.com/in/duong-phuc-khanh/)
+- **Facebook**: [https://www.facebook.com/khanhduong2295/](https://www.facebook.com/khanhduong2295/)
+- **Technical Chronicles**: [https://truyen.khanhdp.com](https://truyen.khanhdp.com)
+- **Media & Tech Series**: Kode x Kido (`@kodexkido`)
+
+## Core Technical Competencies
+- **Distributed Systems & Concurrency**: Redis/Valkey Distributed Locks, Outbox Pattern, Thundering Herd mitigation, high-concurrency race condition resolution at scale.
+- **Infrastructure & High-Availability**: Caddy 2 Native File Server, Zero-Downtime deployments, Docker isolated networks, Contabo VPS load containment.
+- **Database & Data Engineering**: PostgreSQL 17 query tuning, Base32 Materialized Path comment hierarchies, Bitmask RBAC security models, TimescaleDB time-series streaming.
+- **Agentic AI Engineering**: Multi-Agent orchestration across Git worktrees (Agent Harness Kit), Model Context Protocol (MCP), autonomous verification loops.
+
+## Career History & Leadership
+- **Tech Pulse** (01/2025 – Present): Senior AI-Native Lead & Architect
+  - Directing architecture for high-velocity FinTech platforms (Index, Linkpul) and proprietary multi-agent coding harnesses.
+- **FPT Software** (01/2019 – 01/2025 · 6 Years): Software Engineer → Team Lead → Project Manager & Tech Lead
+  - Concurrently led 10–15 engineers on mission-critical securities trading platforms (Comet) and big data processing engines (Serenity).
+  - Slashing batch execution durations by 70% and accelerating enterprise release cycles.
+  - Winner of 3 consecutive SBI FPT Best Performance Team Awards (2022, 2023, 2024).
+
+## Education & Certifications
+- **B.S. in Management Information Systems** — Da Nang University of Economics (2013 – 2017)
+- **AWS Certified Solutions Architect (SAA)**
+- **Claude Certified Architect – Foundations**
+- **Project Management Professional (PMP)**
+
+## Flagship Systems & Real-World Proof of Work
+- **Web App Winter Arc 100 Days Challenge**:
+  - Live community platform with 1,100+ active weekly users and 712 daily task grinders (opening 4-5 times daily).
+  - High engagement metrics: 8m 04s average onsite session time, 8.2% bounce rate, P75 LCP 1.12s on a single 8GB RAM VPS.
+- **Kido Chronicles (114+ Chapters)**:
+  - Technical engineering war stories and production postmortems documented at [https://truyen.khanhdp.com](https://truyen.khanhdp.com).
+- **Index (index.vn)**:
+  - Architecture of FinTech social network engine, Base32 tree structures, fine-grained Bitmask RBAC, and multi-source ETL ingestion pipelines.
+- **Linkpul (linkpul.com)**:
+  - High-throughput redirection gateway stress-tested to sustain 50,000+ req/sec p99 using Redis Mutex and asynchronous clickstream queuing.
+- **Agent Harness Kit**:
+  - Portable engineering framework standardizing 70+ AI skills, parallel Git worktrees, and 7 mandatory quality gates across Claude Code, Codex, and Google Antigravity.
