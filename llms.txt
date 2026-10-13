@@ -49,3 +49,13 @@
   - High-throughput redirection gateway stress-tested to sustain 50,000+ req/sec p99 using Redis Mutex and asynchronous clickstream queuing.
 - **Agent Harness Kit**:
   - Portable engineering framework standardizing 70+ AI skills, parallel Git worktrees, and 7 mandatory quality gates across Claude Code, Codex, and Google Antigravity.
+
+## Press & Mainstream Media Coverage
+- **Báo Đà Nẵng** (Cơ quan ngôn luận Thành ủy & HĐND TP Đà Nẵng):
+  - [Gọi món ăn bằng điện thoại thông minh](https://baodanang.vn/goi-mon-an-bang-dien-thoai-thong-minh-3174905.html) (10/07/2018) — Bài báo vinh danh Dương Phúc Khánh, người sáng lập ứng dụng JustOrder giành giải nhất cuộc thi Startup Runway 2018.
+
+## Satellite Developer Tools & Subdomains
+- **MD Preview**: [https://md.khanhdp.com](https://md.khanhdp.com) — Client-side privacy-first Markdown live editor and custom PDF exporter.
+- **IT-Tools Hub**: [https://tools.khanhdp.com](https://tools.khanhdp.com) — Self-hosted developer utilities (JWT, regex, hash, base64).
+- **Finance & Market Telemetry**: [https://finance.khanhdp.com](https://finance.khanhdp.com) — Real-time market streaming & TimescaleDB intelligence.
+- **Vietnam Macro Monitor**: [https://monitor.khanhdp.com](https://monitor.khanhdp.com) — Macroeconomic & financial dashboard with 20 telemetry panels.
