@@ -6,6 +6,11 @@
       "source": "/porfolio",
       "destination": "/portfolio",
       "permanent": false
+    },
+    {
+      "source": "/bio",
+      "destination": "/about",
+      "permanent": false
     }
   ],
   "rewrites": [
