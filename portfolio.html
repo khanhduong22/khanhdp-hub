@@ -17,31 +17,49 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.json" />
 
-  <!-- Google Tag Manager (Lossless Pure Interaction Loader, 0ms TBT) -->
+  <!-- @kt/deferred-telemetry: Zero-TBT Pure Interaction-Driven Lossless Telemetry -->
   <script>
     window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-RMEP3RZB14');
     window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
+    // Microsoft Clarity Lossless Queue
+    window.clarity = window.clarity || function() { (window.clarity.q = window.clarity.q || []).push(arguments); };
+
+    // Sentry Error Boundary Bridge to Clarity
+    window.addEventListener('error', function(e) {
+      if (window.Sentry && typeof window.Sentry.captureException === 'function') {
+        var id = window.Sentry.captureException(e.error || e.message);
+        if (id && window.clarity) window.clarity('set', 'sentry_event_id', id);
+      }
+    });
+
     (function(w, d) {
-      var loaded = false;
-      function loadGTM() {
-        if (loaded) return;
-        loaded = true;
-        var j = d.createElement('script');
-        j.async = true;
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355';
-        d.head.appendChild(j);
+      var isLoaded = false;
+      function injectScript(src, id) {
+        if (id && d.getElementById(id)) return;
+        if (d.querySelector('script[src="' + src + '"]')) return;
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = src;
+        if (id) s.id = id;
+        (d.head || d.body).appendChild(s);
       }
       var events = ['scroll', 'touchstart', 'pointerdown', 'keydown', 'wheel'];
+      function triggerDeferredLoad() {
+        if (isLoaded) return;
+        isLoaded = true;
+        events.forEach(function(e) { w.removeEventListener(e, triggerDeferredLoad); });
+        // 1. Google Analytics 4 (gtag.js)
+        injectScript('https://www.googletagmanager.com/gtag/js?id=G-RMEP3RZB14', 'ga4-deferred-script');
+        // 2. Google Tag Manager
+        injectScript('https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355', 'gtm-deferred-script');
+      }
       events.forEach(function(e) {
-        w.addEventListener(e, loadGTM, { passive: true, once: true });
-      });
-      // Safety bridge for Clarity & Sentry
-      w.clarity = w.clarity || function() { (w.clarity.q = w.clarity.q || []).push(arguments); };
-      w.addEventListener('error', function(e) {
-        if (w.Sentry && typeof w.Sentry.captureException === 'function') {
-          var id = w.Sentry.captureException(e.error || e.message);
-          if (id && w.clarity) w.clarity('set', 'sentry_event_id', id);
-        }
+        w.addEventListener(e, triggerDeferredLoad, { passive: true, once: true });
       });
     })(window, document);
   </script>
