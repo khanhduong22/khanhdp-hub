@@ -60,6 +60,8 @@
         injectScript('https://www.googletagmanager.com/gtag/js?id=G-RMEP3RZB14', 'ga4-deferred-script');
         // 2. Google Tag Manager
         injectScript('https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355', 'gtm-deferred-script');
+        // 3. Microsoft Clarity
+        injectScript('https://www.clarity.ms/tag/yy4l1xv1a9', 'clarity-deferred-script');
       }
       events.forEach(function(e) {
         w.addEventListener(e, triggerDeferredLoad, { passive: true, once: true });
