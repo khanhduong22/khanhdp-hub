@@ -37,6 +37,19 @@
       }
     });
 
+    // Global Lossless Event Dispatcher (GA4 + Microsoft Clarity)
+    window.trackEvent = function(eventName, params) {
+      params = params || {};
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, params);
+      }
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', eventName);
+        var label = params.event_label || params.label || params.flagship || params.destination_url || params.category;
+        if (label) window.clarity('set', eventName, String(label).slice(0, 50));
+      }
+    };
+
     (function(w, d) {
       var isLoaded = false;
       function injectScript(src, id) {
@@ -3284,6 +3297,7 @@
         el.innerText = 'SHA-256 (Ký điện tử): ' + randHash;
         el.className = 'text-[10px] text-emerald-400 font-mono truncate font-bold';
       }
+      if (window.trackEvent) window.trackEvent('demo_sign_epod', { event_category: 'interactive_demo' });
       alert('Đã đóng dấu mật mã SHA-256 thành công vào biên bản e-POD!');
     }
 
@@ -3294,6 +3308,8 @@
       const barEl = document.getElementById('b2bAgingBar');
 
       if (!statusEl || !textEl || !barEl) return;
+
+      if (window.trackEvent) window.trackEvent('demo_check_b2b_credit', { event_category: 'interactive_demo', status: dealer });
 
       if (dealer === 'good') {
         statusEl.className = 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold';
@@ -3316,6 +3332,8 @@
       const name = document.getElementById('leadName').value;
       const phone = document.getElementById('leadPhone').value;
       const industry = document.getElementById('leadIndustry').value;
+
+      if (window.trackEvent) window.trackEvent('lead_submit', { event_category: 'conversion', industry: industry, client_name: name });
 
       alert(`Cảm ơn anh/chị ${name} (${phone})!
 Yêu cầu tư vấn giải pháp ${industry.toUpperCase()} đã được gửi đến Khánh Studio.
@@ -3343,6 +3361,21 @@ Lead Architect sẽ liên hệ lại trực tiếp qua Zalo trong 30 phút.`);
       }
     }
     initIcons();
+
+    // Global Delegated Click Listener for Outbound and Navigation
+    document.addEventListener("click", (e) => {
+      let a = e.target.closest("a[href]");
+      if (a) {
+        let h = a.getAttribute("href");
+        if (h && (h.startsWith("http://") || h.startsWith("https://")) && !h.includes(window.location.hostname)) {
+          let t = (a.getAttribute("title") || a.textContent || h).trim().slice(0, 60);
+          if (window.trackEvent) window.trackEvent("outbound_click", { event_category: "outbound", destination_url: h, link_text: t });
+        } else if (h && (h.startsWith("#") || h.startsWith("/"))) {
+          let t = (a.textContent || h).trim().slice(0, 40);
+          if (window.trackEvent) window.trackEvent("nav_click", { event_category: "navigation", destination: h, link_text: t });
+        }
+      }
+    }, { passive: !0 });
   </script>
 </body>
 </html>

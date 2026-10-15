@@ -40,6 +40,19 @@
       }
     });
 
+    // Global Lossless Event Dispatcher (GA4 + Microsoft Clarity)
+    window.trackEvent = function(eventName, params) {
+      params = params || {};
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, params);
+      }
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', eventName);
+        var label = params.event_label || params.label || params.flagship || params.destination_url || params.category;
+        if (label) window.clarity('set', eventName, String(label).slice(0, 50));
+      }
+    };
+
     (function(w, d) {
       var isLoaded = false;
       function injectScript(src, id) {
@@ -801,7 +814,7 @@
     </div>
   </footer>
 
-  <!-- Scroll Progress Script -->
+  <!-- Scroll Progress & Telemetry Delegation -->
   <script>
     window.addEventListener('scroll', () => {
       const winScroll = document.documentElement.scrollTop;
@@ -809,6 +822,21 @@
       const scrolled = (winScroll / height) * 100;
       const progressBar = document.getElementById('progress-bar');
       if (progressBar) progressBar.style.width = scrolled + '%';
+    }, { passive: true });
+
+    // Global Delegated Click Listener for Outbound and Navigation
+    document.addEventListener("click", (e) => {
+      let a = e.target.closest("a[href]");
+      if (a) {
+        let h = a.getAttribute("href");
+        if (h && (h.startsWith("http://") || h.startsWith("https://")) && !h.includes(window.location.hostname)) {
+          let t = (a.getAttribute("title") || a.textContent || h).trim().slice(0, 60);
+          if (window.trackEvent) window.trackEvent("outbound_click", { event_category: "outbound", destination_url: h, link_text: t });
+        } else if (h && (h.startsWith("#") || h.startsWith("/"))) {
+          let t = (a.textContent || h).trim().slice(0, 40);
+          if (window.trackEvent) window.trackEvent("nav_click", { event_category: "navigation", destination: h, link_text: t });
+        }
+      }
     }, { passive: true });
   </script>
 </body>

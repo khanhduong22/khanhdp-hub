@@ -40,6 +40,19 @@
       }
     });
 
+    // Global Lossless Event Dispatcher (GA4 + Microsoft Clarity)
+    window.trackEvent = function(eventName, params) {
+      params = params || {};
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, params);
+      }
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', eventName);
+        var label = params.event_label || params.label || params.flagship || params.destination_url || params.category;
+        if (label) window.clarity('set', eventName, String(label).slice(0, 50));
+      }
+    };
+
     (function(w, d) {
       var isLoaded = false;
       function injectScript(src, id) {
@@ -1208,7 +1221,149 @@
   <!-- JAVASCRIPT: MICRO-INTERACTIONS, ACCORDION, CLOCK, PALETTE         -->
   <!-- ================================================================= -->
   <script>
-document.addEventListener("DOMContentLoaded",()=>{let x=document.getElementById("progress-bar");window.addEventListener("scroll",()=>{let k=document.documentElement.scrollHeight-window.innerHeight,z=k>0?window.scrollY/k*100:0;x.style.width=`${z}%`},{passive:!0});let B=document.getElementById("live-time");function A(){let k=new Date,z={timeZone:"Asia/Ho_Chi_Minh",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:!1},D=new Intl.DateTimeFormat("en-GB",z);B.textContent=`${D.format(k)} ICT`}A(),setInterval(A,1000);let O=document.getElementById("toast"),T=document.getElementById("toast-message"),X=null;function F(k){if(T.textContent=k,O.classList.remove("opacity-0","translate-y-12","pointer-events-none"),O.classList.add("opacity-100","translate-y-0"),X)clearTimeout(X);X=setTimeout(()=>{O.classList.remove("opacity-100","translate-y-0"),O.classList.add("opacity-0","translate-y-12","pointer-events-none")},2200)}let f=document.getElementById("copy-email-btn"),Y="phuckhanh22@gmail.com";function H(){navigator.clipboard.writeText(Y).then(()=>{F(`Copied ${Y} to clipboard`);let k=document.getElementById("copy-email-label"),z=k.textContent;k.textContent="Copied to clipboard!",setTimeout(()=>{k.textContent=z},2000)}).catch(()=>{F(`Address: ${Y}`)})}f.addEventListener("click",H);let L=document.querySelectorAll(".accordion-item");L.forEach((k,z)=>{let D=k.querySelector(".accordion-header"),J=k.querySelector(".accordion-content"),K=k.querySelector(".accordion-icon");if(z===0)J.classList.add("expanded"),K.textContent="↑",k.classList.add("ring-1","ring-white/10");D.addEventListener("click",()=>{if(J.classList.contains("expanded"))J.classList.remove("expanded"),K.textContent="↓",k.classList.remove("ring-1","ring-white/10");else J.classList.add("expanded"),K.textContent="↑",k.classList.add("ring-1","ring-white/10")})});let N=document.getElementById("toggle-all-accordions"),U=!1;N.addEventListener("click",()=>{U=!U,L.forEach((k)=>{let z=k.querySelector(".accordion-content"),D=k.querySelector(".accordion-icon");if(U)z.classList.add("expanded"),D.textContent="↑",k.classList.add("ring-1","ring-white/10");else z.classList.remove("expanded"),D.textContent="↓",k.classList.remove("ring-1","ring-white/10")}),N.textContent=U?"Collapse All":"Expand All"});let S=document.querySelectorAll(".filter-btn"),w=document.querySelectorAll(".fleet-row"),v=document.getElementById("fleet-search"),q=document.getElementById("fleet-empty"),Z="all",_="";function Q(){let k=0;if(w.forEach((z)=>{let D=z.getAttribute("data-category"),J=z.getAttribute("data-name").toLowerCase(),K=Z==="all"||D===Z,h=!_||J.includes(_);if(K&&h)z.style.display="",k++;else z.style.display="none"}),k===0)q.classList.remove("hidden");else q.classList.add("hidden")}S.forEach((k)=>{k.addEventListener("click",()=>{S.forEach((z)=>{z.classList.remove("active","bg-white/10","text-white","border-white/20"),z.classList.add("bg-white/[0.03]","text-zinc-400","border-white/[0.06]")}),k.classList.add("active","bg-white/10","text-white","border-white/20"),k.classList.remove("bg-white/[0.03]","text-zinc-400","border-white/[0.06]"),Z=k.getAttribute("data-cat"),Q()})}),v.addEventListener("input",(k)=>{_=k.target.value.toLowerCase().trim(),Q()});let y=document.getElementById("toggle-pine-script"),$=document.getElementById("pine-snippet-container"),I=document.getElementById("pine-btn-text");y.addEventListener("click",()=>{if($.classList.contains("hidden"))$.classList.remove("hidden"),I.textContent="Hide Pine Script snippet";else $.classList.add("hidden"),I.textContent="View Pine Script snippet"});let G=document.getElementById("cmd-modal"),V=document.getElementById("cmd-card"),j=document.getElementById("cmd-input"),P=document.getElementById("cmd-list"),g=document.getElementById("cmd-palette-btn"),E=document.getElementById("footer-cmd-btn");function R(){G.classList.remove("hidden"),G.classList.add("flex"),setTimeout(()=>{V.classList.remove("scale-95"),V.classList.add("scale-100"),j.focus()},10)}function W(){V.classList.remove("scale-100"),V.classList.add("scale-95"),setTimeout(()=>{G.classList.remove("flex"),G.classList.add("hidden"),j.value="",M("")},120)}if(g.addEventListener("click",R),E)E.addEventListener("click",R);G.addEventListener("click",(k)=>{if(k.target===G)W()});function M(k){let z=P.querySelectorAll(".cmd-item"),D=k.toLowerCase().trim();z.forEach((J)=>{let K=J.textContent.toLowerCase();J.style.display=!D||K.includes(D)?"":"none"})}j.addEventListener("input",(k)=>{M(k.target.value)}),P.addEventListener("click",(k)=>{let z=k.target.closest(".cmd-item");if(!z)return;let D=z.getAttribute("data-action");if(W(),D==="manifesto")document.getElementById("manifesto").scrollIntoView({behavior:"smooth"});else if(D==="work")document.getElementById("work").scrollIntoView({behavior:"smooth"});else if(D==="lab")document.getElementById("lab").scrollIntoView({behavior:"smooth"});else if(D==="signal")document.getElementById("signal").scrollIntoView({behavior:"smooth"});else if(D==="portfolio")window.location.href="/portfolio";else if(D==="about")window.location.href="/about";else if(D==="copy-email")H();else if(D==="github")window.open("https://github.com/khanhduong22","_blank");else if(D==="tradingview")window.open("https://vn.tradingview.com/script/neSZYFwg/","_blank")}),window.addEventListener("keydown",(k)=>{if((k.metaKey||k.ctrlKey)&&k.key.toLowerCase()==="k")if(k.preventDefault(),G.classList.contains("hidden"))R();else W();else if(k.key==="/"&&document.activeElement.tagName!=="INPUT")k.preventDefault(),v.focus();else if(k.key==="Escape"){if(!G.classList.contains("hidden"))W()}if(G.classList.contains("hidden")&&document.activeElement.tagName!=="INPUT"){if(k.key==="1")document.getElementById("manifesto").scrollIntoView({behavior:"smooth"});if(k.key==="2")document.getElementById("work").scrollIntoView({behavior:"smooth"});if(k.key==="3")document.getElementById("lab").scrollIntoView({behavior:"smooth"});if(k.key==="4")document.getElementById("signal").scrollIntoView({behavior:"smooth"})}})});
+document.addEventListener("DOMContentLoaded",()=>{
+  let x=document.getElementById("progress-bar");
+  window.addEventListener("scroll",()=>{
+    let k=document.documentElement.scrollHeight-window.innerHeight,z=k>0?window.scrollY/k*100:0;
+    x.style.width=`${z}%`;
+  },{passive:!0});
+  let B=document.getElementById("live-time");
+  function A(){
+    let k=new Date,z={timeZone:"Asia/Ho_Chi_Minh",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:!1},D=new Intl.DateTimeFormat("en-GB",z);
+    B.textContent=`${D.format(k)} ICT`;
+  }
+  A(),setInterval(A,1000);
+  let O=document.getElementById("toast"),T=document.getElementById("toast-message"),X=null;
+  function F(k){
+    if(T.textContent=k,O.classList.remove("opacity-0","translate-y-12","pointer-events-none"),O.classList.add("opacity-100","translate-y-0"),X)clearTimeout(X);
+    X=setTimeout(()=>{O.classList.remove("opacity-100","translate-y-0"),O.classList.add("opacity-0","translate-y-12","pointer-events-none")},2200);
+  }
+  let f=document.getElementById("copy-email-btn"),Y="phuckhanh22@gmail.com";
+  function H(){
+    if(window.trackEvent)window.trackEvent("copy_email",{event_category:"engagement",method:"button"});
+    navigator.clipboard.writeText(Y).then(()=>{
+      F(`Copied ${Y} to clipboard`);
+      let k=document.getElementById("copy-email-label"),z=k.textContent;
+      k.textContent="Copied to clipboard!",setTimeout(()=>{k.textContent=z},2000);
+    }).catch(()=>{F(`Address: ${Y}`)});
+  }
+  f.addEventListener("click",H);
+  let L=document.querySelectorAll(".accordion-item");
+  L.forEach((k,z)=>{
+    let D=k.querySelector(".accordion-header"),J=k.querySelector(".accordion-content"),K=k.querySelector(".accordion-icon");
+    if(z===0)J.classList.add("expanded"),K.textContent="↑",k.classList.add("ring-1","ring-white/10");
+    D.addEventListener("click",()=>{
+      let isExp=!J.classList.contains("expanded");
+      if(J.classList.contains("expanded"))J.classList.remove("expanded"),K.textContent="↓",k.classList.remove("ring-1","ring-white/10");
+      else J.classList.add("expanded"),K.textContent="↑",k.classList.add("ring-1","ring-white/10");
+      let title=k.querySelector(".font-mono.text-base")?k.querySelector(".font-mono.text-base").textContent.trim():"flagship";
+      if(window.trackEvent)window.trackEvent("flagship_accordion_toggle",{event_category:"content",flagship:title,state:isExp?"open":"close"});
+    });
+  });
+  let N=document.getElementById("toggle-all-accordions"),U=!1;
+  N.addEventListener("click",()=>{
+    U=!U,L.forEach((k)=>{
+      let z=k.querySelector(".accordion-content"),D=k.querySelector(".accordion-icon");
+      if(U)z.classList.add("expanded"),D.textContent="↑",k.classList.add("ring-1","ring-white/10");
+      else z.classList.remove("expanded"),D.textContent="↓",k.classList.remove("ring-1","ring-white/10");
+    }),N.textContent=U?"Collapse All":"Expand All";
+    if(window.trackEvent)window.trackEvent("flagship_toggle_all",{event_category:"content",state:U?"expand_all":"collapse_all"});
+  });
+  let S=document.querySelectorAll(".filter-btn"),w=document.querySelectorAll(".fleet-row"),v=document.getElementById("fleet-search"),q=document.getElementById("fleet-empty"),Z="all",_="";
+  function Q(){
+    let k=0;
+    if(w.forEach((z)=>{
+      let D=z.getAttribute("data-category"),J=z.getAttribute("data-name").toLowerCase(),K=Z==="all"||D===Z,h=!_||J.includes(_);
+      if(K&&h)z.style.display="",k++;
+      else z.style.display="none";
+    }),k===0)q.classList.remove("hidden");
+    else q.classList.add("hidden");
+  }
+  S.forEach((k)=>{
+    k.addEventListener("click",()=>{
+      S.forEach((z)=>{
+        z.classList.remove("active","bg-white/10","text-white","border-white/20"),z.classList.add("bg-white/[0.03]","text-zinc-400","border-white/[0.06]");
+      }),k.classList.add("active","bg-white/10","text-white","border-white/20"),k.classList.remove("bg-white/[0.03]","text-zinc-400","border-white/[0.06]"),Z=k.getAttribute("data-cat"),Q();
+      if(window.trackEvent)window.trackEvent("fleet_filter_click",{event_category:"content",category:Z});
+    });
+  }),v.addEventListener("input",(k)=>{
+    _=k.target.value.toLowerCase().trim(),Q();
+    if(window.trackEvent&&_.length>=2)window.trackEvent("fleet_search",{event_category:"search",query:_});
+  });
+  let y=document.getElementById("toggle-pine-script"),$=document.getElementById("pine-snippet-container"),I=document.getElementById("pine-btn-text");
+  y.addEventListener("click",()=>{
+    let isHidden=$.classList.contains("hidden");
+    if(isHidden)$.classList.remove("hidden"),I.textContent="Hide Pine Script snippet";
+    else $.classList.add("hidden"),I.textContent="View Pine Script snippet";
+    if(window.trackEvent)window.trackEvent("pine_script_toggle",{event_category:"content",state:isHidden?"show":"hide"});
+  });
+  let G=document.getElementById("cmd-modal"),V=document.getElementById("cmd-card"),j=document.getElementById("cmd-input"),P=document.getElementById("cmd-list"),g=document.getElementById("cmd-palette-btn"),E=document.getElementById("footer-cmd-btn");
+  function R(){
+    G.classList.remove("hidden"),G.classList.add("flex"),setTimeout(()=>{
+      V.classList.remove("scale-95"),V.classList.add("scale-100"),j.focus();
+    },10);
+    if(window.trackEvent)window.trackEvent("cmd_palette_open",{event_category:"navigation"});
+  }
+  function W(){
+    V.classList.remove("scale-100"),V.classList.add("scale-95"),setTimeout(()=>{
+      G.classList.remove("flex"),G.classList.add("hidden"),j.value="",M("");
+    },120);
+  }
+  if(g.addEventListener("click",R),E)E.addEventListener("click",R);
+  G.addEventListener("click",(k)=>{if(k.target===G)W();});
+  function M(k){
+    let z=P.querySelectorAll(".cmd-item"),D=k.toLowerCase().trim();
+    z.forEach((J)=>{
+      let K=J.textContent.toLowerCase();
+      J.style.display=!D||K.includes(D)?"":"none";
+    });
+  }
+  j.addEventListener("input",(k)=>{M(k.target.value);}),P.addEventListener("click",(k)=>{
+    let z=k.target.closest(".cmd-item");
+    if(!z)return;
+    let D=z.getAttribute("data-action");
+    if(W(),window.trackEvent&&window.trackEvent("cmd_palette_select",{event_category:"navigation",action:D}),D==="manifesto")document.getElementById("manifesto").scrollIntoView({behavior:"smooth"});
+    else if(D==="work")document.getElementById("work").scrollIntoView({behavior:"smooth"});
+    else if(D==="lab")document.getElementById("lab").scrollIntoView({behavior:"smooth"});
+    else if(D==="signal")document.getElementById("signal").scrollIntoView({behavior:"smooth"});
+    else if(D==="portfolio")window.location.href="/portfolio";
+    else if(D==="about")window.location.href="/about";
+    else if(D==="copy-email")H();
+    else if(D==="github")window.open("https://github.com/khanhduong22","_blank");
+    else if(D==="tradingview")window.open("https://vn.tradingview.com/script/neSZYFwg/","_blank");
+  }),window.addEventListener("keydown",(k)=>{
+    if((k.metaKey||k.ctrlKey)&&k.key.toLowerCase()==="k"){
+      if(k.preventDefault(),G.classList.contains("hidden"))R();
+      else W();
+    }else if(k.key==="/"&&document.activeElement.tagName!=="INPUT"){
+      k.preventDefault(),v.focus();
+      if(window.trackEvent)window.trackEvent("keyboard_shortcut",{event_category:"navigation",key:"/"});
+    }else if(k.key==="Escape"){
+      if(!G.classList.contains("hidden"))W();
+    }
+    if(G.classList.contains("hidden")&&document.activeElement.tagName!=="INPUT"){
+      if(k.key==="1")document.getElementById("manifesto").scrollIntoView({behavior:"smooth"}),window.trackEvent&&window.trackEvent("keyboard_shortcut",{event_category:"navigation",key:"1"});
+      if(k.key==="2")document.getElementById("work").scrollIntoView({behavior:"smooth"}),window.trackEvent&&window.trackEvent("keyboard_shortcut",{event_category:"navigation",key:"2"});
+      if(k.key==="3")document.getElementById("lab").scrollIntoView({behavior:"smooth"}),window.trackEvent&&window.trackEvent("keyboard_shortcut",{event_category:"navigation",key:"3"});
+      if(k.key==="4")document.getElementById("signal").scrollIntoView({behavior:"smooth"}),window.trackEvent&&window.trackEvent("keyboard_shortcut",{event_category:"navigation",key:"4"});
+    }
+  });
+
+  // Global Delegated Click Listener for Outbound and Navigation
+  document.addEventListener("click",(e)=>{
+    let a=e.target.closest("a[href]");
+    if(a){
+      let h=a.getAttribute("href");
+      if(h&&(h.startsWith("http://")||h.startsWith("https://"))&&!h.includes(window.location.hostname)){
+        let t=(a.getAttribute("title")||a.textContent||h).trim().slice(0,60);
+        if(window.trackEvent)window.trackEvent("outbound_click",{event_category:"outbound",destination_url:h,link_text:t});
+      }else if(h&&(h.startsWith("#")||h.startsWith("/"))){
+        let t=(a.textContent||h).trim().slice(0,40);
+        if(window.trackEvent)window.trackEvent("nav_click",{event_category:"navigation",destination:h,link_text:t});
+      }
+    }
+  },{passive:!0});
+});
 </script>
 </body>
 </html>
