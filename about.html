@@ -20,6 +20,35 @@
   <meta name="twitter:description" content="Tiểu sử, học vấn và sự nghiệp kỹ thuật của Dương Phúc Khánh (Kido)." />
   <meta name="twitter:image" content="https://khanhdp.com/logo.png" />
 
+  <!-- Google Tag Manager (Lossless Pure Interaction Loader, 0ms TBT) -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    (function(w, d) {
+      var loaded = false;
+      function loadGTM() {
+        if (loaded) return;
+        loaded = true;
+        var j = d.createElement('script');
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355';
+        d.head.appendChild(j);
+      }
+      var events = ['scroll', 'touchstart', 'pointerdown', 'keydown', 'wheel'];
+      events.forEach(function(e) {
+        w.addEventListener(e, loadGTM, { passive: true, once: true });
+      });
+      // Safety bridge for Clarity & Sentry
+      w.clarity = w.clarity || function() { (w.clarity.q = w.clarity.q || []).push(arguments); };
+      w.addEventListener('error', function(e) {
+        if (w.Sentry && typeof w.Sentry.captureException === 'function') {
+          var id = w.Sentry.captureException(e.error || e.message);
+          if (id && w.clarity) w.clarity('set', 'sentry_event_id', id);
+        }
+      });
+    })(window, document);
+  </script>
+
   <!-- Schema.org JSON-LD (AI & Search Engine Entity Graph) -->
   <script type="application/ld+json">
   {
@@ -142,6 +171,11 @@
   <link rel="stylesheet" href="/index.min.css" />
 </head>
 <body class="bg-craft-bg text-craft-text font-sans antialiased selection:bg-white/20 selection:text-white min-h-screen relative">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NXV7B355"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
   <!-- Top Reading Progress Indicator -->
   <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-zinc-500 via-zinc-200 to-white z-50 transition-all duration-100 ease-out" style="width: 0%;"></div>
 
