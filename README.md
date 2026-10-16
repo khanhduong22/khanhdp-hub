@@ -11,7 +11,7 @@
 `khanhdp-hub` is the central command center and entrypoint for the `khanhdp.com` digital ecosystem. Built with the **Craft Minimalist (paco.me / Raycast aesthetic)** architecture in mind:
 
 - **1024px Fluid Container (`max-w-5xl`)**: Optimal readability and spatial harmony on desktop displays.
-- **Satellite Ecosystem Launcher**: Direct access to 9 self-hosted and cloud applications (`md`, `tools`, `finance`, `monitor`, `12weeks`, `food`, `kuma`, `dozzle`, `beszel`).
+- **Satellite Ecosystem Launcher**: Direct access to 10 self-hosted and cloud applications (`md`, `tools`, `finance`, `monitor`, `12weeks`, `food`, `health`, `kuma`, `dozzle`, `beszel`).
 - **Interactive Command Palette (`⌘K` / `Ctrl+K`)**: Raycast-style keyboard navigation for instant jumps and shortcuts.
 - **Selected Systems Architecture Deep-Dive**: Technical teardowns of **Winter Arc**, **Văn Tới Calisthenics**, **Lim Art**, **TK Studio**, **Index.vn**, and **Linkpul**.
 - **Edge Performance**: Zero-bundle static footprint deployed across Vercel Edge Network with sub-100ms response times.
@@ -30,6 +30,7 @@ All satellite microservices and tools are orchestrated under `khanhdp.com`:
 | **Vietnam Monitor** | [`finance.khanhdp.com/monitor`](https://finance.khanhdp.com/monitor) | Vietnam macro & financial intelligence dashboard |
 | **12-Week Year** | [`12weeks.khanhdp.com`](https://12weeks.khanhdp.com)| Execution scorekeeper & sprint tracker |
 | **Food & Nutrition**| [`food.khanhdp.com`](https://food.khanhdp.com) | Nutrition tracking & dietary analytics |
+| **PHR Health Hub** | [`health.khanhdp.com`](https://health.khanhdp.com) | Personal health record, OCR prescription & biometrics |
 | **Uptime Kuma** | [`kuma.khanhdp.com`](https://kuma.khanhdp.com) | 24/7 heartbeat & status page |
 | **Dozzle** | [`dozzle.khanhdp.com`](https://dozzle.khanhdp.com) | Real-time container log streaming |
 | **Beszel Hub** | [`beszel.khanhdp.com`](https://beszel.khanhdp.com)| CPU/RAM/Disk metrics & container stats |

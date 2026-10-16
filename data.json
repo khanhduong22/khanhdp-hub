@@ -94,6 +94,15 @@
       "desc": "Diet tracking, nutritional analytics, and daily meal planning intelligence."
     },
     {
+      "id": "health",
+      "name": "PHR Health Hub",
+      "subdomain": "health.khanhdp.com",
+      "url": "https://health.khanhdp.com",
+      "category": "Life Ops",
+      "badge": "Biometrics & OCR",
+      "desc": "Personal health record tracker, OCR prescription scanner, medication timeline, and biometrics analytics."
+    },
+    {
       "id": "kuma",
       "name": "Uptime Kuma",
       "subdomain": "kuma.khanhdp.com",

@@ -1084,13 +1084,13 @@
         <!-- 5 Tab Filter Buttons -->
         <div class="inline-flex flex-wrap p-1.5 bg-white border border-slate-200 rounded-xl text-xs font-mono shadow-sm">
           <button onclick="filterCategory('all')" id="btn-tab-all" class="category-tab active px-3 py-1.5 rounded-lg font-bold text-slate-900 bg-slate-100 shadow-sm transition-all">
-            Tất cả (18)
+            Tất cả (19)
           </button>
           <button onclick="filterCategory('service')" id="btn-tab-service" class="category-tab px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition-all">
             Dịch vụ & Đặt hẹn (9)
           </button>
           <button onclick="filterCategory('fnb')" id="btn-tab-fnb" class="category-tab px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition-all">
-            F&B & Bán lẻ (5)
+            F&B & Bán lẻ (6)
           </button>
           <button onclick="filterCategory('media')" id="btn-tab-media" class="category-tab px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition-all">
             Media & Video (1)
@@ -1104,8 +1104,42 @@
         </div>
       </div>
 
-      <!-- 15 App Cards Grid -->
+      <!-- 19 App Cards Grid -->
       <div id="appsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- App 0 (Flagship Live Sandbox): Lim Art Retail & Shift ERP -->
+        <div class="craft-card rounded-2xl p-6 sm:p-7 flex flex-col justify-between group border-emerald-300 ring-1 ring-emerald-500/20" data-category="fnb">
+          <div>
+            <div class="flex items-center justify-between mb-3.5">
+              <span class="px-2.5 py-0.5 rounded bg-emerald-50 text-[11px] font-mono text-emerald-700 border border-emerald-200 flex items-center gap-1.5 font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Zero-Login Live Demo
+              </span>
+              <span class="text-[11px] font-mono text-slate-500">25 - 45 Triệu</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 group-hover:text-emerald-600 transition-colors">Lim Art — Quản Lý Cửa Hàng & Ca Kíp PWA</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+              Hệ thống quản trị vận hành cửa hàng bán lẻ thực chiến: Chấm công GPS & nhận diện ca làm việc, checklist đầu/cuối ca, kiểm kho hạn sử dụng (FEFO), bảng lương tự động & phân quyền RBAC.
+            </p>
+            <div class="mt-4 p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100 text-[11px] font-mono space-y-1 text-slate-600">
+              <div class="flex items-center justify-between">
+                <span>Trải nghiệm ngay:</span>
+                <strong class="text-emerald-700">Không cần Tài khoản / Mật khẩu</strong>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>Production Store:</span>
+                <a href="https://limart.khanhdp.com" target="_blank" rel="noopener noreferrer" class="text-emerald-600 hover:underline font-semibold">limart.khanhdp.com ↗</a>
+              </div>
+            </div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-slate-100 space-y-2">
+            <a href="https://limart2.khanhdp.com/admin" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-3 rounded-xl btn-gold text-xs flex items-center justify-center gap-1.5 shadow-sm">
+              <span>👑</span> Giao diện Chủ Shop / Admin Demo ↗
+            </a>
+            <a href="https://limart2.khanhdp.com/" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all">
+              <span>👷</span> Giao diện Nhân Viên / Quản Lý Ca PWA ↗
+            </a>
+          </div>
+        </div>
 
         <!-- App 1: Court Booking -->
         <div class="craft-card rounded-2xl p-6 sm:p-7 flex flex-col justify-between group" data-category="service">
