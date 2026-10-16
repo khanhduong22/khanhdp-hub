@@ -777,14 +777,14 @@
           <div class="text-xs font-mono text-zinc-500 tracking-widest uppercase">03 / THE LAB & SELF-HOSTED FLEET</div>
           <h2 class="text-xl sm:text-2xl font-semibold text-zinc-100 tracking-tight mt-1">Autonomous Infrastructure</h2>
           <p class="text-xs sm:text-sm text-zinc-400 mt-1">
-            8 active subdomains running on Contabo VPS with Docker container orchestration, Valkey 8.0, and Cloudflare DNS edge routing.
+            9 active subdomains & micro-services running on Contabo VPS with Docker container orchestration, Valkey 8.0, and Cloudflare DNS edge routing.
           </p>
         </div>
 
         <!-- Infrastructure Status Micro Pill -->
         <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06] text-[11px] font-mono text-zinc-400 shrink-0 self-start sm:self-auto">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>8 / 8 Services Healthy</span>
+          <span>9 / 9 Services Healthy</span>
           <span class="text-zinc-600">·</span>
           <span class="text-zinc-500">p99 &lt;14ms</span>
         </div>
@@ -794,9 +794,9 @@
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
         <!-- Category Filter Pills -->
         <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono" id="fleet-filters">
-          <button data-cat="all" class="filter-btn active px-2.5 py-1 rounded bg-white/10 text-white border border-white/20 transition-all">All (8)</button>
+          <button data-cat="all" class="filter-btn active px-2.5 py-1 rounded bg-white/10 text-white border border-white/20 transition-all">All (9)</button>
           <button data-cat="Cloud & Observability" class="filter-btn px-2.5 py-1 rounded bg-white/[0.03] text-zinc-400 hover:text-zinc-200 border border-white/[0.06] transition-all">Observability (3)</button>
-          <button data-cat="FinTech & Data" class="filter-btn px-2.5 py-1 rounded bg-white/[0.03] text-zinc-400 hover:text-zinc-200 border border-white/[0.06] transition-all">FinTech (1)</button>
+          <button data-cat="FinTech & Data" class="filter-btn px-2.5 py-1 rounded bg-white/[0.03] text-zinc-400 hover:text-zinc-200 border border-white/[0.06] transition-all">FinTech (2)</button>
           <button data-cat="Life Ops" class="filter-btn px-2.5 py-1 rounded bg-white/[0.03] text-zinc-400 hover:text-zinc-200 border border-white/[0.06] transition-all">Life Ops (2)</button>
           <button data-cat="Tools" class="filter-btn px-2.5 py-1 rounded bg-white/[0.03] text-zinc-400 hover:text-zinc-200 border border-white/[0.06] transition-all">Tools (2)</button>
         </div>
@@ -865,7 +865,25 @@
           <div class="text-[11px] font-mono text-zinc-500 pl-4 sm:pl-0 shrink-0">FinTech & Data</div>
         </div>
 
-        <!-- 4. 12-Week Year Hub -->
+        <!-- 4. Vietnam Monitor -->
+        <div class="fleet-row group p-3.5 sm:p-4 rounded-lg bg-[#111111] hover:bg-[#161616] border border-white/[0.06] hover:border-white/[0.12] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3" data-category="FinTech & Data" data-name="Vietnam Monitor monitor.khanhdp.com finance.khanhdp.com/monitor">
+          <div class="space-y-1 flex-1">
+            <div class="flex items-center gap-2.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <a href="https://finance.khanhdp.com/monitor" target="_blank" rel="noopener noreferrer" class="font-mono text-xs sm:text-sm font-medium text-zinc-200 group-hover:text-white flex items-center gap-1.5">
+                <span>finance.khanhdp.com/monitor</span>
+                <span class="text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform text-xs">↗</span>
+              </a>
+              <span class="text-zinc-600 font-mono text-xs">·</span>
+              <span class="text-xs text-zinc-400 font-medium">Vietnam Monitor</span>
+              <span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Live System</span>
+            </div>
+            <p class="text-xs text-zinc-400 pl-4">Real-time Vietnam macroeconomic & financial intelligence dashboard with 20 interactive telemetry panels.</p>
+          </div>
+          <div class="text-[11px] font-mono text-zinc-500 pl-4 sm:pl-0 shrink-0">FinTech & Data</div>
+        </div>
+
+        <!-- 5. 12-Week Year Hub -->
         <div class="fleet-row group p-3.5 sm:p-4 rounded-lg bg-[#111111] hover:bg-[#161616] border border-white/[0.06] hover:border-white/[0.12] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3" data-category="Life Ops" data-name="12-Week Year Hub 12weeks.khanhdp.com">
           <div class="space-y-1 flex-1">
             <div class="flex items-center gap-2.5">
@@ -883,7 +901,7 @@
           <div class="text-[11px] font-mono text-zinc-500 pl-4 sm:pl-0 shrink-0">Life Ops</div>
         </div>
 
-        <!-- 5. Food & Nutrition Hub -->
+        <!-- 6. Food & Nutrition Hub -->
         <div class="fleet-row group p-3.5 sm:p-4 rounded-lg bg-[#111111] hover:bg-[#161616] border border-white/[0.06] hover:border-white/[0.12] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3" data-category="Life Ops" data-name="Food & Nutrition Hub food.khanhdp.com">
           <div class="space-y-1 flex-1">
             <div class="flex items-center gap-2.5">
@@ -901,7 +919,7 @@
           <div class="text-[11px] font-mono text-zinc-500 pl-4 sm:pl-0 shrink-0">Life Ops</div>
         </div>
 
-        <!-- 6. Uptime Kuma -->
+        <!-- 7. Uptime Kuma -->
         <div class="fleet-row group p-3.5 sm:p-4 rounded-lg bg-[#111111] hover:bg-[#161616] border border-white/[0.06] hover:border-white/[0.12] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3" data-category="Cloud & Observability" data-name="Uptime Kuma kuma.khanhdp.com">
           <div class="space-y-1 flex-1">
             <div class="flex items-center gap-2.5">
@@ -919,7 +937,7 @@
           <div class="text-[11px] font-mono text-zinc-500 pl-4 sm:pl-0 shrink-0">Observability</div>
         </div>
 
-        <!-- 7. Dozzle Logs -->
+        <!-- 8. Dozzle Logs -->
         <div class="fleet-row group p-3.5 sm:p-4 rounded-lg bg-[#111111] hover:bg-[#161616] border border-white/[0.06] hover:border-white/[0.12] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3" data-category="Cloud & Observability" data-name="Dozzle Logs dozzle.khanhdp.com">
           <div class="space-y-1 flex-1">
             <div class="flex items-center gap-2.5">
@@ -937,7 +955,7 @@
           <div class="text-[11px] font-mono text-zinc-500 pl-4 sm:pl-0 shrink-0">Observability</div>
         </div>
 
-        <!-- 8. Beszel Telemetry Hub -->
+        <!-- 9. Beszel Telemetry Hub -->
         <div class="fleet-row group p-3.5 sm:p-4 rounded-lg bg-[#111111] hover:bg-[#161616] border border-white/[0.06] hover:border-white/[0.12] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3" data-category="Cloud & Observability" data-name="Beszel Telemetry Hub beszel.khanhdp.com">
           <div class="space-y-1 flex-1">
             <div class="flex items-center gap-2.5">
@@ -1175,7 +1193,7 @@
           <span class="text-zinc-500">#work</span>
         </button>
         <button class="cmd-item w-full flex items-center justify-between px-3 py-2 rounded text-zinc-300 hover:bg-white/[0.08] hover:text-white transition-colors" data-action="lab">
-          <span>03 / The Lab & Self-Hosted Fleet (8 Subdomains)</span>
+          <span>03 / The Lab & Self-Hosted Fleet (9 Services)</span>
           <span class="text-zinc-500">#lab</span>
         </button>
         <button class="cmd-item w-full flex items-center justify-between px-3 py-2 rounded text-zinc-300 hover:bg-white/[0.08] hover:text-white transition-colors" data-action="signal">
