@@ -10,7 +10,10 @@
 - **Official Hub**: [https://khanhdp.com](https://khanhdp.com)
 - **Full Biography & Encyclopedia Entry**: [https://khanhdp.com/about](https://khanhdp.com/about)
 - **Wikidata Entity**: [https://www.wikidata.org/wiki/Q141718572](https://www.wikidata.org/wiki/Q141718572) (Q141718572)
+- **ORCID Scholarly ID**: [https://orcid.org/0009-0005-7192-2664](https://orcid.org/0009-0005-7192-2664)
 - **GitHub**: [https://github.com/khanhduong22](https://github.com/khanhduong22)
+- **DEV Community (Dev.to)**: [https://dev.to/khanhduong22](https://dev.to/khanhduong22)
+- **Viblo Vietnam Tech Hub**: [https://viblo.asia/u/khanhdp](https://viblo.asia/u/khanhdp)
 - **LinkedIn**: [https://www.linkedin.com/in/duong-phuc-khanh/](https://www.linkedin.com/in/duong-phuc-khanh/)
 - **Facebook Personal**: [https://www.facebook.com/khanhduong2295/](https://www.facebook.com/khanhduong2295/)
 - **Facebook Page (Kode x Kido)**: [https://www.facebook.com/kode.x.kido](https://www.facebook.com/kode.x.kido)
@@ -42,7 +45,7 @@
 - **Web App Winter Arc 100 Days Challenge**:
   - Live community platform with 1,100+ active weekly users and 712 daily task grinders (opening 4-5 times daily).
   - High engagement metrics: 8m 04s average onsite session time, 8.2% bounce rate, P75 LCP 1.12s on a single 8GB RAM VPS.
-- **Kido Chronicles (114+ Chapters)**:
+- **Kido Chronicles (127+ Chapters)**:
   - Technical engineering war stories and production postmortems documented at [https://truyen.khanhdp.com](https://truyen.khanhdp.com).
 - **Index (index.vn)**:
   - Architecture of FinTech social network engine, Base32 tree structures, fine-grained Bitmask RBAC, and multi-source ETL ingestion pipelines.
