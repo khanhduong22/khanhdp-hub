@@ -70,7 +70,7 @@
       "id": "monitor",
       "name": "Vietnam Monitor",
       "subdomain": "monitor.khanhdp.com",
-      "url": "https://monitor.khanhdp.com",
+      "url": "https://finance.khanhdp.com/monitor",
       "category": "FinTech & Data",
       "badge": "Live System",
       "desc": "Real-time Vietnam macroeconomic & financial intelligence dashboard with 20 interactive telemetry panels."
@@ -85,15 +85,6 @@
       "desc": "High-velocity execution and weekly scoring system based on the 12-Week Year methodology."
     },
     {
-      "id": "health",
-      "name": "PHR Health Hub",
-      "subdomain": "health.khanhdp.com",
-      "url": "https://health.khanhdp.com",
-      "category": "Life Ops",
-      "badge": "Private",
-      "desc": "Personal health record tracker, biometrics logging, and lifestyle optimization dashboard."
-    },
-    {
       "id": "food",
       "name": "Food & Nutrition Hub",
       "subdomain": "food.khanhdp.com",
@@ -101,24 +92,6 @@
       "category": "Life Ops",
       "badge": "Personal Ops",
       "desc": "Diet tracking, nutritional analytics, and daily meal planning intelligence."
-    },
-    {
-      "id": "signoz",
-      "name": "SigNoz APM",
-      "subdomain": "signoz.khanhdp.com",
-      "url": "https://signoz.khanhdp.com",
-      "category": "Cloud & Observability",
-      "badge": "Infrastructure",
-      "desc": "Distributed tracing, OpenTelemetry collectors, and p99 service latency telemetry."
-    },
-    {
-      "id": "grafana",
-      "name": "Grafana Dashboards",
-      "subdomain": "grafana.khanhdp.com",
-      "url": "https://grafana.khanhdp.com",
-      "category": "Cloud & Observability",
-      "badge": "Infrastructure",
-      "desc": "Unified system metrics, CPU/memory telemetry, and real-time VPS resource utilization."
     },
     {
       "id": "kuma",
@@ -146,24 +119,6 @@
       "category": "Cloud & Observability",
       "badge": "Telemetry",
       "desc": "Lightweight CPU/RAM/Disk metrics, Docker container telemetry, and node latency monitoring."
-    },
-    {
-      "id": "vantoi",
-      "name": "Văn Tới Calisthenics",
-      "subdomain": "vantoi.khanhdp.com",
-      "url": "https://vantoi.khanhdp.com",
-      "category": "Production Apps",
-      "badge": "Production",
-      "desc": "Full-stack fitness platform for Văn Tới Calisthenics with course booking, video tutorials, and user portals."
-    },
-    {
-      "id": "sonar",
-      "name": "SonarQube Quality",
-      "subdomain": "sonar.khanhdp.com",
-      "url": "https://sonar.khanhdp.com",
-      "category": "Quality & Security",
-      "badge": "On-Demand",
-      "desc": "Automated code smell inspection, vulnerability audit, and test coverage quality gate."
     }
   ],
   "trading": {
