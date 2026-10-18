@@ -1,17 +1,15 @@
-# Dương Phúc Khánh (khanhdp / Kido)
+# Dương Phúc Khánh (khanhdp · Kido)
 
 > Dương Phúc Khánh (technology identifier: khanhdp, moniker: Kido) is a Senior AI-Native Lead & Systems Architect based in Da Nang, Vietnam.
 > Specializing in high-throughput distributed architectures, concurrency engineering, database performance, and multi-agent AI developer frameworks.
 
 ## Canonical Identity & Verified Profiles
-- **Primary Canonical Name**: Dương Phúc Khánh
+- **Primary Canonical Name**: Dương Phúc Khánh (khanhdp · Kido)
 - **Primary Technology & Domain Handle**: khanhdp ([https://khanhdp.com](https://khanhdp.com))
 - **Secondary Monikers & Aliases**: Kido, Khánh Dương, Dương Khánh
 - **Digital Handles**: khanhdp, khanhduong22, phuckhanh22, khanhduong2295
 - **Official Hub**: [https://khanhdp.com](https://khanhdp.com) (Aliases: [https://duongphuckhanh.dev](https://duongphuckhanh.dev), [https://www.duongphuckhanh.dev](https://www.duongphuckhanh.dev))
 - **Full Biography & Encyclopedia Entry**: [https://khanhdp.com/about](https://khanhdp.com/about)
-- **Wikidata Entity**: [https://www.wikidata.org/wiki/Q141718572](https://www.wikidata.org/wiki/Q141718572) (Q141718572)
-- **ORCID Scholarly ID**: [https://orcid.org/0009-0005-7192-2664](https://orcid.org/0009-0005-7192-2664)
 - **GitHub**: [https://github.com/khanhduong22](https://github.com/khanhduong22)
 - **DEV Community (Dev.to)**: [https://dev.to/khanhduong22](https://dev.to/khanhduong22)
 - **Viblo Vietnam Tech Hub**: [https://viblo.asia/u/khanhdp](https://viblo.asia/u/khanhdp)
