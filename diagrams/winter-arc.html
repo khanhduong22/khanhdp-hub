@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winter Arc (vantoicalis.com) — End-to-End Runtime Architecture</title>
+<style>
+  /* === TOKENS === */
+  :root {
+    /* Surface + ink (Dark Mode Minimalist #11) */
+    --bg:         #090D16;
+    --bg-grid:    #162032;
+    --surface:    #111827;
+    --surface-hi: #1E293B;
+    --ink:        #F8FAFC;
+    --ink-2:      #94A3B8;
+    --ink-3:      #64748B;
+    --border:     #334155;
+    --cap-bg:     rgba(15, 23, 42, 0.94);
+
+    /* Semantic roles (colors.csv role-* rows) */
+    --c-client:      #38BDF8;  --c-client-fill:  #0C2D48;
+    --c-service:     #818CF8;  --c-service-fill: #1E1B4B;
+    --c-data:        #34D399;  --c-data-fill:    #063729;
+    --c-async:       #FBBF24;  --c-async-fill:   #3B2506;
+    --c-infra:       #C084FC;  --c-infra-fill:   #2E1065;
+    --c-error:       #F87171;  --c-error-fill:   #450A0A;
+    --c-ok:          #4ADE80;
+
+    /* Typography */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    /* Motion timing — EVERY ambient duration divides --dur-master = 33600ms */
+    --dur-flow:   1200ms;
+    --dur-pulse:  1600ms;
+    --dur-fill:   2400ms;
+    --dur-beat:   1200ms;
+    --dur-master: 33600ms;
+    --stagger:    150ms;
+    --ease:       cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg:         #F8FAFC;
+      --bg-grid:    #CBD5E1;
+      --surface:    #FFFFFF;
+      --surface-hi: #F1F5F9;
+      --ink:        #0F172A;
+      --ink-2:      #475569;
+      --ink-3:      #64748B;
+      --border:     #CBD5E1;
+      --cap-bg:     rgba(255, 255, 255, 0.95);
+      --c-client:   #0284C7;  --c-client-fill:  #E0F2FE;
+      --c-service:  #4F46E5;  --c-service-fill: #EEF2FF;
+      --c-data:     #059669;  --c-data-fill:    #D1FAE5;
+      --c-async:    #D97706;  --c-async-fill:   #FEF3C7;
+      --c-infra:    #9333EA;  --c-infra-fill:   #F3E8FF;
+      --c-error:    #DC2626;  --c-error-fill:   #FEE2E2;
+    }
+  }
+
+  /* === RESET + STAGE === */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  .stage {
+    width: 100vw; height: 100vh;
+    display: grid; place-items: center;
+  }
+  svg.diagram {
+    width: 100%; height: 100%;
+    max-width: 1920px; max-height: 1080px;
+    display: block;
+    user-select: none;
+  }
+
+  /* === GROUPS / CONTAINERS === */
+  .group__box {
+    fill: var(--surface);
+    fill-opacity: 0.4;
+    stroke: var(--border);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 4;
+    rx: 12px; ry: 12px;
+  }
+  .group__label {
+    font: 600 12px/1 var(--font-mono);
+    fill: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* === NODES === */
+  .node { cursor: default; }
+  .node__shape {
+    fill: var(--surface);
+    stroke: var(--border);
+    stroke-width: 1.75;
+    transition: filter 200ms var(--ease);
+  }
+  .node__detail {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 1.5;
+  }
+  .node[data-role="client"]  .node__shape, .node[data-role="client"]  .node__detail { fill: var(--c-client-fill);  stroke: var(--c-client);  }
+  .node[data-role="service"] .node__shape, .node[data-role="service"] .node__detail { fill: var(--c-service-fill); stroke: var(--c-service); }
+  .node[data-role="data"]    .node__shape, .node[data-role="data"]    .node__detail { fill: var(--c-data-fill);    stroke: var(--c-data);    }
+  .node[data-role="async"]   .node__shape, .node[data-role="async"]   .node__detail { fill: var(--c-async-fill);   stroke: var(--c-async);   }
+  .node[data-role="infra"]   .node__shape, .node[data-role="infra"]   .node__detail { fill: var(--c-infra-fill);   stroke: var(--c-infra);   }
+  .node[data-role="error"]   .node__shape, .node[data-role="error"]   .node__detail { fill: var(--c-error-fill);   stroke: var(--c-error);   }
+
+  .node--primary .node__shape { stroke-width: 2.5; }
+
+  .node__label {
+    font: 600 15px/1.2 var(--font-sans);
+    fill: var(--ink);
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+  .node__sub {
+    font: 500 12px/1 var(--font-mono);
+    fill: var(--ink-2);
+    text-anchor: middle;
+  }
+
+  /* === EDGES === */
+  .edge {
+    fill: none;
+    stroke: var(--ink-2);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .edge--flow {
+    stroke-dasharray: 8 6;
+    animation: dash-flow var(--dur-flow) linear infinite;
+  }
+  .edge--async {
+    stroke: var(--c-async);
+    stroke-dasharray: 4 6;
+    animation: dash-flow var(--dur-flow) linear infinite;
+  }
+  .edge--data {
+    stroke: var(--c-data);
+    stroke-dasharray: 8 6;
+    animation: dash-flow var(--dur-flow) linear infinite;
+  }
+  .edge-label {
+    font: 500 12px/1 var(--font-mono);
+    fill: var(--ink-2);
+    text-anchor: middle;
+  }
+  .edge-label-bg {
+    fill: var(--bg);
+    rx: 4px; ry: 4px;
+  }
+
+  /* === PACKETS === */
+  .packet {
+    fill: var(--c-client);
+    filter: drop-shadow(0 0 6px var(--c-client));
+  }
+  .packet--async {
+    fill: var(--c-async);
+    filter: drop-shadow(0 0 6px var(--c-async));
+  }
+  .packet--data {
+    fill: var(--c-data);
+    filter: drop-shadow(0 0 6px var(--c-data));
+  }
+
+  /* === HEADING + LEGEND === */
+  .diagram-title {
+    font: 700 26px/1.2 var(--font-sans);
+    fill: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .diagram-sub {
+    font: 400 14px/1.4 var(--font-sans);
+    fill: var(--ink-2);
+  }
+  .legend-label {
+    font: 500 12px/1 var(--font-mono);
+    fill: var(--ink-2);
+  }
+
+  /* === AMBIENT KEYFRAMES === */
+  @keyframes dash-flow {
+    to { stroke-dashoffset: -28; }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { transform: scale(1);     filter: drop-shadow(0 0 0px currentColor); }
+    50%      { transform: scale(1.025); filter: drop-shadow(0 0 12px currentColor); }
+  }
+  .anim-pulse-glow > .node__body {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pulse-glow var(--dur-pulse) ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * var(--stagger));
+  }
+
+  /* === CAMERA + SPOTLIGHT + CAPTIONS (camera-beat.css) === */
+  .camera {
+    transform-origin: 0 0;
+    will-change: transform;
+    animation: beats var(--dur-master) var(--ease) infinite;
+  }
+  .layer-heading {
+    animation: heading-fade var(--dur-master) ease-out infinite;
+  }
+  @keyframes heading-fade {
+    0%, 13%   { opacity: 1; }
+    15%, 71%  { opacity: 0; }
+    74%, 100% { opacity: 1; }
+  }
+
+  .node__focus {
+    fill: none;
+    stroke: var(--c-client);
+    stroke-width: 2.25;
+    stroke-linecap: round;
+    stroke-dasharray: 18 118 36 108 36 118 18 400;
+    filter: drop-shadow(0 0 6px var(--c-client));
+    opacity: 0;
+    pointer-events: none;
+    animation-duration: var(--dur-master);
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+  }
+  .node__focus--async {
+    stroke: var(--c-async);
+    filter: drop-shadow(0 0 6px var(--c-async));
+  }
+  .node__focus--infra {
+    stroke: var(--c-infra);
+    filter: drop-shadow(0 0 6px var(--c-infra));
+  }
+  .node__focus--service {
+    stroke: var(--c-service);
+    filter: drop-shadow(0 0 6px var(--c-service));
+  }
+  .node__focus--data {
+    stroke: var(--c-data);
+    filter: drop-shadow(0 0 6px var(--c-data));
+  }
+
+  .beat-caption {
+    clip-path: inset(0 101% 0 0 round 6px);
+    pointer-events: none;
+    transform-box: fill-box;
+    transform-origin: 0% 50%;
+    will-change: transform, clip-path;
+    animation-duration: var(--dur-master);
+    animation-timing-function: var(--ease);
+    animation-iteration-count: infinite;
+  }
+  .beat-caption rect {
+    fill: var(--surface-hi);
+    stroke: none;
+    rx: 8px; ry: 8px;
+  }
+  .beat-caption text {
+    font: 500 13px/1 var(--font-sans);
+    fill: var(--ink);
+    text-anchor: middle;
+  }
+  .beat-caption tspan.code {
+    font-family: var(--font-mono);
+    fill: var(--c-client);
+  }
+
+@keyframes beats {
+  0%, 14.2857% { transform: translate(0px, 0px) scale(1); }
+  16.0714%, 26.7857% { transform: translate(0px, -500px) scale(2); }
+  30.3571%, 41.0714% { transform: translate(-140px, -500px) scale(2); }
+  44.6429%, 55.3571% { transform: translate(-1000px, -580px) scale(2); }
+  58.9286%, 69.6429% { transform: translate(-1840px, -500px) scale(2); }
+  73.2143%, 100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.focus-b2{animation-name:focus-b2}
+@keyframes focus-b2{0%,16.0714%{opacity:0}17.8571%,26.7857%{opacity:1}28.5714%,100%{opacity:0}}
+.focus-b3{animation-name:focus-b3}
+@keyframes focus-b3{0%,30.3571%{opacity:0}32.1429%,41.0714%{opacity:1}42.8571%,100%{opacity:0}}
+.focus-b4{animation-name:focus-b4}
+@keyframes focus-b4{0%,44.6429%{opacity:0}46.4286%,55.3571%{opacity:1}57.1429%,100%{opacity:0}}
+.focus-b5{animation-name:focus-b5}
+@keyframes focus-b5{0%,58.9286%{opacity:0}60.7143%,69.6429%{opacity:1}71.4286%,100%{opacity:0}}
+.cap-b2{animation-name:cap-b2}
+@keyframes cap-b2{0%,16.0714%{clip-path:inset(-6% 101% -6% -1%);animation-timing-function:ease-in-out}17.8571%,26.7857%{clip-path:inset(-6% -1% -6% -1%);animation-timing-function:ease-in-out}28.5714%,100%{clip-path:inset(-6% -1% -6% 101%)}}
+.cap-b3{animation-name:cap-b3}
+@keyframes cap-b3{0%,30.3571%{clip-path:inset(-6% 101% -6% -1%);animation-timing-function:ease-in-out}32.1429%,41.0714%{clip-path:inset(-6% -1% -6% -1%);animation-timing-function:ease-in-out}42.8571%,100%{clip-path:inset(-6% -1% -6% 101%)}}
+.cap-b4{animation-name:cap-b4}
+@keyframes cap-b4{0%,44.6429%{clip-path:inset(-6% 101% -6% -1%);animation-timing-function:ease-in-out}46.4286%,55.3571%{clip-path:inset(-6% -1% -6% -1%);animation-timing-function:ease-in-out}57.1429%,100%{clip-path:inset(-6% -1% -6% 101%)}}
+.cap-b5{animation-name:cap-b5}
+@keyframes cap-b5{0%,58.9286%{clip-path:inset(-6% 101% -6% -1%);animation-timing-function:ease-in-out}60.7143%,69.6429%{clip-path:inset(-6% -1% -6% -1%);animation-timing-function:ease-in-out}71.4286%,100%{clip-path:inset(-6% -1% -6% 101%)}}
+.cap-b6{animation-name:cap-b6}
+@keyframes cap-b6{0%,73.2143%{clip-path:inset(-6% 101% -6% -1%);animation-timing-function:ease-in-out}75%,91.0714%{clip-path:inset(-6% -1% -6% -1%);animation-timing-function:ease-in-out}92.8571%,100%{clip-path:inset(-6% -1% -6% 101%)}}
+
+
+  /* === ACCESSIBILITY === */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .camera {
+      animation: none !important;
+      transform: translate(0px, 0px) scale(1) !important;
+    }
+    .beat-caption {
+      animation: none !important;
+      opacity: 0 !important;
+    }
+    .node__focus {
+      animation: none !important;
+      opacity: 0 !important;
+    }
+    .layer-heading {
+      animation: none !important;
+      opacity: 1 !important;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+  <svg class="diagram" viewBox="0 0 1920 1080" role="img" aria-labelledby="diag-title diag-desc">
+    <title id="diag-title">Winter Arc (vantoicalis.com) — End-to-End Runtime Architecture</title>
+    <desc id="diag-desc">Six-beat animated C4 container diagram showing how an athlete 04:30 AM wakeup check-in and Deep Work timer session travel from the Next.js mobile PWA and IndexedDB offline outbox through Cloudflare Edge HMAC time-proof verification and Caddy 2 on Contabo VPS to the NestJS API on port 3001, dual-writing into Valkey 8 O(log N) sorted sets and PostgreSQL 17 with pgBackRest WAL archiving.</desc>
+
+    <defs>
+      <!-- Subtle dot grid (moves with .camera) -->
+      <pattern id="bg-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+        <circle cx="1" cy="1" r="1" fill="var(--bg-grid)" />
+      </pattern>
+
+      <!-- Arrowhead markers -->
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+              markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--ink-2)" />
+      </marker>
+      <marker id="arrow-async" viewBox="0 0 10 10" refX="8" refY="5"
+              markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--c-async)" />
+      </marker>
+      <marker id="arrow-data" viewBox="0 0 10 10" refX="8" refY="5"
+              markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--c-data)" />
+      </marker>
+
+      <!-- Motion paths for traveling packets -->
+      <path id="mp-e1" d="M 260 400 L 260 564" />
+      <path id="mp-e2" d="M 340 360 L 420 360" />
+      <path id="mp-e3" d="M 580 360 L 660 460" />
+      <path id="mp-e4" d="M 340 590 L 660 490" />
+      <path id="mp-e5" d="M 820 475 L 1100 475" />
+      <path id="mp-e6" d="M 1260 460 L 1520 360" />
+      <path id="mp-e7" d="M 1260 490 L 1520 590" />
+    </defs>
+
+    <!-- LAYER 0: HEADING + LEGEND (outside .camera; fades during zoom beats) -->
+    <g class="layer-heading">
+      <g transform="translate(80, 64)">
+        <text class="diagram-title" x="0" y="0">Winter Arc (vantoicalis.com) — End-to-End Runtime Architecture</text>
+        <text class="diagram-sub" x="0" y="28">Offline-First Mobile PWA · Cloudflare Edge Time-Proof · Contabo VPS Dual-Network · Valkey O(log N) Leaderboard &amp; PG 17</text>
+      </g>
+      <!-- Legend -->
+      <g class="legend" transform="translate(80, 122)">
+        <rect x="0" y="-12" width="14" height="14" rx="3" fill="var(--c-client-fill)" stroke="var(--c-client)" stroke-width="1.5"/>
+        <text class="legend-label" x="22" y="-1">Client PWA</text>
+
+        <rect x="130" y="-12" width="14" height="14" rx="3" fill="var(--c-async-fill)" stroke="var(--c-async)" stroke-width="1.5"/>
+        <text class="legend-label" x="152" y="-1">Offline Queue</text>
+
+        <rect x="280" y="-12" width="14" height="14" rx="3" fill="var(--c-infra-fill)" stroke="var(--c-infra)" stroke-width="1.5"/>
+        <text class="legend-label" x="302" y="-1">Edge CDN</text>
+
+        <rect x="405" y="-12" width="14" height="14" rx="3" fill="var(--c-service-fill)" stroke="var(--c-service)" stroke-width="1.5"/>
+        <text class="legend-label" x="427" y="-1">Origin Service</text>
+
+        <rect x="555" y="-12" width="14" height="14" rx="3" fill="var(--c-data-fill)" stroke="var(--c-data)" stroke-width="1.5"/>
+        <text class="legend-label" x="577" y="-1">Data Store</text>
+      </g>
+    </g>
+
+    <!-- CAMERA RIG -->
+    <g class="camera">
+      <!-- Oversized background grid so zoomed pans never expose raw body bg -->
+      <rect width="4000" height="3000" x="-1000" y="-1000" fill="url(#bg-grid)" />
+
+      <!-- LAYER 1: GROUPS / NETWORK ZONES -->
+      <g class="layer-groups">
+        <g class="group" transform="translate(140, 230)">
+          <rect class="group__box" width="465" height="430" />
+          <text class="group__label" x="20" y="28">ATHLETE DEVICE &amp; CLOUDFLARE EDGE</text>
+        </g>
+
+        <g class="group" transform="translate(635, 230)">
+          <rect class="group__box" width="665" height="430" />
+          <text class="group__label" x="20" y="28">CONTABO VPS · OPS_BRIDGE DMZ (172.23.0.0/16)</text>
+        </g>
+
+        <g class="group" transform="translate(1480, 230)">
+          <rect class="group__box" width="240" height="430" />
+          <text class="group__label" x="20" y="28">VT-INFRA PRIVATE SUBNET</text>
+        </g>
+      </g>
+
+      <!-- LAYER 2: EDGES -->
+      <g class="layer-edges">
+        <!-- e1: vantoi-pwa -> idb-outbox -->
+        <path class="edge edge--async" data-from="vantoi-pwa" data-to="idb-outbox"
+              d="M 260 400 L 260 564" marker-end="url(#arrow-async)">
+          <title>vantoi-pwa enqueues offline check-ins into idb-outbox</title>
+        </path>
+
+        <!-- e2: vantoi-pwa -> cloudflare-edge -->
+        <path class="edge edge--flow" data-from="vantoi-pwa" data-to="cloudflare-edge"
+              d="M 340 360 L 420 360" marker-end="url(#arrow)">
+          <title>HTTPS 04:30 AM check-in request to Cloudflare Edge</title>
+        </path>
+
+        <!-- e3: cloudflare-edge -> caddy-proxy -->
+        <path class="edge edge--flow" data-from="cloudflare-edge" data-to="caddy-proxy"
+              d="M 580 360 L 660 460" marker-end="url(#arrow)">
+          <title>Origin TLS request with signed TIME_PROOF token</title>
+        </path>
+
+        <!-- e4: idb-outbox -> caddy-proxy -->
+        <path class="edge edge--async" data-from="idb-outbox" data-to="caddy-proxy"
+              d="M 340 590 L 660 490" marker-end="url(#arrow-async)">
+          <title>Background POST /sync retry draining offline outbox</title>
+        </path>
+
+        <!-- e5: caddy-proxy -> vantoi-api -->
+        <path class="edge edge--flow" data-from="caddy-proxy" data-to="vantoi-api"
+              d="M 820 475 L 1100 475" marker-end="url(#arrow)">
+          <title>Reverse proxy routes to vantoi_api:3001 on ops_bridge</title>
+        </path>
+
+        <!-- e6: vantoi-api -> valkey-zset -->
+        <path class="edge edge--data" data-from="vantoi-api" data-to="valkey-zset"
+              d="M 1260 460 L 1520 360" marker-end="url(#arrow-data)">
+          <title>Atomic ZADD score update into Valkey 8 sorted sets</title>
+        </path>
+
+        <!-- e7: vantoi-api -> postgres-db -->
+        <path class="edge edge--data" data-from="vantoi-api" data-to="postgres-db"
+              d="M 1260 490 L 1520 590" marker-end="url(#arrow-data)">
+          <title>Prisma ACID transaction persisted to PostgreSQL 17</title>
+        </path>
+      </g>
+
+      <!-- LAYER 3: NODES -->
+      <g class="layer-nodes">
+        <!-- 1. vantoi-pwa (browser / shape-device) -->
+        <g class="node" data-node-id="vantoi-pwa" data-role="client" transform="translate(180, 320)">
+          <title>vantoi-pwa — Next.js 16 athlete mobile PWA recording 04:30 AM wakeups and Deep Work timers</title>
+          <g class="node__body">
+            <rect class="node__shape" x="0" y="0" width="160" height="80" rx="8" />
+            <line class="node__detail" x1="0" y1="20" x2="160" y2="20" />
+            <circle cx="12" cy="10" r="2.5" fill="var(--c-client)" />
+            <circle cx="22" cy="10" r="2.5" fill="var(--c-client)" opacity="0.6" />
+            <circle cx="32" cy="10" r="2.5" fill="var(--c-client)" opacity="0.3" />
+          </g>
+          <text class="node__label" x="80" y="42">Văn Tới PWA</text>
+          <text class="node__sub" x="80" y="64">04:30 AM · Zustand</text>
+          <rect class="node__focus focus-b2" x="-10" y="-10" width="180" height="100" rx="12" />
+        </g>
+
+        <!-- 2. idb-outbox (message-queue / shape-pipe) -->
+        <g class="node" data-node-id="idb-outbox" data-role="async" transform="translate(180, 550)">
+          <title>idb-outbox — IndexedDB offline outbox queue with stuck-SYNCING auto-recovery</title>
+          <g class="node__body">
+            <rect class="node__shape" x="0" y="14" width="160" height="52" rx="26" />
+            <line class="node__detail" x1="20" y1="14" x2="20" y2="66" stroke-dasharray="3 3" />
+            <line class="node__detail" x1="140" y1="14" x2="140" y2="66" stroke-dasharray="3 3" />
+          </g>
+          <text class="node__label" x="80" y="34">IDB Outbox</text>
+          <text class="node__sub" x="80" y="54">offline queue</text>
+          <rect class="node__focus node__focus--async focus-b2" x="-10" y="4" width="180" height="72" rx="12" />
+        </g>
+
+        <!-- 3. cloudflare-edge (cdn / shape-rounded-rect) -->
+        <g class="node" data-node-id="cloudflare-edge" data-role="infra" transform="translate(420, 320)">
+          <title>cloudflare-edge — Cloudflare Edge CDN serving 103 Early Hints and signing HMAC TIME_PROOF tokens</title>
+          <g class="node__body">
+            <rect class="node__shape" x="0" y="0" width="160" height="80" rx="8" />
+          </g>
+          <text class="node__label" x="80" y="34">Cloudflare Edge</text>
+          <text class="node__sub" x="80" y="58">TIME_PROOF HMAC</text>
+          <rect class="node__focus node__focus--infra focus-b3" x="-10" y="-10" width="180" height="100" rx="12" />
+        </g>
+
+        <!-- 4. caddy-proxy (reverse-proxy / shape-hexagon) -->
+        <g class="node" data-node-id="caddy-proxy" data-role="service" transform="translate(660, 435)">
+          <title>caddy-proxy — Caddy 2 reverse proxy on Contabo VPS answering CORS OPTIONS in 1ms</title>
+          <g class="node__body">
+            <polygon class="node__shape" points="20,0 140,0 160,40 140,80 20,80 0,40" />
+          </g>
+          <text class="node__label" x="80" y="34">Caddy 2</text>
+          <text class="node__sub" x="80" y="56">TLS · 1ms CORS</text>
+          <rect class="node__focus node__focus--service focus-b3" x="-10" y="-10" width="180" height="100" rx="12" />
+        </g>
+
+        <!-- 5. vantoi-api (microservice / shape-rounded-rect) -->
+        <g class="node node--primary anim-pulse-glow" data-node-id="vantoi-api" data-role="service" style="--i:0; color: var(--c-service)" transform="translate(1100, 435)">
+          <title>vantoi-api — NestJS API container on port 3001 verifying HMAC tokens and enforcing daily XP caps</title>
+          <g class="node__body">
+            <rect class="node__shape" x="0" y="0" width="160" height="80" rx="8" />
+          </g>
+          <text class="node__label" x="80" y="34">vantoi-api :3001</text>
+          <text class="node__sub" x="80" y="58">25 XP · 15h · 4h</text>
+          <rect class="node__focus node__focus--service focus-b4" x="-10" y="-10" width="180" height="100" rx="12" />
+        </g>
+
+        <!-- 6. valkey-zset (cache / shape-cache) -->
+        <g class="node anim-pulse-glow" data-node-id="valkey-zset" data-role="data" style="--i:1; color: var(--c-data)" transform="translate(1520, 320)">
+          <title>valkey-zset — Valkey 8 sorted sets ranking today and all-time leaderboards in O(log N)</title>
+          <g class="node__body">
+            <rect class="node__shape" x="0" y="0" width="160" height="80" rx="8" />
+          </g>
+          <text class="node__label" x="80" y="34">Valkey 8 ZSET</text>
+          <text class="node__sub" x="80" y="58">O(log N) · TTL 48h</text>
+          <rect class="node__focus node__focus--data focus-b5" x="-10" y="-10" width="180" height="100" rx="12" />
+        </g>
+
+        <!-- 7. postgres-db (sql-database / shape-cylinder) -->
+        <g class="node" data-node-id="postgres-db" data-role="data" transform="translate(1520, 550)">
+          <title>postgres-db — PostgreSQL 17 primary database with pgBackRest continuous WAL archive</title>
+          <g class="node__body">
+            <path class="node__shape" d="M 0 14 A 80 14 0 0 1 160 14 V 66 A 80 14 0 0 1 0 66 Z" />
+            <path class="node__detail" d="M 0 14 A 80 14 0 0 0 160 14" />
+          </g>
+          <text class="node__label" x="80" y="42">PostgreSQL 17</text>
+          <text class="node__sub" x="80" y="62">WAL · pgBackRest</text>
+          <rect class="node__focus node__focus--data focus-b5" x="-10" y="-6" width="180" height="92" rx="12" />
+        </g>
+      </g>
+
+      <!-- LAYER 4: MOTION OVERLAYS (traveling packets with negative delays so t=0 is mid-flight) -->
+      <g class="layer-motion">
+        <circle class="packet packet--async" r="4.5">
+          <animateMotion dur="2400ms" begin="-800ms" repeatCount="indefinite" rotate="auto">
+            <mpath href="#mp-e1" />
+          </animateMotion>
+        </circle>
+        <circle class="packet" r="5">
+          <animateMotion dur="1600ms" begin="-400ms" repeatCount="indefinite" rotate="auto">
+            <mpath href="#mp-e2" />
+          </animateMotion>
+        </circle>
+        <circle class="packet" r="5">
+          <animateMotion dur="1600ms" begin="-900ms" repeatCount="indefinite" rotate="auto">
+            <mpath href="#mp-e3" />
+          </animateMotion>
+        </circle>
+        <circle class="packet packet--async" r="4.5">
+          <animateMotion dur="2400ms" begin="-1400ms" repeatCount="indefinite" rotate="auto">
+            <mpath href="#mp-e4" />
+          </animateMotion>
+        </circle>
+        <circle class="packet" r="5.5">
+          <animateMotion dur="1600ms" begin="-600ms" repeatCount="indefinite" rotate="auto">
+            <mpath href="#mp-e5" />
+          </animateMotion>
+        </circle>
+        <circle class="packet packet--data" r="5">
+          <animateMotion dur="1600ms" begin="-500ms" repeatCount="indefinite" rotate="auto">
+            <mpath href="#mp-e6" />
+          </animateMotion>
+        </circle>
+        <circle class="packet packet--data" r="5">
+          <animateMotion dur="1600ms" begin="-1100ms" repeatCount="indefinite" rotate="auto">
+            <mpath href="#mp-e7" />
+          </animateMotion>
+        </circle>
+      </g>
+
+      <!-- LAYER 5: EDGE LABELS + BEAT CAPTIONS -->
+      <g class="layer-labels">
+        <!-- Edge labels placed well clear of straight edge segments -->
+        <g transform="translate(212, 482)">
+          <rect class="edge-label-bg" x="-34" y="-11" width="68" height="20" />
+          <text class="edge-label" x="0" y="3">enqueue</text>
+        </g>
+
+        <g transform="translate(380, 338)">
+          <rect class="edge-label-bg" x="-34" y="-11" width="68" height="20" />
+          <text class="edge-label" x="0" y="3">04:30 AM</text>
+        </g>
+
+        <g transform="translate(635, 372)">
+          <rect class="edge-label-bg" x="-44" y="-11" width="88" height="20" />
+          <text class="edge-label" x="0" y="3">HMAC proof</text>
+        </g>
+
+        <g transform="translate(500, 576)">
+          <rect class="edge-label-bg" x="-44" y="-11" width="88" height="20" />
+          <text class="edge-label" x="0" y="3">POST /sync</text>
+        </g>
+
+        <g transform="translate(960, 452)">
+          <rect class="edge-label-bg" x="-64" y="-11" width="128" height="20" />
+          <text class="edge-label" x="0" y="3">ops_bridge :3001</text>
+        </g>
+
+        <g transform="translate(1375, 374)">
+          <rect class="edge-label-bg" x="-60" y="-11" width="120" height="20" />
+          <text class="edge-label" x="0" y="3">ZADD · O(log N)</text>
+        </g>
+
+        <g transform="translate(1375, 578)">
+          <rect class="edge-label-bg" x="-44" y="-11" width="88" height="20" />
+          <text class="edge-label" x="0" y="3">ACID · WAL</text>
+        </g>
+
+        <!-- Beat Captions (world-space lower thirds inside each beat's hold bbox) -->
+        <g class="beat-caption cap-b2" transform="translate(180, 690)">
+          <rect class="caption-box" x="-48.4" y="7" width="576.9" height="30.7" rx="8" data-cap="b2" />
+          <text x="240" y="27"><tspan class="code">vantoi-pwa</tspan> records 04:30 AM check-ins; <tspan class="code">idb-outbox</tspan> queues offline sessions for retry.</text>
+        </g>
+
+        <g class="beat-caption cap-b3" transform="translate(260, 690)">
+          <rect class="caption-box" x="-64.5" y="7" width="609.1" height="30.8" rx="8" data-cap="b3" />
+          <text x="240" y="27"><tspan class="code">cloudflare-edge</tspan> signs TIME_PROOF tokens; <tspan class="code">caddy-proxy</tspan> answers CORS OPTIONS in 1ms.</text>
+        </g>
+
+        <g class="beat-caption cap-b4" transform="translate(720, 690)">
+          <rect class="caption-box" x="-28.6" y="7" width="537.1" height="30.7" rx="8" data-cap="b4" />
+          <text x="240" y="27"><tspan class="code">vantoi-api</tspan> on port 3001 verifies HMAC tokens and enforces 25 XP wakeup caps.</text>
+        </g>
+
+        <g class="beat-caption cap-b5" transform="translate(1150, 690)">
+          <rect class="caption-box" x="-32.4" y="7" width="544.8" height="30.8" rx="8" data-cap="b5" />
+          <text x="240" y="27"><tspan class="code">valkey-zset</tspan> ranks athletes in O(log N) with TTL 48h; <tspan class="code">postgres-db</tspan> archives WAL.</text>
+        </g>
+
+        <g class="beat-caption cap-b6" transform="translate(720, 840)">
+          <rect class="caption-box" x="-11.5" y="7" width="502.9" height="30.4" rx="8" data-cap="b6" />
+          <text x="240" y="27">Full Winter Arc flow: offline-safe mobile PWA to O(log N) Valkey leaderboard.</text>
+        </g>
+      </g>
+    </g>
+  </svg>
+</main>
+</body>
+</html>

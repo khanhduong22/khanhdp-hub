@@ -399,7 +399,11 @@
                 High-retention athletic habit platform built for extreme memory efficiency: 46-byte Redis Bitmap daily streaks, sub-5ms Valkey distributed mutex locks preventing 6:00 AM race conditions, and a ~400MB RAM cluster running on an 8GB Linux VPS.
               </p>
             </div>
-            <div class="flex items-center gap-3 pt-1">
+            <div class="flex items-center gap-2 sm:gap-3 pt-1">
+              <a href="/diagrams/winter-arc" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono bg-sky-500/10 text-sky-400 border border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-400/40 transition-colors" title="Open Interactive C4 Runtime Architecture Diagram" onclick="event.stopPropagation()">
+                <span>C4 Diagram</span>
+                <span>↗</span>
+              </a>
               <a href="https://vantoicalis.com" target="_blank" rel="noopener noreferrer" class="p-1 text-zinc-500 hover:text-zinc-200 transition-colors" title="Open Winter Arc (vantoicalis.com)" onclick="event.stopPropagation()">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
               </a>
@@ -439,11 +443,18 @@
                 <span class="px-2 py-0.5 rounded bg-white/[0.04] border border-white/[0.08] text-[11px] font-mono text-zinc-300">Docker</span>
               </div>
 
-              <div class="flex items-center justify-between pt-1">
-                <a href="https://vantoicalis.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-200 hover:text-white underline underline-offset-4 decoration-zinc-600 hover:decoration-white transition-colors">
-                  <span>Visit Winter Arc Platform</span>
-                  <span>↗</span>
-                </a>
+              <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                <div class="flex flex-wrap items-center gap-4">
+                  <a href="https://vantoicalis.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-200 hover:text-white underline underline-offset-4 decoration-zinc-600 hover:decoration-white transition-colors">
+                    <span>Visit Winter Arc Platform</span>
+                    <span>↗</span>
+                  </a>
+                  <a href="/diagrams/winter-arc" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/25 hover:border-sky-400/50 text-xs font-mono text-sky-300 hover:text-sky-200 transition-colors">
+                    <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+                    <span>Interactive Runtime Architecture (6-Beat C4 Diagram)</span>
+                    <span>↗</span>
+                  </a>
+                </div>
                 <span class="text-[11px] font-mono text-zinc-500">Benchmark: 46B per user · 1,100+ WAU · p99 &lt;5ms</span>
               </div>
             </div>
@@ -1489,6 +1500,10 @@
           <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 05 / SME Web Apps & Micro-SaaS Ecosystem</span>
           <span class="text-zinc-500">/portfolio ↗</span>
         </button>
+        <button class="cmd-item w-full flex items-center justify-between px-3 py-2 rounded text-zinc-300 hover:bg-white/[0.08] hover:text-white transition-colors" data-action="winter-arc-diagram">
+          <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Winter Arc — Interactive C4 Runtime Architecture</span>
+          <span class="text-zinc-500">/diagrams/winter-arc ↗</span>
+        </button>
         <button class="cmd-item w-full flex items-center justify-between px-3 py-2 rounded text-zinc-300 hover:bg-white/[0.08] hover:text-white transition-colors" data-action="copy-email">
           <span>Copy Email Address</span>
           <span class="text-zinc-500">phuckhanh22@gmail.com</span>
@@ -1639,6 +1654,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     else if(D==="signal")document.getElementById("signal").scrollIntoView({behavior:"smooth"});
     else if(D==="portfolio")window.location.href="/portfolio";
     else if(D==="about")window.location.href="/about";
+    else if(D==="winter-arc-diagram")window.open("/diagrams/winter-arc","_blank");
     else if(D==="copy-email")H();
     else if(D==="github")window.open("https://github.com/khanhduong22","_blank");
     else if(D==="youtube")window.open("https://www.youtube.com/@kodexkido","_blank");

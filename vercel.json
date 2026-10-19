@@ -31,6 +31,10 @@
       "destination": "/about.html"
     },
     {
+      "source": "/diagrams/winter-arc",
+      "destination": "/diagrams/winter-arc.html"
+    },
+    {
       "source": "/apps/ride",
       "destination": "/apps/ride/index.html"
     },

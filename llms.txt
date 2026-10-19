@@ -47,6 +47,7 @@
 - **Web App Winter Arc 100 Days Challenge**:
   - Live community platform with 1,100+ active weekly users and 712 daily task grinders (opening 4-5 times daily).
   - High engagement metrics: 8m 04s average onsite session time, 8.2% bounce rate, P75 LCP 1.12s on a single 8GB RAM VPS.
+  - Interactive 6-Beat C4 Runtime Architecture Diagram: [https://khanhdp.com/diagrams/winter-arc](https://khanhdp.com/diagrams/winter-arc).
 - **Kido Chronicles (127+ Chapters)**:
   - Technical engineering war stories and production postmortems documented at [https://truyen.khanhdp.com](https://truyen.khanhdp.com).
 - **Index (index.vn)**:
