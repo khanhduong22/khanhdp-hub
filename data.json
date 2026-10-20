@@ -13,7 +13,7 @@
     { "value": "50,000+", "label": "Req/s Sustained Throughput", "context": "Stress-tested FastAPI & Redis gateway" },
     { "value": "98%", "label": "Memory Footprint Reduction", "context": "Redis HyperLogLog real-time analytics" },
     { "value": "3x", "label": "Consecutive Best Performance", "context": "Awarded at SBI FPT (2022, 2023, 2024)" },
-    { "value": "8+", "label": "Years Engineering Experience", "context": "Distributed systems & FinTech platforms" }
+    { "value": "7+", "label": "Years Engineering Experience", "context": "Distributed systems & FinTech platforms" }
   ],
   "flagships": [
     {
@@ -149,8 +149,8 @@
     "City Computer Science Award First Prize"
   ],
   "certifications": [
-    "Claude Certified Architect – Foundations (Anthropic)",
-    "AWS Certified Solutions Architect – Associate (SAA)",
-    "Project Management Professional (PMP Track)"
+    "Claude Architect Foundations (Anthropic Academy)",
+    "AWS Solutions Architect (SAA Labs)",
+    "Project Management Professional (PMP Coursework)"
   ]
 }
