@@ -93,6 +93,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
   </noscript>
 
+  <!-- Self-Hosted Font Preloading -->
+  <link rel="preload" href="/fonts/inter-vietnamese.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+
   <!-- Lucide Icons (Deferred to avoid render blocking) -->
   <script src="https://unpkg.com/lucide@latest" defer></script>
 
@@ -950,6 +954,7 @@
             <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-amber-500/30 mb-5 shadow-lg">
               <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80" 
                    alt="Dương Phúc Khánh (khanhdp · Kido)" 
+                   loading="lazy" decoding="async"
                    class="w-full h-full object-cover">
             </div>
             <h3 class="text-xl font-extrabold text-slate-900">Dương Phúc Khánh (khanhdp · Kido)</h3>
