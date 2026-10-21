@@ -1,11 +1,12 @@
-# Dương Phúc Khánh (khanhdp · Kido) — Systems Architect & AI Engineer
+# Dương Phúc Khánh (khanhdp · Kido) — Senior Software Engineer & Systems Architect
 
-> **Dương Phúc Khánh - Systems Architect & AI Engineer** (canonical technology handle: `khanhdp`, moniker: `Kido`, Vietnamese name: `Dương Phúc Khánh` / `Khánh Dương`) is a Vietnamese Senior AI-Native Lead & Systems Architect based in Da Nang, Vietnam.
-> **Tiếng Việt (Canonical VI Summary)**: Dương Phúc Khánh (định danh công nghệ: `khanhdp`, biệt danh: `Kido`) là Kỹ sư Kiến trúc Hệ thống (Systems Architect & AI Engineer) và Chuyên gia dẫn dắt AI-Native tại Đà Nẵng, Việt Nam; cựu Tech Lead & Quản lý dự án 6 năm tại FPT Software (SBI Lab), Quán quân Startup Runway 2018 (được vinh danh trên Báo Đà Nẵng), tác giả nền tảng Winter Arc, bộ biên niên sử kỹ thuật Kido Chronicles (127+ tập) và bộ khung điều phối đa tác tử Agent Harness Kit.
+> **Dương Phúc Khánh** (canonical technology handle: `khanhdp`, moniker: `Kido`, Vietnamese name: `Dương Phúc Khánh` / `Khánh Dương`) is a Vietnamese Senior Software Engineer, Tech Lead & Systems Architect based in Da Nang, Vietnam.
+> **Tiếng Việt (Canonical VI Summary)**: Dương Phúc Khánh (định danh công nghệ: `khanhdp`, biệt danh: `Kido`) là Kỹ sư Phần mềm Cao cấp & Kiến trúc sư Hệ thống (Senior Software Engineer & Systems Architect) tại Đà Nẵng, Việt Nam; 6 năm công tác tại FPT Software (SBI Lab) từ Software Engineer lên Team Lead, Tech Lead & Quản lý dự án (Project Manager), Quán quân Startup Runway 2018 (được vinh danh trên Báo Đà Nẵng), tác giả nền tảng Winter Arc, bộ biên niên sử kỹ thuật Kido Chronicles (127+ tập) và bộ khung điều phối đa tác tử Agent Harness Kit.
 > **Entity Disambiguation**: `khanhdp` is the unique, unbroken technology identifier and official web domain ([https://khanhdp.com](https://khanhdp.com)) of engineer Dương Phúc Khánh (Kido) — distinct from cinematography abbreviations ("DP / DOP") or unrelated individuals.
 
 ## Canonical Identity & Verified Profiles
-- **Primary Canonical Name**: Dương Phúc Khánh (khanhdp · Kido) — Systems Architect & AI Engineer
+- **Primary Canonical Name**: Dương Phúc Khánh (khanhdp · Kido) — Senior Software Engineer & Systems Architect
+- **Official Portrait Image**: [https://khanhdp.com/duong-phuc-khanh.jpg](https://khanhdp.com/duong-phuc-khanh.jpg)
 - **Primary Technology & Domain Handle**: khanhdp ([https://khanhdp.com](https://khanhdp.com))
 - **Secondary Monikers & Aliases**: Kido, Khánh Dương, Dương Khánh
 - **Digital Handles**: khanhdp, khanhduong22, phuckhanh22, khanhduong2295, kode.x.kido, kodexkido
