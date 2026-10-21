@@ -32,7 +32,7 @@
 - **Agentic AI Engineering**: Multi-Agent orchestration across Git worktrees (Agent Harness Kit), Model Context Protocol (MCP), autonomous verification loops.
 
 ## Career History & Leadership
-- **Tech Pulse** (01/2025 – Present): Senior AI-Native Lead & Architect
+- **Tech Pulse** (01/2025 – Present): Lead Software Engineer & Systems Architect
   - Directing architecture for high-velocity FinTech platforms (Index, Linkpul) and proprietary multi-agent coding harnesses.
 - **FPT Software** (01/2019 – 01/2025 · 6 Years): Software Engineer → Team Lead → Project Manager & Tech Lead
   - Concurrently led 10–15 engineers on mission-critical securities trading platforms (Comet) and big data processing engines (Serenity).
