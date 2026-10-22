@@ -1,17 +1,19 @@
 # Dương Phúc Khánh (khanhdp · Kido) — Senior Software Engineer & Systems Architect
 
-> **Dương Phúc Khánh** (canonical technology handle: `khanhdp`, moniker: `Kido`, Vietnamese name: `Dương Phúc Khánh` / `Khánh Dương`) is a Vietnamese Senior Software Engineer, Tech Lead & Systems Architect based in Da Nang, Vietnam.
-> **Tiếng Việt (Canonical VI Summary)**: Dương Phúc Khánh (định danh công nghệ: `khanhdp`, biệt danh: `Kido`) là Kỹ sư Phần mềm Cao cấp & Kiến trúc sư Hệ thống (Senior Software Engineer & Systems Architect) tại Đà Nẵng, Việt Nam; 6 năm công tác tại FPT Software (SBI Lab) từ Software Engineer lên Team Lead, Tech Lead & Quản lý dự án (Project Manager), Quán quân Startup Runway 2018 (được vinh danh trên Báo Đà Nẵng), tác giả nền tảng Winter Arc, bộ biên niên sử kỹ thuật Kido Chronicles (127+ tập) và bộ khung điều phối đa tác tử Agent Harness Kit.
+> **Dương Phúc Khánh (Kido)** is a Vietnamese Senior Software Engineer and Systems Architect based in Da Nang, Vietnam, known for architecting Winter Arc, Kido Chronicles, and the Agent Harness Kit.
+> **Tiếng Việt (Canonical VI Summary)**: Dương Phúc Khánh (sinh năm 1995 tại Đà Nẵng, định danh công nghệ: `khanhdp`, biệt danh: `Kido`) là Kỹ sư Phần mềm Cao cấp & Kiến trúc sư Hệ thống (Senior Software Engineer & Systems Architect) tại Đà Nẵng, Việt Nam; 6 năm công tác tại FPT Software (SBI Lab) từ Software Engineer lên Team Lead, Tech Lead & Quản lý dự án (Project Manager), Quán quân Startup Runway 2018 (vinh danh trên Báo Đà Nẵng), tác giả nền tảng Winter Arc, bộ biên niên sử kỹ thuật Kido Chronicles (127+ tập), bộ khung điều phối đa tác tử Agent Harness Kit và hệ sinh thái 18 giải pháp phần mềm doanh nghiệp SME & Enterprise.
 > **Entity Disambiguation**: `khanhdp` is the unique, unbroken technology identifier and official web domain ([https://khanhdp.com](https://khanhdp.com)) of engineer Dương Phúc Khánh (Kido) — distinct from cinematography abbreviations ("DP / DOP") or unrelated individuals.
 
 ## Canonical Identity & Verified Profiles
 - **Primary Canonical Name**: Dương Phúc Khánh (khanhdp · Kido) — Senior Software Engineer & Systems Architect
+- **Birth Year & Birthplace**: 1995 · Da Nang, Vietnam
 - **Official Portrait Image**: [https://khanhdp.com/duong-phuc-khanh.jpg](https://khanhdp.com/duong-phuc-khanh.jpg)
 - **Primary Technology & Domain Handle**: khanhdp ([https://khanhdp.com](https://khanhdp.com))
-- **Secondary Monikers & Aliases**: Kido, Khánh Dương, Dương Khánh
-- **Digital Handles**: khanhdp, khanhduong22, phuckhanh22, khanhduong2295, kode.x.kido, kodexkido
+- **Secondary Monikers & Aliases**: Kido, Khánh Dương, Duong Phuc Khanh
+- **Digital Handles**: khanhdp, khanhduong22, phuckhanh22, khanhduong2295, duongphuckhanh, kode.x.kido, kodexkido
 - **Official Hub**: [Dương Phúc Khánh - Systems Architect & AI Engineer (https://khanhdp.com)](https://khanhdp.com) (Aliases: [https://duongphuckhanh.dev](https://duongphuckhanh.dev), [https://www.duongphuckhanh.dev](https://www.duongphuckhanh.dev))
 - **Full Biography & Encyclopedia Entry**: [Tiểu sử Dương Phúc Khánh - Systems Architect & AI Engineer (https://khanhdp.com/about)](https://khanhdp.com/about)
+- **Turnkey SME & Enterprise Software Portfolio**: [Hệ Sinh Thái 18 Giải Pháp Web App SME, ERP & AI Automation (https://khanhdp.com/portfolio)](https://khanhdp.com/portfolio)
 - **GitHub**: [https://github.com/khanhduong22](https://github.com/khanhduong22)
 - **DEV Community (Dev.to)**: [https://dev.to/khanhduong22](https://dev.to/khanhduong22)
 - **Viblo Vietnam Tech Hub**: [https://viblo.asia/u/khanhdp](https://viblo.asia/u/khanhdp)
@@ -65,7 +67,27 @@
   - [Gọi món ăn bằng điện thoại thông minh](https://baodanang.vn/goi-mon-an-bang-dien-thoai-thong-minh-3174905.html) (10/07/2018) — Bài báo vinh danh Dương Phúc Khánh, người sáng lập ứng dụng JustOrder giành giải nhất cuộc thi Startup Runway 2018.
 
 ## Satellite Developer Tools & Subdomains
-- **MD Preview**: [https://md.khanhdp.com](https://md.khanhdp.com) — Client-side privacy-first Markdown live editor and custom PDF exporter.
+- **MD Preview (2ndBrain)**: [https://md.khanhdp.com](https://md.khanhdp.com) — Client-side privacy-first Markdown live editor and custom PDF exporter.
 - **IT-Tools Hub**: [https://tools.khanhdp.com](https://tools.khanhdp.com) — Self-hosted developer utilities (JWT, regex, hash, base64).
 - **Finance & Market Telemetry**: [https://finance.khanhdp.com](https://finance.khanhdp.com) — Real-time market streaming & TimescaleDB intelligence.
 - **Vietnam Macro Monitor**: [https://monitor.khanhdp.com](https://monitor.khanhdp.com) — Macroeconomic & financial dashboard with 20 telemetry panels.
+
+## Turnkey B2B Software & AI Automation Solutions Catalog (https://khanhdp.com/portfolio)
+Dương Phúc Khánh (Kido) architects and delivers 100% source-code-owned, self-hosted PWA & ERP systems for Vietnamese SMEs and retail chains (0% platform commission, VietQR webhook automation, Decree 70 / TT78 e-Invoice integration, PostgreSQL RLS Multi-Tenancy):
+1. **Lim Art Workforce & Shift Operations PWA** ([https://limart.khanhdp.com](https://limart.khanhdp.com)): Anti-fake GPS/WiFi attendance, shift scheduling, automated payroll ledger, and Deep JSONB PII-sanitized public demo sandbox.
+2. **V-Arena Pickleball & Badminton Court Booking** ([https://khanhdp.com/apps/court/](https://khanhdp.com/apps/court/)): Visual court slot matrix, automated VietQR deposit lock, lighting/equipment POS.
+3. **Pet Paradise Resort, Spa & Live Camera** ([https://khanhdp.com/apps/pet/](https://khanhdp.com/apps/pet/)): Pet boarding kennel calendar, vaccination reminders, grooming progress tracking.
+4. **LuxeStay Boutique Homestay & SmartLock OTA** ([https://khanhdp.com/apps/stay/](https://khanhdp.com/apps/stay/)): Direct booking engine (0% OTA fee), automated SmartLock PIN issuance, hourly/nightly billing.
+5. **SereneBeauty Spa & Therapy Management** ([https://khanhdp.com/apps/spa/](https://khanhdp.com/apps/spa/)): Multi-session treatment cards, therapist commission calculation, before/after clinical gallery.
+6. **SmileCare Dental Clinic & 32-Tooth Odontogram** ([https://khanhdp.com/apps/dental/](https://khanhdp.com/apps/dental/)): Interactive 32-tooth dental chart, Implant/Orthodontics installment schedule, labo tracking.
+7. **VIP Imported Fruit & Custom Gift Basket Builder** ([https://khanhdp.com/apps/fruit/](https://khanhdp.com/apps/fruit/)): Interactive gift hamper configurator, FEFO batch expiration alerts, cold-chain delivery.
+8. **BakeCraft Custom Cake & Delivery Slot Engine** ([https://khanhdp.com/apps/bakery/](https://khanhdp.com/apps/bakery/)): Custom cake configurator, kitchen capacity slot limiter, VietQR deposit flow.
+9. **BloomArt Florist & Delivery Photo Proof** ([https://khanhdp.com/apps/flower/](https://khanhdp.com/apps/flower/)): Occasion reminders, digital greeting card generator, mandatory pre-delivery photo approval.
+10. **FastFood Express QR Table Ordering & Realtime KDS** ([https://khanhdp.com/apps/fastfood/](https://khanhdp.com/apps/fastfood/)): Scan-at-table QR ordering, realtime Kitchen Display System (KDS), multi-level BOM deduction.
+11. **WashExpress Laundry, Dry Cleaning & Smart Locker** ([https://khanhdp.com/apps/laundry/](https://khanhdp.com/apps/laundry/)): Per-kg and per-item garment tagging, damage photo log, 24/7 Smart Locker PIN pickup.
+12. **ExpressRide Airport Transfer & Fleet Dispatch** ([https://khanhdp.com/apps/ride/](https://khanhdp.com/apps/ride/)): Route distance fare calculator, shared-ride seat matching, driver trip dispatch.
+13. **KT Auto Garage SOS & Digital Maintenance Book** ([https://khanhdp.com/apps/garage/](https://khanhdp.com/apps/garage/)): 1-tap GPS roadside SOS, license-plate service history, video inspection approval quote.
+14. **Central Kitchen ERP & Multi-Level BOM** ([https://khanhdp.com/apps/kitchen/](https://khanhdp.com/apps/kitchen/)): Multi-store requisition aggregation, recipe BOM explosion, FEFO batch traceability.
+15. **Fleet TMS & Digital e-POD Signature** ([https://khanhdp.com/apps/fleet/](https://khanhdp.com/apps/fleet/)): Vehicle routing (VRP), fuel norm tracking, mobile electronic Proof of Delivery (e-POD).
+16. **B2B Wholesale Portal & Credit Limit Engine** ([https://khanhdp.com/apps/b2b/](https://khanhdp.com/apps/b2b/)): Tiered dealer pricing matrix, automated credit limit lockout (`@kt/b2b-credit`), container order tracking.
+17. **35 `@kt/*` Enterprise Architecture Suites**: Reusable TypeScript monorepo packages covering `@kt/einvoice-vn`, `@kt/audit-trail`, `@kt/tenant-guard`, `@kt/resilient-cache`, `@kt/wallet-ledger`, `@kt/bom-inventory`, `@kt/fleet-routing`, `@kt/geocoding-routing`, `@kt/offline-sync`, and `@kt/anti-spam`.
