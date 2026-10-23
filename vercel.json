@@ -23,6 +23,18 @@
       "destination": "/about.html"
     },
     {
+      "source": "/en",
+      "destination": "/en.html"
+    },
+    {
+      "source": "/articles",
+      "destination": "/articles/index.html"
+    },
+    {
+      "source": "/articles/:slug",
+      "destination": "/articles/:slug/index.html"
+    },
+    {
       "source": "/diagrams/winter-arc",
       "destination": "/diagrams/winter-arc.html"
     },
@@ -216,11 +228,11 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800"
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
         },
         {
           "key": "CDN-Cache-Control",
-          "value": "public, s-maxage=86400, stale-while-revalidate=604800"
+          "value": "public, s-maxage=3600, stale-while-revalidate=86400"
         }
       ]
     },
@@ -229,11 +241,37 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800"
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
         },
         {
           "key": "CDN-Cache-Control",
-          "value": "public, s-maxage=86400, stale-while-revalidate=604800"
+          "value": "public, s-maxage=3600, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/en",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, s-maxage=3600, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/articles(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, s-maxage=3600, stale-while-revalidate=86400"
         }
       ]
     },
@@ -242,11 +280,11 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800"
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
         },
         {
           "key": "CDN-Cache-Control",
-          "value": "public, s-maxage=86400, stale-while-revalidate=604800"
+          "value": "public, s-maxage=3600, stale-while-revalidate=86400"
         }
       ]
     },
@@ -255,11 +293,11 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800"
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
         },
         {
           "key": "CDN-Cache-Control",
-          "value": "public, s-maxage=86400, stale-while-revalidate=604800"
+          "value": "public, s-maxage=3600, stale-while-revalidate=86400"
         }
       ]
     },
@@ -268,11 +306,11 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800"
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
         },
         {
           "key": "CDN-Cache-Control",
-          "value": "public, s-maxage=86400, stale-while-revalidate=604800"
+          "value": "public, s-maxage=3600, stale-while-revalidate=86400"
         }
       ]
     },

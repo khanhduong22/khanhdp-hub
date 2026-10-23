@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why I Refused a $500/mo Cloud Bill: Running 1,100+ Active Users at 1.12s LCP on a Single 8GB Linux VPS — Dương Phúc Khánh (Duong Phuc Khanh · Kido)</title>
+  <meta name="description" content="How Duong Phuc Khanh (Kido) tuned Linux kernel sysctl, Caddy 2, PostgreSQL 17, and Valkey 8 to serve 113,000+ weekly events without AWS bloat." />
+
+  <!-- Canonical Tag -->
+  <link rel="canonical" href="https://khanhdp.com/articles/bare-metal-vps-high-concurrency-playbook/" />
+
+  <!-- Favicons & Brand Suite -->
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="144x144" href="/favicon-144x144.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- OpenGraph Metadata -->
+  <meta property="og:title" content="Why I Refused a $500/mo Cloud Bill: Running 1,100+ Active Users at 1.12s LCP on a Single 8GB Linux VPS — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta property="og:description" content="How Duong Phuc Khanh (Kido) tuned Linux kernel sysctl, Caddy 2, PostgreSQL 17, and Valkey 8 to serve 113,000+ weekly events without AWS bloat." />
+  <meta property="og:url" content="https://khanhdp.com/articles/bare-metal-vps-high-concurrency-playbook/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Dương Phúc Khánh (khanhdp · Kido)" />
+  <meta property="og:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Why I Refused a $500/mo Cloud Bill: Running 1,100+ Active Users at 1.12s LCP on a Single 8GB Linux VPS — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta name="twitter:description" content="How Duong Phuc Khanh (Kido) tuned Linux kernel sysctl, Caddy 2, PostgreSQL 17, and Valkey 8 to serve 113,000+ weekly events without AWS bloat." />
+  <meta name="twitter:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+
+  <!-- Deferred Lossless Telemetry -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-RMEP3RZB14');
+    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
+    window.clarity = window.clarity || function() { (window.clarity.q = window.clarity.q || []).push(arguments); };
+
+    window.addEventListener('error', function(e) {
+      if (window.Sentry && typeof window.Sentry.captureException === 'function') {
+        var id = window.Sentry.captureException(e.error || e.message);
+        if (id && window.clarity) window.clarity('set', 'sentry_event_id', id);
+      }
+    });
+
+    window.trackEvent = function(eventName, params) {
+      params = params || {};
+      if (typeof window.gtag === 'function') window.gtag('event', eventName, params);
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', eventName);
+        var label = params.event_label || params.label || params.destination_url || params.category;
+        if (label) window.clarity('set', eventName, String(label).slice(0, 50));
+      }
+    };
+
+    (function(w, d) {
+      var isLoaded = false;
+      function injectScript(src, id) {
+        if (id && d.getElementById(id)) return;
+        if (d.querySelector('script[src="' + src + '"]')) return;
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = src;
+        if (id) s.id = id;
+        (d.head || d.body).appendChild(s);
+      }
+      var events = ['scroll', 'touchstart', 'pointerdown', 'keydown', 'wheel'];
+      function triggerDeferredLoad() {
+        if (isLoaded) return;
+        isLoaded = true;
+        events.forEach(function(e) { w.removeEventListener(e, triggerDeferredLoad); });
+        injectScript('https://www.googletagmanager.com/gtag/js?id=G-RMEP3RZB14', 'ga4-deferred-script');
+        injectScript('https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355', 'gtm-deferred-script');
+        injectScript('https://www.clarity.ms/tag/yy4l1xv1a9', 'clarity-deferred-script');
+      }
+      events.forEach(function(e) {
+        w.addEventListener(e, triggerDeferredLoad, { passive: true, once: true });
+      });
+    })(window, document);
+  </script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://khanhdp.com/articles/bare-metal-vps-high-concurrency-playbook/#article",
+      "headline": "Why I Refused a $500/mo Cloud Bill: Running 1,100+ Active Users at 1.12s LCP on a Single 8GB Linux VPS",
+      "name": "Why I Refused a $500/mo Cloud Bill: Running 1,100+ Active Users at 1.12s LCP on a Single 8GB Linux VPS — Dương Phúc Khánh (Duong Phuc Khanh · Kido)",
+      "description": "How Duong Phuc Khanh (Kido) tuned Linux kernel sysctl, Caddy 2, PostgreSQL 17, and Valkey 8 to serve 113,000+ weekly events without AWS bloat.",
+      "url": "https://khanhdp.com/articles/bare-metal-vps-high-concurrency-playbook/",
+      "mainEntityOfPage": "https://khanhdp.com/articles/bare-metal-vps-high-concurrency-playbook/",
+      "inLanguage": "en",
+      "datePublished": "2026-10-20",
+      "dateModified": "2026-10-23",
+      "author": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "publisher": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "articleSection": "DevOps & VPS"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://khanhdp.com/#person",
+      "name": "Dương Phúc Khánh",
+      "givenName": "Khánh",
+      "familyName": "Dương",
+      "additionalName": "Phúc",
+      "alternateName": [
+        "Duong Phuc Khanh",
+        "khanhdp",
+        "Kido",
+        "Khánh Dương",
+        "Khanh Duong",
+        "khanhduong22",
+        "phuckhanh22",
+        "kode.x.kido",
+        "kodexkido"
+      ],
+      "jobTitle": "Senior Software Engineer & Systems Architect",
+      "url": "https://khanhdp.com",
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "birthDate": "1995",
+      "identifier": [
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Google Knowledge Graph ID",
+          "value": "/g/11zyg5zq1c"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Wikidata",
+          "value": "Q141718572"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "ORCID",
+          "value": "0009-0005-7192-2664"
+        }
+      ],
+      "sameAs": [
+        "https://www.google.com/search?kgmid=/g/11zyg5zq1c",
+        "https://g.co/kg/g/11zyg5zq1c",
+        "https://khanhdp.com",
+        "https://khanhdp.com/about",
+        "https://khanhdp.com/en",
+        "https://duongphuckhanh.dev",
+        "https://www.wikidata.org/wiki/Q141718572",
+        "https://orcid.org/0009-0005-7192-2664",
+        "https://baodanang.vn/goi-mon-an-bang-dien-thoai-thong-minh-3174905.html",
+        "https://github.com/khanhduong22",
+        "https://dev.to/khanhduong22",
+        "https://viblo.asia/u/khanhdp",
+        "https://linkedin.com/in/duong-phuc-khanh/",
+        "https://x.com/duongphuckhanh",
+        "https://facebook.com/khanhduong2295/",
+        "https://truyen.khanhdp.com"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://khanhdp.com/articles/bare-metal-vps-high-concurrency-playbook/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://khanhdp.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Technical Articles",
+          "item": "https://khanhdp.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Why I Refused a $500/mo Cloud Bill: Running 1,100+ Active Users at 1.12s LCP on a Single 8GB Linux VPS",
+          "item": "https://khanhdp.com/articles/bare-metal-vps-high-concurrency-playbook/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="preload" href="/fonts/inter-vietnamese.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/index.min.css" />
+</head>
+<body class="bg-craft-bg text-craft-text font-sans antialiased selection:bg-white/20 selection:text-white min-h-screen relative">
+  <!-- Top Reading Progress Indicator -->
+  <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-zinc-500 via-zinc-200 to-white z-50 transition-all duration-100 ease-out" style="width: 0%;"></div>
+
+  <!-- Ambient Light Header Radial -->
+  <div class="absolute inset-x-0 top-0 h-[480px] ambient-glow pointer-events-none"></div>
+
+  <!-- Sticky Minimal Navigation Bar -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-[#0a0a0a]/85 border-b border-white/[0.06] transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="/" class="group flex items-center gap-2.5 text-zinc-100 hover:text-white transition-colors">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse"></span>
+        <span class="font-mono text-xs tracking-wider uppercase font-semibold text-zinc-200">DUONG PHUC KHANH · KIDO</span>
+      </a>
+
+      <nav class="flex items-center gap-4 text-xs font-mono">
+        <div class="hidden sm:flex items-center gap-4 text-zinc-400">
+          <a href="/" class="hover:text-zinc-200 transition-colors">Overview</a>
+          <a href="/en" class="hover:text-zinc-200 transition-colors">Biography (EN)</a>
+          <a href="/about" class="hover:text-zinc-200 transition-colors">Tiểu sử (VI)</a>
+          <a href="/articles/" class="text-white font-semibold flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Articles
+          </a>
+          <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-zinc-200 transition-colors">Chronicles</a>
+          <a href="/portfolio" class="px-2.5 py-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all font-semibold flex items-center gap-1.5">
+            SME Portfolio
+          </a>
+        </div>
+
+        <div class="h-3 w-[1px] bg-white/10 hidden sm:block"></div>
+
+        <a href="mailto:phuckhanh22@gmail.com" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-zinc-300 hover:text-zinc-100 transition-all text-xs font-mono">
+          <span>Contact</span>
+          <span>↗</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Article Container -->
+  <main class="max-w-4xl mx-auto px-6 pt-12 pb-24">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-xs font-mono text-zinc-500 tracking-wider uppercase mb-6 pb-3 border-b border-white/[0.06] overflow-x-auto">
+      <a href="/" class="hover:text-zinc-300 transition-colors shrink-0">KHANHDP.COM</a>
+      <span>/</span>
+      <a href="/articles/" class="hover:text-zinc-300 transition-colors shrink-0">ARTICLES</a>
+      <span>/</span>
+      <span class="text-zinc-400 shrink-0">DEVOPS & VPS</span>
+    </div>
+
+    <!-- Article Header -->
+    <header class="space-y-4 mb-8">
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">DevOps & VPS</span>
+        <span class="text-zinc-500">2026-10-20</span>
+        <span class="text-zinc-600">·</span>
+        <span class="text-zinc-400">By Dương Phúc Khánh (Kido)</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-semibold tracking-tight text-zinc-100 leading-tight">
+        Why I Refused a $500/mo Cloud Bill: Running 1,100+ Active Users at 1.12s LCP on a Single 8GB Linux VPS
+      </h1>
+
+      <p class="text-base sm:text-lg text-zinc-400 leading-relaxed">
+        How Duong Phuc Khanh (Kido) tuned Linux kernel sysctl, Caddy 2, PostgreSQL 17, and Valkey 8 to serve 113,000+ weekly events without AWS bloat.
+      </p>
+    </header>
+
+    
+        <!-- Top Author & Entity Verification Ribbon -->
+        <div class="border border-emerald-500/30 bg-emerald-950/20 rounded-xl p-4 my-6 text-xs font-mono text-zinc-300">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-500/20 pb-2.5 mb-2.5">
+            <div class="flex items-center gap-2 text-emerald-400 font-semibold uppercase tracking-wider text-[11px]">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Authoritative Technical Whitepaper</span>
+            </div>
+            <div class="flex items-center gap-3 text-zinc-400 text-[11px]">
+              <span>Verified Entity:</span>
+              <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Wikidata Q141718572</a>
+              <span>·</span>
+              <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-sky-400 hover:underline">ORCID 0009-0005-7192-2664</a>
+            </div>
+          </div>
+          <div class="text-[12px] leading-relaxed text-zinc-300">
+            Authored by <strong class="text-white">Duong Phuc Khanh</strong> (<strong class="text-zinc-200">Dương Phúc Khánh</strong> · <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>), Senior Software Engineer &amp; Systems Architect. Explore the <a href="/en" class="text-sky-400 hover:underline font-semibold">Official English Biography</a>, read the <a href="/about" class="text-sky-400 hover:underline">Tiểu sử Tiếng Việt</a>, browse the <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>, or inspect the 128-episode engineering postmortem anthology on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline font-semibold">Kido Chronicles</a>.
+          </div>
+        </div>
+        
+
+    <!-- Article Body Prose -->
+    <article class="prose prose-invert max-w-none text-zinc-300 leading-relaxed font-normal text-sm sm:text-base border-t border-white/[0.06] pt-6">
+      <p class="leading-relaxed my-3.5 text-zinc-300">Modern cloud architecture often suffers from Resume-Driven Development: spinning up managed NAT gateways, multi-node Kubernetes clusters, and serverless databases for workloads that barely hit 50 requests per second.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">When I (<strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> / <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong>) architected the <strong class="text-white font-semibold"><a href="https://vantoicalis.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Winter Arc Platform</a></strong> (and my personal ecosystem at <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp.com</a></strong>), I set a strict engineering constraint:</p>
+<blockquote class="border-l-2 border-emerald-400 pl-4 py-1.5 my-4 bg-white/[0.02] rounded-r text-zinc-300 italic text-sm"><strong class="text-white font-semibold">Run the entire production stack on a single 8GB RAM NVMe Linux VPS while maintaining a Google Core Web Vitals LCP under 1.2 seconds and 99.95% uptime.</strong></blockquote>
+<p class="leading-relaxed my-3.5 text-zinc-300">Today, that single node handles <strong class="text-white font-semibold">1,100+ weekly active athletes</strong>, <strong class="text-white font-semibold">712 daily workout loggers</strong> (opening the PWA 33–34 times/week), <strong class="text-white font-semibold">8m04s average session time</strong>, and <strong class="text-white font-semibold">113,000+ weekly telemetry events</strong>—at a fraction of a typical cloud bill.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Here is the exact bare-metal tuning playbook I use in production (documented across 114 episodes of <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles</a></strong>).</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="1-linux-kernel-memory-hygiene-vm-swappiness-10-tcp-bbr" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>1. Linux Kernel & Memory Hygiene (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">vm.swappiness = 10</code> + TCP BBR)</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Default Linux distributions are tuned for general-purpose desktop or legacy server workloads, not high-concurrency container stacks. Three <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">sysctl</code> changes immediately transformed our P99 tail latency:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-ini"># /etc/sysctl.d/99-kido-production.conf
+net.core.default_qdisc = fq
+net.ipv4.tcp_congestion_control = bbr
+vm.swappiness = 10
+vm.overcommit_memory = 1
+net.core.somaxconn = 4096</code></pre>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">TCP BBR</strong>: Cuts mobile 4G handshake and retransmission latency by 30–40% for users in Vietnam hitting European/Singapore nodes.</li>
+<li><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">vm.swappiness = 10</code></strong>: Prevents the kernel from prematurely swapping out hot PostgreSQL shared buffers or Node.js V8 heap pages while still keeping an emergency swap cushion against the OOM Killer.</li>
+<li><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">vm.overcommit_memory = 1</code></strong>: Mandatory for Redis/Valkey background <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">BGSAVE</code> forks so copy-on-write snapshots never fail under 70% RAM utilization.</li>
+</ul>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="2-caddy-2-native-file-reverse-proxy-zero-config-http-3" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>2. Caddy 2 Native File & Reverse Proxy (Zero-Config HTTP/3)</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Instead of stacking Nginx + Certbot + custom Lua scripts, <strong class="text-white font-semibold">Caddy 2</strong> serves as our single edge ingress:</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>Automatic <strong class="text-white font-semibold">HTTP/3 (QUIC)</strong> and TLS 1.3 session resumption out of the box.</li>
+<li>Static sub-apps like <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">truyen.khanhdp.com</code>)</a></strong> are served directly from disk via Caddy's <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">file_server</code> with pre-compressed <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">zstd</code> and <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">gzip</code>, delivering <strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">&lt;10ms</code> TTFB</strong> with <strong class="text-white font-semibold">0 MB of container RAM overhead</strong>.</li>
+</ul>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="3-strict-docker-subnet-isolation-cgroup-limits" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>3. Strict Docker Subnet Isolation & Cgroup Limits</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">As detailed in the bare-metal infrastructure patterns designed by <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh (khanhdp · Kido)</a></strong>, never let a noisy neighbor container starve PostgreSQL. Every service in our <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">docker-compose.yml</code> is governed by hard <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">mem_limit</code> boundaries and separated into dedicated internal bridge networks (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">frontend_net</code> vs <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">backend_db_net</code>) with custom <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">DOCKER-USER</code> iptables rules blocking external port scanners.</p>
+<hr class="border-white/[0.08] my-8" />
+<blockquote class="border-l-2 border-emerald-400 pl-4 py-1.5 my-4 bg-white/[0.02] rounded-r text-zinc-300 italic text-sm"><strong class="text-white font-semibold">About the Author (Tiểu sử tác giả):</strong> <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (canonical handle: <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong>, moniker: <strong class="text-white font-semibold">Kido</strong>) là Kỹ sư Kiến trúc Hệ thống (Senior AI-Native Lead & Systems Architect) tại Đà Nẵng, Việt Nam; cựu Tech Lead 6 năm tại FPT Software (SBI Lab), Quán quân Startup Runway 2018 (ĐH Kinh tế - ĐH Đà Nẵng), tác giả của <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Winter Arc</a></strong>, <strong class="text-white font-semibold"><a href="https://github.com/khanhduong22" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Agent Harness Kit</a></strong> và <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles</a></strong>. Xem đầy đủ tại <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Tiểu sử Dương Phúc Khánh</a></strong> & <strong class="text-white font-semibold"><a href="https://www.wikidata.org/wiki/Q141718572" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Wikidata Q141718572</a></strong>.</blockquote>
+<h2 id="about-the-author-ecosystem" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>About the Author & Ecosystem</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300"><strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (<strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong> / <strong class="text-white font-semibold">Kido</strong> / <strong class="text-white font-semibold">Khánh Dương</strong>) is a Senior AI-Native Lead & Systems Architect based in Da Nang, Vietnam, alumnus of <a href="https://vi.wikipedia.org/wiki/Tr%C6%B0%E1%BB%9Dng_%C4%90%E1%BA%A1i_h%E1%BB%8Dc_Kinh_t%E1%BA%BF,_%C4%90%E1%BA%A1i_h%E1%BB%8Dc_%C4%90%C3%A0_N%E1%BA%B5ng" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Da Nang University of Economics (DUE)</a>, and creator of <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">agent-harness-kit</code>.</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>🌐 <strong class="text-white font-semibold">Portfolio & Systems Benchmarks</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (<a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a>)</li>
+<li>🏛️ <strong class="text-white font-semibold">Encyclopedia Biography</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh (khanhdp · Kido)</a></strong> (<a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Tiểu sử</a>)</li>
+<li>📖 <strong class="text-white font-semibold">127 Production War Stories</strong>: <a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">https://truyen.khanhdp.com</a></li>
+<li>💻 <strong class="text-white font-semibold">Open-Source Multi-Agent Framework</strong>: <a href="https://github.com/khanhduong22/agent-harness-kit" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">github.com/khanhduong22/agent-harness-kit</a></li>
+</ul>
+    </article>
+
+    <!-- Contextual Kido Chronicles Episodes (Deep Links) -->
+    <section class="mt-16 pt-8 border-t border-white/[0.06] space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          <span>Related Production Postmortems (Kido Chronicles)</span>
+        </h2>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-xs font-mono text-purple-300 hover:text-purple-200 hover:underline">
+          View all 128 episodes ↗
+        </a>
+      </div>
+      <p class="text-xs text-zinc-400">
+        Curated real-world war stories and incident postmortems authored by Duong Phuc Khanh on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">truyen.khanhdp.com</a> related to this topic:
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+        
+        <a href="https://truyen.khanhdp.com/tap/tap-84-cuoc-thanh-trung-docker-dangle-cuu-o-cung-vps/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">DevOps & VPS</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 84 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 84: Cuộc Thanh Trừng Docker Dangle Cứu Ổ Cứng VPS
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Xử lý sự cố tràn ổ cứng 100% lúc 4 giờ sáng do Docker build layer dangle và script tự động dọn dẹp cron job.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-108-con-bao-cors-preflight-options-caddy/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Infrastructure</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 108 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 108: Cơn Bão CORS Preflight OPTIONS & Nghệ Thuật Caddy 2
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Cách dập tắt hàng ngàn OPTIONS request thừa thãi làm nghẽn server và cấu hình Caddy Native Reverse Proxy.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-114-voi-caddy-roi-thi-caddy-het-khai-tu-nginx-portfolio/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">DevOps & VPS</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 114 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 114: Khai Tử Nginx Sang Caddy Toàn Diện Trên Portfolio
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Quy hoạch lại toàn bộ hạ tầng 30 container, tự động hóa SSL Let's Encrypt và cắt giảm 80% độ phức tạp config.
+          </div>
+        </a>
+        
+      </div>
+    </section>
+
+    <!-- Author Bio & Entity Verification Card (Bottom) -->
+    <section class="mt-12 p-6 rounded-2xl border border-white/10 bg-[#121212] space-y-4">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+        <img
+          src="/duong-phuc-khanh.jpg"
+          alt="Duong Phuc Khanh (Dương Phúc Khánh · Kido)"
+          width="88"
+          height="88"
+          style="width:88px;height:88px;object-fit:cover;"
+          class="rounded-xl border border-white/15 shrink-0"
+        />
+        <div class="space-y-2 text-center sm:text-left flex-1">
+          <h3 class="text-base font-semibold text-zinc-100">About the Author: Duong Phuc Khanh (khanhdp · Kido)</h3>
+          
+        <p class="text-sm text-zinc-300 leading-relaxed mb-3">
+          <strong>Duong Phuc Khanh</strong> (Vietnamese: <em>Dương Phúc Khánh</em>, born 1995 in Da Nang, Vietnam) is a Senior Software Engineer and Systems Architect at <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>. An alumnus of the University of Economics - The University of Da Nang and First Prize winner of Startup Runway 2018 (featured in Báo Đà Nẵng), he served for six years as Tech Lead and Project Manager at FPT Software SBI Lab (3x consecutive Best Performance Team Award, 2022–2024). He is the creator of <a href="https://vantoicalis.com" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Winter Arc</a>, the 128-episode <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>, and the <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Agent Harness Kit</a>.
+        </p>
+        
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs font-mono pt-1">
+            <a href="https://khanhdp.com" class="text-sky-400 hover:underline">Home</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/en" class="text-sky-400 hover:underline">Biography (EN)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/about" class="text-sky-400 hover:underline">Tiểu sử (VI)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Wikidata</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">ORCID</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="border-t border-white/[0.06] bg-[#080808] text-xs font-mono text-zinc-500 py-12">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <a href="https://khanhdp.com" class="text-zinc-300 hover:text-white font-semibold uppercase transition-colors">DUONG PHUC KHANH (KIDO)</a>
+      </div>
+      <div class="flex items-center gap-4 text-zinc-400 flex-wrap">
+        <a href="/" class="hover:text-white transition-colors">Overview</a>
+        <a href="/en" class="hover:text-white transition-colors">Biography (EN)</a>
+        <a href="/about" class="hover:text-white transition-colors">Tiểu sử (VI)</a>
+        <a href="/articles/" class="text-white hover:text-emerald-400 transition-colors">Articles</a>
+        <a href="/portfolio" class="hover:text-white transition-colors">Portfolio</a>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Chronicles</a>
+        <a href="https://github.com/khanhduong22" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://www.linkedin.com/in/duong-phuc-khanh/" target="_blank" rel="noopener" class="hover:text-white transition-colors">LinkedIn</a>
+      </div>
+    </div>
+    <div class="max-w-5xl mx-auto px-6 mt-4 text-[11px] text-zinc-600 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>© 2026 Duong Phuc Khanh (khanhdp · Kido). All rights reserved.</p>
+      <p>Crafted with quiet confidence</p>
+    </div>
+  </footer>
+
+  <!-- Scroll Progress Script -->
+  <script>
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar) progressBar.style.width = scrolled + '%';
+    }, { passive: true });
+
+    document.addEventListener("click", (e) => {
+      let a = e.target.closest("a[href]");
+      if (a) {
+        let h = a.getAttribute("href");
+        if (h && (h.startsWith("http://") || h.startsWith("https://")) && !h.includes(window.location.hostname)) {
+          let t = (a.getAttribute("title") || a.textContent || h).trim().slice(0, 60);
+          if (window.trackEvent) window.trackEvent("outbound_click", { event_category: "outbound", destination_url: h, link_text: t });
+        } else if (h && (h.startsWith("#") || h.startsWith("/"))) {
+          let t = (a.textContent || h).trim().slice(0, 40);
+          if (window.trackEvent) window.trackEvent("nav_click", { event_category: "navigation", destination: h, link_text: t });
+        }
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>

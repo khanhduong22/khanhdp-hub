@@ -1,4 +1,4 @@
-# robots.txt for khanhdp.com
+# robots.txt for khanhdp.com — Dương Phúc Khánh (Duong Phuc Khanh · Kido)
 # Allow all standard search engines and AI generative crawlers
 
 User-agent: *
@@ -29,6 +29,6 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-# Sitemaps and AI Context
+# XML Sitemaps (Root Entity Home + Kido Chronicles Ecosystem)
 Sitemap: https://khanhdp.com/sitemap.xml
-Sitemap: https://khanhdp.com/llms.txt
+Sitemap: https://truyen.khanhdp.com/sitemap.xml

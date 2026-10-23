@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical Articles & Architecture Postmortems — Dương Phúc Khánh (Duong Phuc Khanh · Kido)</title>
+  <meta name="description" content="Authoritative technical whitepapers, distributed systems architecture case studies, PostgreSQL optimization, and high-concurrency engineering postmortems by Duong Phuc Khanh (Dương Phúc Khánh · khanhdp · Kido)." />
+
+  <link rel="canonical" href="https://khanhdp.com/articles/" />
+
+  <!-- Favicons & Brand Suite -->
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="144x144" href="/favicon-144x144.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- OpenGraph Metadata -->
+  <meta property="og:title" content="Technical Articles &amp; Architecture Postmortems — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta property="og:description" content="Authoritative technical whitepapers, distributed systems architecture case studies, PostgreSQL optimization, and high-concurrency engineering postmortems by Duong Phuc Khanh (Dương Phúc Khánh · khanhdp · Kido)." />
+  <meta property="og:url" content="https://khanhdp.com/articles/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Dương Phúc Khánh (khanhdp · Kido)" />
+  <meta property="og:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Technical Articles &amp; Architecture Postmortems — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta name="twitter:description" content="Authoritative technical whitepapers, distributed systems architecture case studies, PostgreSQL optimization, and high-concurrency engineering postmortems by Duong Phuc Khanh (Dương Phúc Khánh · khanhdp · Kido)." />
+  <meta name="twitter:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+
+  <!-- Deferred Telemetry -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-RMEP3RZB14');
+    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
+    window.clarity = window.clarity || function() { (window.clarity.q = window.clarity.q || []).push(arguments); };
+
+    window.trackEvent = function(eventName, params) {
+      params = params || {};
+      if (typeof window.gtag === 'function') window.gtag('event', eventName, params);
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', eventName);
+        var label = params.event_label || params.label || params.destination_url || params.category;
+        if (label) window.clarity('set', eventName, String(label).slice(0, 50));
+      }
+    };
+
+    (function(w, d) {
+      var isLoaded = false;
+      function injectScript(src, id) {
+        if (id && d.getElementById(id)) return;
+        if (d.querySelector('script[src="' + src + '"]')) return;
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = src;
+        if (id) s.id = id;
+        (d.head || d.body).appendChild(s);
+      }
+      var events = ['scroll', 'touchstart', 'pointerdown', 'keydown', 'wheel'];
+      function triggerDeferredLoad() {
+        if (isLoaded) return;
+        isLoaded = true;
+        events.forEach(function(e) { w.removeEventListener(e, triggerDeferredLoad); });
+        injectScript('https://www.googletagmanager.com/gtag/js?id=G-RMEP3RZB14', 'ga4-deferred-script');
+        injectScript('https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355', 'gtm-deferred-script');
+        injectScript('https://www.clarity.ms/tag/yy4l1xv1a9', 'clarity-deferred-script');
+      }
+      events.forEach(function(e) {
+        w.addEventListener(e, triggerDeferredLoad, { passive: true, once: true });
+      });
+    })(window, document);
+  </script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": "https://khanhdp.com/articles/#page",
+      "url": "https://khanhdp.com/articles/",
+      "name": "Technical Articles & Architecture Postmortems — Dương Phúc Khánh (Duong Phuc Khanh · Kido)",
+      "description": "Authoritative technical whitepapers, distributed systems architecture case studies, PostgreSQL optimization, and high-concurrency engineering postmortems by Duong Phuc Khanh (Dương Phúc Khánh · khanhdp · Kido).",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://khanhdp.com/#person"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://khanhdp.com/#person",
+      "name": "Dương Phúc Khánh",
+      "givenName": "Khánh",
+      "familyName": "Dương",
+      "additionalName": "Phúc",
+      "alternateName": [
+        "Duong Phuc Khanh",
+        "khanhdp",
+        "Kido",
+        "Khánh Dương",
+        "Khanh Duong",
+        "khanhduong22",
+        "phuckhanh22",
+        "kode.x.kido",
+        "kodexkido"
+      ],
+      "jobTitle": "Senior Software Engineer & Systems Architect",
+      "url": "https://khanhdp.com",
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "birthDate": "1995",
+      "identifier": [
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Google Knowledge Graph ID",
+          "value": "/g/11zyg5zq1c"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Wikidata",
+          "value": "Q141718572"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "ORCID",
+          "value": "0009-0005-7192-2664"
+        }
+      ],
+      "sameAs": [
+        "https://www.google.com/search?kgmid=/g/11zyg5zq1c",
+        "https://g.co/kg/g/11zyg5zq1c",
+        "https://khanhdp.com",
+        "https://khanhdp.com/about",
+        "https://khanhdp.com/en",
+        "https://duongphuckhanh.dev",
+        "https://www.wikidata.org/wiki/Q141718572",
+        "https://orcid.org/0009-0005-7192-2664",
+        "https://baodanang.vn/goi-mon-an-bang-dien-thoai-thong-minh-3174905.html",
+        "https://github.com/khanhduong22",
+        "https://dev.to/khanhduong22",
+        "https://viblo.asia/u/khanhdp",
+        "https://linkedin.com/in/duong-phuc-khanh/",
+        "https://x.com/duongphuckhanh",
+        "https://facebook.com/khanhduong2295/",
+        "https://truyen.khanhdp.com"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://khanhdp.com/articles/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://khanhdp.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Articles",
+          "item": "https://khanhdp.com/articles/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="preload" href="/fonts/inter-vietnamese.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/index.min.css" />
+</head>
+<body class="bg-craft-bg text-craft-text font-sans antialiased selection:bg-white/20 selection:text-white min-h-screen relative">
+  <!-- Reading Progress Bar -->
+  <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-zinc-500 via-zinc-200 to-white z-50 transition-all duration-100 ease-out" style="width: 0%;"></div>
+
+  <!-- Ambient Glow -->
+  <div class="absolute inset-x-0 top-0 h-[480px] ambient-glow pointer-events-none"></div>
+
+  <!-- Sticky Navbar -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-[#0a0a0a]/85 border-b border-white/[0.06] transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="/" class="group flex items-center gap-2.5 text-zinc-100 hover:text-white transition-colors">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse"></span>
+        <span class="font-mono text-xs tracking-wider uppercase font-semibold text-zinc-200">DUONG PHUC KHANH · KIDO</span>
+      </a>
+
+      <nav class="flex items-center gap-4 text-xs font-mono">
+        <div class="hidden sm:flex items-center gap-4 text-zinc-400">
+          <a href="/" class="hover:text-zinc-200 transition-colors">Overview</a>
+          <a href="/en" class="hover:text-zinc-200 transition-colors">Biography (EN)</a>
+          <a href="/about" class="hover:text-zinc-200 transition-colors">Tiểu sử (VI)</a>
+          <a href="/articles/" class="text-white font-semibold flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Articles
+          </a>
+          <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-zinc-200 transition-colors">Chronicles</a>
+          <a href="/portfolio" class="px-2.5 py-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all font-semibold flex items-center gap-1.5">
+            SME Portfolio
+          </a>
+        </div>
+
+        <div class="h-3 w-[1px] bg-white/10 hidden sm:block"></div>
+
+        <a href="mailto:phuckhanh22@gmail.com" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-zinc-300 hover:text-zinc-100 transition-all text-xs font-mono">
+          <span>Contact</span>
+          <span>↗</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Narrative Hub -->
+  <main class="max-w-5xl mx-auto px-6 pt-12 pb-24 space-y-16">
+
+    <!-- Hero Header -->
+    <div class="space-y-4 max-w-3xl">
+      <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 tracking-wider uppercase">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span>Systems Engineering &amp; Architecture Publications</span>
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-semibold tracking-tight text-zinc-100 leading-tight">
+        Technical Articles &amp; Incident Postmortems
+      </h1>
+      <p class="text-base sm:text-lg text-zinc-400 leading-relaxed">
+        Authoritative distributed systems engineering whitepapers, PostgreSQL query optimizations, Valkey distributed locking patterns, and zero-TBT PWA case studies authored by <a href="/en" class="text-white hover:text-emerald-400 font-semibold underline decoration-zinc-600 underline-offset-4">Duong Phuc Khanh</a> (<strong>Dương Phúc Khánh</strong> · khanhdp · Kido).
+      </p>
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono pt-2">
+        <span class="px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-300">12 Full-Length Architecture Papers</span>
+        <span class="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300">128+ Kido Chronicles Postmortems</span>
+        <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">ORCID: 0009-0005-7192-2664</span>
+      </div>
+    </div>
+
+    <!-- Section 1: English Architecture Deep-Dives -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between border-b border-white/[0.06] pb-3">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-semibold text-zinc-100 flex items-center gap-2">
+            <span class="text-emerald-400 font-mono text-sm">EN.</span>
+            <span>English Systems Architecture Deep-Dives</span>
+          </h2>
+          <p class="text-xs font-mono text-zinc-400 mt-0.5">Authoritative technical essays targeting global systems engineering audiences</p>
+        </div>
+        <span class="text-xs font-mono text-zinc-500">7 Articles</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">Multi-Agent AI</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/7-gate-multi-agent-engineering-harness/">How I Built a 7-Gate Multi-Agent Engineering Harness (And Survived a 6:00 AM Race Condition Storm)</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              Inside the architecture of Duong Phuc Khanh (Kido): Scaling a real-world PWA to 1,100+ weekly active athletes on a single 8GB VPS using Valkey Distributed Locks and Autonomous AI Agents.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">Architecture, AI Agents</span>
+            <a href="/articles/7-gate-multi-agent-engineering-harness/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">DevOps & VPS</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/bare-metal-vps-high-concurrency-playbook/">Why I Refused a $500/mo Cloud Bill: Running 1,100+ Active Users at 1.12s LCP on a Single 8GB Linux VPS</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              How Duong Phuc Khanh (Kido) tuned Linux kernel sysctl, Caddy 2, PostgreSQL 17, and Valkey 8 to serve 113,000+ weekly events without AWS bloat.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">Linux, Sysctl</span>
+            <a href="/articles/bare-metal-vps-high-concurrency-playbook/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">Web Performance</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/zero-tbt-lighthouse-100-pwa-engineering/">Zero-TBT & 8-Minute Mobile Sessions: Engineering a 60FPS Offline-First PWA on iOS Safari</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              How we achieved 0ms Total Blocking Time, 1.12s P75 LCP, and an 8.2% bounce rate on mobile Safari using the 3-Tier Viewport Protocol and Offline Outbox queues.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">PWA, Zero-TBT</span>
+            <a href="/articles/zero-tbt-lighthouse-100-pwa-engineering/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">Cache & Concurrency</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/http-304-singleflight-cache-races-mutation-epochs/">Why HTTP 304 Not Modified Quietly Erased Our PWA State (And How We Fixed SingleFlight Cache Races with Mutation Epochs)</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              How a 50ms replica lag combined with SWR background revalidation erased staff check-in states, and how we solved SingleFlight cache races using Client Mutation Ledgers and Server Mutation Epochs.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">HTTP 304, SingleFlight</span>
+            <a href="/articles/http-304-singleflight-cache-races-mutation-epochs/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">Database & Redis</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/redis-valkey-bitmaps-popcnt-o1-streak-engine/">From 32KB SQL Joins to 46 Bytes: Architecting an O(1) Habit Streak Engine with Valkey/Redis Bitmaps & POPCNT</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              How Duong Phuc Khanh (Kido) replaced bloated relational habit logs with 46-byte Redis/Valkey Bitmaps and CPU hardware POPCNT instructions, dropping p99 streak latency from 140ms to 0.08ms.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">Redis, Bitmaps</span>
+            <a href="/articles/redis-valkey-bitmaps-popcnt-o1-streak-engine/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">Edge & Next.js</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/nextjs-16-cloudflare-rsc-flight-cache-poisoning/">Anatomy of a Next.js 16 + Cloudflare Edge Outage: Eradicating RSC Flight Payload Cache Poisoning</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              How Next.js App Router client navigation headers (RSC: 1) poisoned Cloudflare Edge Cache with raw Flight streams, resulting in white screens on iOS Safari PWA, and our 3-layer zero-downtime architectural fix.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">Next.js 16, Cloudflare</span>
+            <a href="/articles/nextjs-16-cloudflare-rsc-flight-cache-poisoning/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">PostgreSQL & RBAC</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/postgresql-17-base32-materialized-paths-bitmask-rbac/">Killing Recursive CTEs: Sub-Millisecond Comment Trees & Bitmask RBAC in PostgreSQL 17</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              Why WITH RECURSIVE CTEs and 5-table RBAC joins choke under concurrency, and how Duong Phuc Khanh (Kido) architected Base32 Materialized Paths and 64-bit Bitmask RBAC to drop p95 query latency from 142ms to 0.8ms.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">PostgreSQL 17, Materialized Path</span>
+            <a href="/articles/postgresql-17-base32-materialized-paths-bitmask-rbac/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+      </div>
+    </section>
+
+    <!-- Section 2: Vietnamese Production Case Studies -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between border-b border-white/[0.06] pb-3">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-semibold text-zinc-100 flex items-center gap-2">
+            <span class="text-emerald-400 font-mono text-sm">VI.</span>
+            <span>Chuyên Khảo Kỹ Thuật &amp; Sự Cố Production (Tiếng Việt)</span>
+          </h2>
+          <p class="text-xs font-mono text-zinc-400 mt-0.5">Giải phẫu thực chiến các ca nghẽn tải, race condition và kiến trúc cơ sở dữ liệu</p>
+        </div>
+        <span class="text-xs font-mono text-zinc-500">5 Bài viết</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">Hệ Thống Phân Tán</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/giai-phau-race-condition-valkey-distributed-lock/">[Case Study Production] Giải phẫu cơn bão Race Condition lúc 6h00 sáng & cách gánh 1.100+ WAU trên VPS 8GB RAM bằng Valkey Distributed Lock</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              Phân tích kiến trúc của Dương Phúc Khánh (khanhdp · Kido): Xử lý TOCTOU Race Condition trong điểm danh buổi sáng bằng Valkey Distributed Lock và SingleFlight Pattern.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">Valkey, Distributed Lock</span>
+            <a href="/articles/giai-phau-race-condition-valkey-distributed-lock/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">Hệ Thống Phân Tán</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/http-304-not-modified-singleflight-cache-race-pwa/">[Postmortem Production] Giải phẫu cú lừa HTTP 304 Not Modified & SingleFlight Cache Race làm 'bốc hơi' dữ liệu PWA — Kiến trúc sư Dương Phúc Khánh (khanhdp)</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              Cách hiện tượng trễ replica 50ms kết hợp cùng SWR revalidation làm biến mất trạng thái điểm danh của nhân viên, và giải pháp Mutation Epochs của Dương Phúc Khánh.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">HTTP 304, SingleFlight</span>
+            <a href="/articles/http-304-not-modified-singleflight-cache-race-pwa/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">Cơ Sở Dữ Liệu</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/kien-truc-redis-valkey-bitmap-46-bytes-streak-engine/">Kiến trúc Redis/Valkey Bitmap 46 Bytes: Xây dựng O(1) Streak Engine & Khử Sạch N+1 Query SQL</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              Cách Dương Phúc Khánh (Kido) thay thế hàng triệu dòng habit logs quan hệ bằng 46 bytes Redis Bitmap và tập lệnh phần cứng CPU POPCNT, đưa độ trễ p99 từ 140ms về 0.08ms.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">Redis, Valkey</span>
+            <a href="/articles/kien-truc-redis-valkey-bitmap-46-bytes-streak-engine/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">Edge & Next.js</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/xu-ly-rsc-flight-cache-poisoning-nextjs-16-cloudflare/">Giải Phẫu Sự Cố Cloudflare Edge & Next.js 16: Triệt Tiêu Thảm Họa RSC Flight Payload Cache Poisoning</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              Cách header client navigation (RSC: 1) của Next.js App Router đầu độc bộ nhớ đệm Cloudflare Edge Cache biến PWA thành màn hình trắng xóa trên iOS Safari, và kiến trúc phòng thủ 3 lớp zero-downtime của Dương Phúc Khánh.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">Next.js 16, Cloudflare</span>
+            <a href="/articles/xu-ly-rsc-flight-cache-poisoning-nextjs-16-cloudflare/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+
+        <article class="p-5 rounded-xl border border-white/10 bg-[#121212]/80 hover:bg-[#151515] hover:border-emerald-500/30 transition-all flex flex-col justify-between group">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-emerald-400 font-semibold uppercase">PostgreSQL & RBAC</span>
+              <span class="text-zinc-500">2026-10-20</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors leading-snug">
+              <a href="/articles/postgresql-17-base32-materialized-path-bitmask-rbac-tieng-viet/">Khắc Phục Đòn Chí Mạng Recursive CTE: Cây Bình Luận Base32 Materialized Path & Bitmask RBAC Trong PostgreSQL 17</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-3 leading-relaxed">
+              Tại sao WITH RECURSIVE CTEs và JOIN 5 bảng phân quyền làm nghẽn Database khi tải cao, và giải pháp Base32 Materialized Path cùng 64-bit Bitmask RBAC đưa độ trễ p95 từ 142ms xuống 0.8ms của Dương Phúc Khánh.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-zinc-500">PostgreSQL 17, Base32 Path</span>
+            <a href="/articles/postgresql-17-base32-materialized-path-bitmask-rbac-tieng-viet/" class="text-sky-400 group-hover:text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>Read article</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+        
+      </div>
+    </section>
+
+    <!-- Section 3: Curated Grid of 20 Flagship Kido Chronicles Episodes -->
+    <section class="space-y-6 pt-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.06] pb-3">
+        <div>
+          <div class="flex items-center gap-2 text-purple-400 font-mono text-xs font-semibold uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+            <span>Biên Niên Sử Thực Chiến (128+ Tập)</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-1">
+            20 Tập Kido Chronicles Tiêu Biểu (truyen.khanhdp.com)
+          </h2>
+          <p class="text-xs text-zinc-400 mt-0.5 font-mono">
+            Nhật ký giải phẫu sự cố sản xuất nửa đêm, kỹ thuật kiểm thử và văn hóa kỹ sư thực chiến
+          </p>
+        </div>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 transition-all font-mono text-xs flex items-center gap-1.5 self-start sm:self-center">
+          <span>Xem trọn bộ 128 tập</span>
+          <span>↗</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        
+        <a href="https://truyen.khanhdp.com/tap/tap-1-thang-em-vibe-coding/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">AI & Agentic</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 1 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 1: Cú Sốc Vibe-Coding & Cuộc Tháo Chạy Nửa Đêm
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Bài học xương máu khi giao trọn niềm tin cho AI sinh code không có guardrails và cú crash hệ thống lúc 2 giờ sáng.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-1 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-9-bay-in-app-browser/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Mobile & Webview</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 9 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 9: Bẫy In-App Browser Facebook & Zalo Trên Mobile
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Giải mã thảm họa Storage Partitioning, mất Cookie Session và chiến thuật Breakout ra Safari / Chrome ngoài.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-9 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-10-tham-hoa-360px/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Frontend UI</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 10 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 10: Thảm Họa Màn Hình 360px & Nghệ Thuật Viewport
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Tối ưu hóa layout cho các dòng điện thoại Android giá rẻ, triệt tiêu Horizontal Scrollbar và bảo vệ 60FPS.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-10 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-11-mo-sentry-apm/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Observability</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 11 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 11: Mở Sentry APM & Bắt Ma Latency Lúc Nửa Đêm
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Cách thiết lập tracing phân tán, gắn nhãn transaction và truy tìm câu lệnh SQL nuốt trọn CPU Contabo.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-11 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-82-chuyen-tau-ngam-web-push-ios-safari/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">PWA & iOS</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 82 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 82: Chuyến Tàu Ngầm Web Push Trên iOS Safari
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Chinh phục Web Push Notification trên iOS PWA không cần qua Apple Developer Account $99/năm.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-82 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-84-cuoc-thanh-trung-docker-dangle-cuu-o-cung-vps/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">DevOps & VPS</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 84 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 84: Cuộc Thanh Trừng Docker Dangle Cứu Ổ Cứng VPS
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Xử lý sự cố tràn ổ cứng 100% lúc 4 giờ sáng do Docker build layer dangle và script tự động dọn dẹp cron job.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-84 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-100-dai-ket-cuc-100-tap-khuc-khai-hoan-spartan/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Milestone</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 100 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 100: Đại Kết Cục 100 Tập & Khúc Khải Hoàn Spartan
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Nhìn lại hành trình 100 ngày kỷ luật Winter Arc, cột mốc 1.1K WAU và triết lý kỹ thuật của một Senior Developer.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-100 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-108-con-bao-cors-preflight-options-caddy/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Infrastructure</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 108 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 108: Cơn Bão CORS Preflight OPTIONS & Nghệ Thuật Caddy 2
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Cách dập tắt hàng ngàn OPTIONS request thừa thãi làm nghẽn server và cấu hình Caddy Native Reverse Proxy.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-108 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-111-tieng-keu-cuu-luc-04h48-cua-minh-chu-va-chiec-bay-time-proof-secret/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Security</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 111 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 111: Tiếng Kêu Cứu Lúc 04h48 & Chiếc Bẫy Time-Proof Secret
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Giải cứu chuỗi kỷ luật rạng sáng, bảo vệ chữ ký HMAC SHA-256 chống lại tấn công Replay Attack từ client.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-111 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-114-voi-caddy-roi-thi-caddy-het-khai-tu-nginx-portfolio/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">DevOps & VPS</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 114 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 114: Khai Tử Nginx Sang Caddy Toàn Diện Trên Portfolio
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Quy hoạch lại toàn bộ hạ tầng 30 container, tự động hóa SSL Let's Encrypt và cắt giảm 80% độ phức tạp config.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-114 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-115-bat-ma-web-vitals-sentry-va-bi-mat-30-giay/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Observability</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 115 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 115: Bắt Ma Web Vitals Sentry & Bí Mật 30 Giây
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Lọc sạch các giao dịch ảo của người dùng mở tab ngầm làm bóp méo số liệu LCP và INP trong Google Search Console.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-115 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-116-dai-phau-thuat-state-management-zustand-tanstack-query/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Architecture</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 116 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 116: Đại Phẫu Thuật State Management Zustand & TanStack Query
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Phân định rạch ròi giữa Server State và Client State, xóa bỏ anti-pattern nhồi nhét API cache vào global state.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-116 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-118-cuoc-khai-tu-6400-dong-redux-cu-lat-do-the-ky-cua-zustand-tanstack-query/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Code Refactor</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 118 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 118: Khai Tử 6400 Dòng Redux Cũ — Cuộc Đảo Chính Của Zustand
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Hành trình xẻ thịt khối mã nguồn cồng kềnh, giảm 42KB bundle size và tăng tốc độ phản hồi UI lên 60FPS.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-118 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-119-bop-co-eager-auth-va-tram-sach-material-symbols-interaction-driven-auth/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Web Performance</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 119 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 119: Bóp Cổ Eager Auth & Interaction-Driven Auth Thông Minh
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Chặn đứng các request xác thực người dùng chặn ngang quá trình First Paint, đưa TBT về 0ms tuyệt đối.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-119 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-120-xoa-bo-loading-tsx-cua-nextjs-bi-kip-zero-streaming-fallback-va-frame-0-skeleton/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Next.js</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 120 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 120: Xóa Bỏ loading.tsx Của Next.js & Frame-0 Skeleton
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Khắc phục triệt để hiện tượng giật màn hình (CLS) khi Next.js chuyển trang bằng Skeleton đồng bộ Frame-0.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-120 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-121-dai-di-cu-monorepo-len-full-bun-chat-dut-long-task-205ms-va-day-lcp-ve-frame-2/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Infrastructure</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 121 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 121: Đại Di Cư Monorepo Lên Full Bun — Chặt Đứt Long Task 205ms
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Chuyển dịch toàn bộ runtime sang Bun, tối ưu build pipeline và đẩy thời gian nạp trang LCP về Frame 2.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-121 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-124-vu-an-dau-doc-bo-nho-dem-rsc-service-worker-v7-va-accessibility-100-tuyet-doi/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Edge & PWA</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 124 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 124: Vụ Án Đầu Độc Bộ Nhớ Đệm RSC & Service Worker v7
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Phân tích cú xung đột giữa Service Worker Cache và Next.js RSC Flight Header khiến iOS Safari bị crash trắng xóa.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-124 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-125-khai-tu-firebase-sdk-khoi-web-buoc-ngoat-native-google-oauth-20/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Security</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 125 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 125: Khai Tử Firebase SDK Khỏi Web — Bước Ngoặt Native Google OAuth 2.0
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Cắt bỏ 140KB thư viện Firebase cồng kềnh, tự viết Google Identity Platform native flow siêu nhẹ và an toàn.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-125 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-126-nghe-thuat-xe-thit-god-file-2000-dong-va-tuyet-ky-tab-preloader/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Code Refactor</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 126 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 126: Nghệ Thuật Xẻ Thịt God-File 2000 Dòng & Tuyệt Kỹ Tab Preloader
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Phương pháp luận phân rã tệp tin khổng lồ thành các slice domain rành mạch và kỹ thuật prefetch theo cử chỉ chạm.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-126 →</span>
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-131-dao-trung-o-bug-multi-temporal-tenancy-khi-asia-saigon-troi-day-va-cu-lua-ip-cloudflare/" target="_blank" rel="noopener" class="p-4 rounded-xl border border-white/10 bg-[#121212]/70 hover:bg-[#161616] hover:border-purple-400/40 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+              <span class="text-purple-400 font-semibold">Distributed Systems</span>
+              <span class="group-hover:text-purple-300 transition-colors">Tập 131 ↗</span>
+            </div>
+            <h4 class="text-xs sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+              Tập 131: Đào Trúng Ổ Bug Multi-Temporal Tenancy & Cú Lừa IP Cloudflare
+            </h4>
+            <p class="text-[11px] text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+              Xử lý sai lệch múi giờ đa quốc gia của vận động viên quốc tế và cách bóc tách IP gốc qua Cloudflare Header.
+            </p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-white/[0.04] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
+            <span>truyen.khanhdp.com</span>
+            <span class="text-purple-400 group-hover:translate-x-0.5 transition-transform">Read tap-131 →</span>
+          </div>
+        </a>
+        
+      </div>
+    </section>
+
+    <!-- Author & Entity Verification Box -->
+    <section class="p-6 rounded-2xl border border-white/10 bg-[#121212] space-y-4">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+        <img
+          src="/duong-phuc-khanh.jpg"
+          alt="Duong Phuc Khanh (Dương Phúc Khánh · Kido)"
+          width="96"
+          height="96"
+          style="width:96px;height:96px;object-fit:cover;"
+          class="rounded-2xl border border-white/15 shrink-0"
+        />
+        <div class="space-y-2 text-center sm:text-left flex-1">
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <h3 class="text-lg font-semibold text-zinc-100">Dương Phúc Khánh</h3>
+            <span class="text-xs font-mono text-zinc-400">/ Duong Phuc Khanh · khanhdp · Kido</span>
+          </div>
+          <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+            Senior Software Engineer &amp; Systems Architect based in Da Nang, Vietnam. 6 years at FPT Software SBI Lab (3x Best Performance Award recipient), Startup Runway 2018 Champion. Creator of <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>, <a href="/en" class="text-sky-400 hover:underline">Official Biography (EN)</a>, <a href="/about" class="text-sky-400 hover:underline">Tiểu sử Tiếng Việt</a>, <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>, and <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Agent Harness Kit</a>.
+          </p>
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs font-mono pt-1">
+            <a href="https://www.google.com/search?kgmid=/g/11zyg5zq1c" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Google KG /g/11zyg5zq1c</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Wikidata Q141718572</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-sky-400 hover:underline">ORCID 0009-0005-7192-2664</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://github.com/khanhduong22" target="_blank" rel="noopener" class="text-zinc-400 hover:text-white">GitHub</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://dev.to/khanhduong22" target="_blank" rel="noopener" class="text-zinc-400 hover:text-white">DEV.to</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://viblo.asia/u/khanhdp" target="_blank" rel="noopener" class="text-zinc-400 hover:text-white">Viblo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="border-t border-white/[0.06] bg-[#080808] text-xs font-mono text-zinc-500 py-12">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <a href="https://khanhdp.com" class="text-zinc-300 hover:text-white font-semibold uppercase transition-colors">DUONG PHUC KHANH (KIDO)</a>
+      </div>
+      <div class="flex items-center gap-4 text-zinc-400 flex-wrap">
+        <a href="/" class="hover:text-white transition-colors">Overview</a>
+        <a href="/en" class="hover:text-white transition-colors">Biography (EN)</a>
+        <a href="/about" class="hover:text-white transition-colors">Tiểu sử (VI)</a>
+        <a href="/articles/" class="text-white hover:text-emerald-400 transition-colors">Articles</a>
+        <a href="/portfolio" class="hover:text-white transition-colors">Portfolio</a>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Chronicles</a>
+        <a href="https://github.com/khanhduong22" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://www.linkedin.com/in/duong-phuc-khanh/" target="_blank" rel="noopener" class="hover:text-white transition-colors">LinkedIn</a>
+      </div>
+    </div>
+    <div class="max-w-5xl mx-auto px-6 mt-4 text-[11px] text-zinc-600 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>© 2026 Duong Phuc Khanh (khanhdp · Kido). All rights reserved.</p>
+      <p>Crafted with quiet confidence</p>
+    </div>
+  </footer>
+
+  <!-- Scroll Progress Script -->
+  <script>
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar) progressBar.style.width = scrolled + '%';
+    }, { passive: true });
+
+    document.addEventListener("click", (e) => {
+      let a = e.target.closest("a[href]");
+      if (a) {
+        let h = a.getAttribute("href");
+        if (h && (h.startsWith("http://") || h.startsWith("https://")) && !h.includes(window.location.hostname)) {
+          let t = (a.getAttribute("title") || a.textContent || h).trim().slice(0, 60);
+          if (window.trackEvent) window.trackEvent("outbound_click", { event_category: "outbound", destination_url: h, link_text: t });
+        } else if (h && (h.startsWith("#") || h.startsWith("/"))) {
+          let t = (a.textContent || h).trim().slice(0, 40);
+          if (window.trackEvent) window.trackEvent("nav_click", { event_category: "navigation", destination: h, link_text: t });
+        }
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>

@@ -1,18 +1,23 @@
-# Dương Phúc Khánh (khanhdp · Kido) — Senior Software Engineer & Systems Architect
+# Dương Phúc Khánh (Duong Phuc Khanh · khanhdp · Kido) — Senior Software Engineer & Systems Architect
 
-> **Dương Phúc Khánh (Kido)** is a Vietnamese Senior Software Engineer and Systems Architect based in Da Nang, Vietnam, known for architecting Winter Arc, Kido Chronicles, and the Agent Harness Kit.
-> **Tiếng Việt (Canonical VI Summary)**: Dương Phúc Khánh (sinh năm 1995 tại Đà Nẵng, định danh công nghệ: `khanhdp`, biệt danh: `Kido`) là Kỹ sư Phần mềm Cao cấp & Kiến trúc sư Hệ thống (Senior Software Engineer & Systems Architect) tại Đà Nẵng, Việt Nam; 6 năm công tác tại FPT Software (SBI Lab) từ Software Engineer lên Team Lead, Tech Lead & Quản lý dự án (Project Manager), Quán quân Startup Runway 2018 (vinh danh trên Báo Đà Nẵng), tác giả nền tảng Winter Arc, bộ biên niên sử kỹ thuật Kido Chronicles (127+ tập), bộ khung điều phối đa tác tử Agent Harness Kit và hệ sinh thái 18 giải pháp phần mềm doanh nghiệp SME & Enterprise.
-> **Entity Disambiguation**: `khanhdp` is the unique, unbroken technology identifier and official web domain ([https://khanhdp.com](https://khanhdp.com)) of engineer Dương Phúc Khánh (Kido) — distinct from cinematography abbreviations ("DP / DOP") or unrelated individuals.
+> **Dương Phúc Khánh (Duong Phuc Khanh · Kido · khanhdp)** is a Vietnamese Senior Software Engineer and Systems Architect (born **1995** in Da Nang, Vietnam) known for architecting Winter Arc, Kido Chronicles (128+ episodes), and the Agent Harness Kit.
+> **Tiếng Việt (Canonical VI Summary)**: Dương Phúc Khánh (tiếng Anh: `Duong Phuc Khanh`, sinh năm **1995** tại Đà Nẵng; định danh công nghệ: `khanhdp`, biệt danh: `Kido`) là Kỹ sư Phần mềm Cao cấp & Kiến trúc sư Hệ thống (Senior Software Engineer & Systems Architect) tại Đà Nẵng, Việt Nam; cựu sinh viên Trường Đại học Kinh tế – Đại học Đà Nẵng (`Q5207273`), Quán quân Startup Runway 2018 (vinh danh trên Báo Đà Nẵng), 6 năm công tác tại FPT Software (SBI Lab) từ Software Engineer lên Team Lead, Tech Lead & Quản lý dự án (Project Manager, 3x Best Performance Award 2022–2024), tác giả nền tảng Winter Arc, bộ biên niên sử kỹ thuật Kido Chronicles (128+ tập), bộ khung điều phối đa tác tử Agent Harness Kit và hệ sinh thái 18 giải pháp phần mềm doanh nghiệp SME & Enterprise.
+> **Entity Disambiguation (`/g/11zyg5zq1c` · `Q141718572`)**:
+> 1. `Dương Phúc Khánh` (`Duong Phuc Khanh`) refers to the Da Nang-based Senior Software Engineer & Systems Architect at [https://khanhdp.com](https://khanhdp.com) — distinct from Vietnamese geographic locations (`Khu công nghiệp Phúc Khánh`, `Cầu Phúc Khánh`, `Xã Phúc Khánh`) or regional newspaper reporters.
+> 2. `khanhdp` is the unique technology identifier and official web domain ([https://khanhdp.com](https://khanhdp.com)) of engineer Dương Phúc Khánh (Kido).
+> 3. **Canonical Birth Year Verification**: Born in **1995** in Da Nang, Vietnam (verified across Wikidata `Q141718572`, ORCID `0009-0005-7192-2664`, and Google Knowledge Panel `/g/11zyg5zq1c`).
 
 ## Canonical Identity & Verified Profiles
-- **Primary Canonical Name**: Dương Phúc Khánh (khanhdp · Kido) — Senior Software Engineer & Systems Architect
-- **Birth Year & Birthplace**: 1995 · Da Nang, Vietnam
+- **Primary Canonical Name**: Dương Phúc Khánh (Duong Phuc Khanh · khanhdp · Kido) — Senior Software Engineer & Systems Architect
+- **Birth Year & Birthplace**: 1995 · Da Nang, Vietnam (Wikidata `Q25282`)
 - **Official Portrait Image**: [https://khanhdp.com/duong-phuc-khanh.jpg](https://khanhdp.com/duong-phuc-khanh.jpg)
 - **Primary Technology & Domain Handle**: khanhdp ([https://khanhdp.com](https://khanhdp.com))
 - **Secondary Monikers & Aliases**: Kido, Khánh Dương, Duong Phuc Khanh
 - **Digital Handles**: khanhdp, khanhduong22, phuckhanh22, khanhduong2295, duongphuckhanh, kode.x.kido, kodexkido
 - **Official Hub**: [Dương Phúc Khánh - Systems Architect & AI Engineer (https://khanhdp.com)](https://khanhdp.com) (Aliases: [https://duongphuckhanh.dev](https://duongphuckhanh.dev), [https://www.duongphuckhanh.dev](https://www.duongphuckhanh.dev))
-- **Full Biography & Encyclopedia Entry**: [Tiểu sử Dương Phúc Khánh - Systems Architect & AI Engineer (https://khanhdp.com/about)](https://khanhdp.com/about)
+- **Full Vietnamese Biography & Encyclopedia Entry**: [Tiểu sử Dương Phúc Khánh - Systems Architect & AI Engineer (https://khanhdp.com/about)](https://khanhdp.com/about)
+- **Full English Biography & Encyclopedia Entry**: [Duong Phuc Khanh (Dương Phúc Khánh · Kido) — Official English Biography (https://khanhdp.com/en)](https://khanhdp.com/en)
+- **Technical Publications & Architecture Postmortems Hub**: [Engineering Articles by Dương Phúc Khánh (https://khanhdp.com/articles/)](https://khanhdp.com/articles/)
 - **Turnkey SME & Enterprise Software Portfolio**: [Hệ Sinh Thái 18 Giải Pháp Web App SME, ERP & AI Automation (https://khanhdp.com/portfolio)](https://khanhdp.com/portfolio)
 - **GitHub**: [https://github.com/khanhduong22](https://github.com/khanhduong22)
 - **DEV Community (Dev.to)**: [https://dev.to/khanhduong22](https://dev.to/khanhduong22)
@@ -91,3 +96,18 @@ Dương Phúc Khánh (Kido) architects and delivers 100% source-code-owned, self
 15. **Fleet TMS & Digital e-POD Signature** ([https://khanhdp.com/apps/fleet/](https://khanhdp.com/apps/fleet/)): Vehicle routing (VRP), fuel norm tracking, mobile electronic Proof of Delivery (e-POD).
 16. **B2B Wholesale Portal & Credit Limit Engine** ([https://khanhdp.com/apps/b2b/](https://khanhdp.com/apps/b2b/)): Tiered dealer pricing matrix, automated credit limit lockout (`@kt/b2b-credit`), container order tracking.
 17. **35 `@kt/*` Enterprise Architecture Suites**: Reusable TypeScript monorepo packages covering `@kt/einvoice-vn`, `@kt/audit-trail`, `@kt/tenant-guard`, `@kt/resilient-cache`, `@kt/wallet-ledger`, `@kt/bom-inventory`, `@kt/fleet-routing`, `@kt/geocoding-routing`, `@kt/offline-sync`, and `@kt/anti-spam`.
+
+## Published Engineering Postmortems & Systems Architecture Monographs (https://khanhdp.com/articles/)
+1. **[VI] Giải phẫu cơn bão Race Condition lúc 6h00 sáng & Valkey Distributed Lock** ([https://khanhdp.com/articles/giai-phau-race-condition-valkey-distributed-lock/](https://khanhdp.com/articles/giai-phau-race-condition-valkey-distributed-lock/)) — by Dương Phúc Khánh (Duong Phuc Khanh · Kido).
+2. **[VI] Tại sao HTTP 304 Not Modified âm thầm xóa sạch State PWA & SingleFlight Mutation Epochs** ([https://khanhdp.com/articles/http-304-not-modified-singleflight-cache-race-pwa/](https://khanhdp.com/articles/http-304-not-modified-singleflight-cache-race-pwa/)) — by Dương Phúc Khánh (Duong Phuc Khanh · Kido).
+3. **[VI] Từ 32KB SQL Joins xuống 46 Bytes: Kiến trúc O(1) Streak Engine với Valkey/Redis Bitmaps & POPCNT** ([https://khanhdp.com/articles/kien-truc-redis-valkey-bitmap-46-bytes-streak-engine/](https://khanhdp.com/articles/kien-truc-redis-valkey-bitmap-46-bytes-streak-engine/)) — by Dương Phúc Khánh (Duong Phuc Khanh · Kido).
+4. **[VI] Giải phẫu sự cố RSC Flight Payload Cache Poisoning trên Next.js 16 + Cloudflare Edge** ([https://khanhdp.com/articles/xu-ly-rsc-flight-cache-poisoning-nextjs-16-cloudflare/](https://khanhdp.com/articles/xu-ly-rsc-flight-cache-poisoning-nextjs-16-cloudflare/)) — by Dương Phúc Khánh (Duong Phuc Khanh · Kido).
+5. **[VI] Khai tử CTE Đệ quy: Cây bình luận Sub-Millisecond & Bitmask RBAC 64-bit trên PostgreSQL 17** ([https://khanhdp.com/articles/postgresql-17-base32-materialized-path-bitmask-rbac-tieng-viet/](https://khanhdp.com/articles/postgresql-17-base32-materialized-path-bitmask-rbac-tieng-viet/)) — by Dương Phúc Khánh (Duong Phuc Khanh · Kido).
+6. **[EN] How I Built a 7-Gate Multi-Agent Engineering Harness (And Survived a 6:00 AM Race Condition Storm)** ([https://khanhdp.com/articles/7-gate-multi-agent-engineering-harness/](https://khanhdp.com/articles/7-gate-multi-agent-engineering-harness/)) — by Duong Phuc Khanh (Dương Phúc Khánh · Kido).
+7. **[EN] The Bare-Metal VPS High-Concurrency Playbook: Serving 1,100+ WAU on a Single 8GB Node** ([https://khanhdp.com/articles/bare-metal-vps-high-concurrency-playbook/](https://khanhdp.com/articles/bare-metal-vps-high-concurrency-playbook/)) — by Duong Phuc Khanh (Dương Phúc Khánh · Kido).
+8. **[EN] Zero-TBT & Lighthouse 100 PWA Engineering: The 3-Tier Viewport & Interaction Telemetry Protocol** ([https://khanhdp.com/articles/zero-tbt-lighthouse-100-pwa-engineering/](https://khanhdp.com/articles/zero-tbt-lighthouse-100-pwa-engineering/)) — by Duong Phuc Khanh (Dương Phúc Khánh · Kido).
+9. **[EN] Why HTTP 304 Not Modified Quietly Erased Our PWA State (SingleFlight Cache Races & Mutation Epochs)** ([https://khanhdp.com/articles/http-304-singleflight-cache-races-mutation-epochs/](https://khanhdp.com/articles/http-304-singleflight-cache-races-mutation-epochs/)) — by Duong Phuc Khanh (Dương Phúc Khánh · Kido).
+10. **[EN] From 32KB SQL Joins to 46 Bytes: Architecting an O(1) Habit Streak Engine with Valkey/Redis Bitmaps & POPCNT** ([https://khanhdp.com/articles/redis-valkey-bitmaps-popcnt-o1-streak-engine/](https://khanhdp.com/articles/redis-valkey-bitmaps-popcnt-o1-streak-engine/)) — by Duong Phuc Khanh (Dương Phúc Khánh · Kido).
+11. **[EN] Anatomy of a Next.js 16 + Cloudflare Edge Outage: Eradicating RSC Flight Payload Cache Poisoning** ([https://khanhdp.com/articles/nextjs-16-cloudflare-rsc-flight-cache-poisoning/](https://khanhdp.com/articles/nextjs-16-cloudflare-rsc-flight-cache-poisoning/)) — by Duong Phuc Khanh (Dương Phúc Khánh · Kido).
+12. **[EN] Killing Recursive CTEs: Sub-Millisecond Comment Trees & Bitmask RBAC in PostgreSQL 17** ([https://khanhdp.com/articles/postgresql-17-base32-materialized-paths-bitmask-rbac/](https://khanhdp.com/articles/postgresql-17-base32-materialized-paths-bitmask-rbac/)) — by Duong Phuc Khanh (Dương Phúc Khánh · Kido).
+

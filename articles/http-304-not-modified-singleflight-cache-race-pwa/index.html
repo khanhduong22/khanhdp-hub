@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Postmortem Production] Giải phẫu cú lừa HTTP 304 Not Modified & SingleFlight Cache Race làm 'bốc hơi' dữ liệu PWA — Kiến trúc sư Dương Phúc Khánh (khanhdp) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)</title>
+  <meta name="description" content="Cách hiện tượng trễ replica 50ms kết hợp cùng SWR revalidation làm biến mất trạng thái điểm danh của nhân viên, và giải pháp Mutation Epochs của Dương Phúc Khánh." />
+
+  <!-- Canonical Tag -->
+  <link rel="canonical" href="https://khanhdp.com/articles/http-304-not-modified-singleflight-cache-race-pwa/" />
+
+  <!-- Favicons & Brand Suite -->
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="144x144" href="/favicon-144x144.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- OpenGraph Metadata -->
+  <meta property="og:title" content="[Postmortem Production] Giải phẫu cú lừa HTTP 304 Not Modified &amp; SingleFlight Cache Race làm &#x27;bốc hơi&#x27; dữ liệu PWA — Kiến trúc sư Dương Phúc Khánh (khanhdp) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta property="og:description" content="Cách hiện tượng trễ replica 50ms kết hợp cùng SWR revalidation làm biến mất trạng thái điểm danh của nhân viên, và giải pháp Mutation Epochs của Dương Phúc Khánh." />
+  <meta property="og:url" content="https://khanhdp.com/articles/http-304-not-modified-singleflight-cache-race-pwa/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content="vi_VN" />
+  <meta property="og:site_name" content="Dương Phúc Khánh (khanhdp · Kido)" />
+  <meta property="og:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="[Postmortem Production] Giải phẫu cú lừa HTTP 304 Not Modified &amp; SingleFlight Cache Race làm &#x27;bốc hơi&#x27; dữ liệu PWA — Kiến trúc sư Dương Phúc Khánh (khanhdp) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta name="twitter:description" content="Cách hiện tượng trễ replica 50ms kết hợp cùng SWR revalidation làm biến mất trạng thái điểm danh của nhân viên, và giải pháp Mutation Epochs của Dương Phúc Khánh." />
+  <meta name="twitter:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+
+  <!-- Deferred Lossless Telemetry -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-RMEP3RZB14');
+    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
+    window.clarity = window.clarity || function() { (window.clarity.q = window.clarity.q || []).push(arguments); };
+
+    window.addEventListener('error', function(e) {
+      if (window.Sentry && typeof window.Sentry.captureException === 'function') {
+        var id = window.Sentry.captureException(e.error || e.message);
+        if (id && window.clarity) window.clarity('set', 'sentry_event_id', id);
+      }
+    });
+
+    window.trackEvent = function(eventName, params) {
+      params = params || {};
+      if (typeof window.gtag === 'function') window.gtag('event', eventName, params);
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', eventName);
+        var label = params.event_label || params.label || params.destination_url || params.category;
+        if (label) window.clarity('set', eventName, String(label).slice(0, 50));
+      }
+    };
+
+    (function(w, d) {
+      var isLoaded = false;
+      function injectScript(src, id) {
+        if (id && d.getElementById(id)) return;
+        if (d.querySelector('script[src="' + src + '"]')) return;
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = src;
+        if (id) s.id = id;
+        (d.head || d.body).appendChild(s);
+      }
+      var events = ['scroll', 'touchstart', 'pointerdown', 'keydown', 'wheel'];
+      function triggerDeferredLoad() {
+        if (isLoaded) return;
+        isLoaded = true;
+        events.forEach(function(e) { w.removeEventListener(e, triggerDeferredLoad); });
+        injectScript('https://www.googletagmanager.com/gtag/js?id=G-RMEP3RZB14', 'ga4-deferred-script');
+        injectScript('https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355', 'gtm-deferred-script');
+        injectScript('https://www.clarity.ms/tag/yy4l1xv1a9', 'clarity-deferred-script');
+      }
+      events.forEach(function(e) {
+        w.addEventListener(e, triggerDeferredLoad, { passive: true, once: true });
+      });
+    })(window, document);
+  </script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://khanhdp.com/articles/http-304-not-modified-singleflight-cache-race-pwa/#article",
+      "headline": "[Postmortem Production] Giải phẫu cú lừa HTTP 304 Not Modified & SingleFlight Cache Race làm 'bốc hơi' dữ liệu PWA — Kiến trúc sư Dương Phúc Khánh (khanhdp)",
+      "name": "[Postmortem Production] Giải phẫu cú lừa HTTP 304 Not Modified & SingleFlight Cache Race làm 'bốc hơi' dữ liệu PWA — Kiến trúc sư Dương Phúc Khánh (khanhdp) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)",
+      "description": "Cách hiện tượng trễ replica 50ms kết hợp cùng SWR revalidation làm biến mất trạng thái điểm danh của nhân viên, và giải pháp Mutation Epochs của Dương Phúc Khánh.",
+      "url": "https://khanhdp.com/articles/http-304-not-modified-singleflight-cache-race-pwa/",
+      "mainEntityOfPage": "https://khanhdp.com/articles/http-304-not-modified-singleflight-cache-race-pwa/",
+      "inLanguage": "vi",
+      "datePublished": "2026-10-20",
+      "dateModified": "2026-10-23",
+      "author": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "publisher": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "articleSection": "Hệ Thống Phân Tán"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://khanhdp.com/#person",
+      "name": "Dương Phúc Khánh",
+      "givenName": "Khánh",
+      "familyName": "Dương",
+      "additionalName": "Phúc",
+      "alternateName": [
+        "Duong Phuc Khanh",
+        "khanhdp",
+        "Kido",
+        "Khánh Dương",
+        "Khanh Duong",
+        "khanhduong22",
+        "phuckhanh22",
+        "kode.x.kido",
+        "kodexkido"
+      ],
+      "jobTitle": "Senior Software Engineer & Systems Architect",
+      "url": "https://khanhdp.com",
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "birthDate": "1995",
+      "identifier": [
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Google Knowledge Graph ID",
+          "value": "/g/11zyg5zq1c"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Wikidata",
+          "value": "Q141718572"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "ORCID",
+          "value": "0009-0005-7192-2664"
+        }
+      ],
+      "sameAs": [
+        "https://www.google.com/search?kgmid=/g/11zyg5zq1c",
+        "https://g.co/kg/g/11zyg5zq1c",
+        "https://khanhdp.com",
+        "https://khanhdp.com/about",
+        "https://khanhdp.com/en",
+        "https://duongphuckhanh.dev",
+        "https://www.wikidata.org/wiki/Q141718572",
+        "https://orcid.org/0009-0005-7192-2664",
+        "https://baodanang.vn/goi-mon-an-bang-dien-thoai-thong-minh-3174905.html",
+        "https://github.com/khanhduong22",
+        "https://dev.to/khanhduong22",
+        "https://viblo.asia/u/khanhdp",
+        "https://linkedin.com/in/duong-phuc-khanh/",
+        "https://x.com/duongphuckhanh",
+        "https://facebook.com/khanhduong2295/",
+        "https://truyen.khanhdp.com"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://khanhdp.com/articles/http-304-not-modified-singleflight-cache-race-pwa/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://khanhdp.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Technical Articles",
+          "item": "https://khanhdp.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "[Postmortem Production] Giải phẫu cú lừa HTTP 304 Not Modified & SingleFlight Cache Race làm 'bốc hơi' dữ liệu PWA — Kiến trúc sư Dương Phúc Khánh (khanhdp)",
+          "item": "https://khanhdp.com/articles/http-304-not-modified-singleflight-cache-race-pwa/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="preload" href="/fonts/inter-vietnamese.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/index.min.css" />
+</head>
+<body class="bg-craft-bg text-craft-text font-sans antialiased selection:bg-white/20 selection:text-white min-h-screen relative">
+  <!-- Top Reading Progress Indicator -->
+  <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-zinc-500 via-zinc-200 to-white z-50 transition-all duration-100 ease-out" style="width: 0%;"></div>
+
+  <!-- Ambient Light Header Radial -->
+  <div class="absolute inset-x-0 top-0 h-[480px] ambient-glow pointer-events-none"></div>
+
+  <!-- Sticky Minimal Navigation Bar -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-[#0a0a0a]/85 border-b border-white/[0.06] transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="/" class="group flex items-center gap-2.5 text-zinc-100 hover:text-white transition-colors">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse"></span>
+        <span class="font-mono text-xs tracking-wider uppercase font-semibold text-zinc-200">DUONG PHUC KHANH · KIDO</span>
+      </a>
+
+      <nav class="flex items-center gap-4 text-xs font-mono">
+        <div class="hidden sm:flex items-center gap-4 text-zinc-400">
+          <a href="/" class="hover:text-zinc-200 transition-colors">Overview</a>
+          <a href="/en" class="hover:text-zinc-200 transition-colors">Biography (EN)</a>
+          <a href="/about" class="hover:text-zinc-200 transition-colors">Tiểu sử (VI)</a>
+          <a href="/articles/" class="text-white font-semibold flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Articles
+          </a>
+          <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-zinc-200 transition-colors">Chronicles</a>
+          <a href="/portfolio" class="px-2.5 py-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all font-semibold flex items-center gap-1.5">
+            SME Portfolio
+          </a>
+        </div>
+
+        <div class="h-3 w-[1px] bg-white/10 hidden sm:block"></div>
+
+        <a href="mailto:phuckhanh22@gmail.com" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-zinc-300 hover:text-zinc-100 transition-all text-xs font-mono">
+          <span>Contact</span>
+          <span>↗</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Article Container -->
+  <main class="max-w-4xl mx-auto px-6 pt-12 pb-24">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-xs font-mono text-zinc-500 tracking-wider uppercase mb-6 pb-3 border-b border-white/[0.06] overflow-x-auto">
+      <a href="/" class="hover:text-zinc-300 transition-colors shrink-0">KHANHDP.COM</a>
+      <span>/</span>
+      <a href="/articles/" class="hover:text-zinc-300 transition-colors shrink-0">ARTICLES</a>
+      <span>/</span>
+      <span class="text-zinc-400 shrink-0">HỆ THỐNG PHÂN TÁN</span>
+    </div>
+
+    <!-- Article Header -->
+    <header class="space-y-4 mb-8">
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Hệ Thống Phân Tán</span>
+        <span class="text-zinc-500">2026-10-20</span>
+        <span class="text-zinc-600">·</span>
+        <span class="text-zinc-400">By Dương Phúc Khánh (Kido)</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-semibold tracking-tight text-zinc-100 leading-tight">
+        [Postmortem Production] Giải phẫu cú lừa HTTP 304 Not Modified & SingleFlight Cache Race làm 'bốc hơi' dữ liệu PWA — Kiến trúc sư Dương Phúc Khánh (khanhdp)
+      </h1>
+
+      <p class="text-base sm:text-lg text-zinc-400 leading-relaxed">
+        Cách hiện tượng trễ replica 50ms kết hợp cùng SWR revalidation làm biến mất trạng thái điểm danh của nhân viên, và giải pháp Mutation Epochs của Dương Phúc Khánh.
+      </p>
+    </header>
+
+    
+        <!-- Top Author & Entity Verification Ribbon -->
+        <div class="border border-emerald-500/30 bg-emerald-950/20 rounded-xl p-4 my-6 text-xs font-mono text-zinc-300">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-500/20 pb-2.5 mb-2.5">
+            <div class="flex items-center gap-2 text-emerald-400 font-semibold uppercase tracking-wider text-[11px]">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Chuyên Khảo Kiến Trúc Hệ Thống</span>
+            </div>
+            <div class="flex items-center gap-3 text-zinc-400 text-[11px]">
+              <span>Định danh thực thể:</span>
+              <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Wikidata Q141718572</a>
+              <span>·</span>
+              <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-sky-400 hover:underline">ORCID 0009-0005-7192-2664</a>
+            </div>
+          </div>
+          <div class="text-[12px] leading-relaxed text-zinc-300">
+            Tác giả: <strong class="text-white">Dương Phúc Khánh</strong> (tiếng Anh: <strong class="text-zinc-200">Duong Phuc Khanh</strong> · <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>), Kỹ sư Phần mềm Cao cấp &amp; Kiến trúc sư Hệ thống. Đọc <a href="/about" class="text-sky-400 hover:underline font-semibold">Tiểu sử Tiếng Việt</a>, xem bản <a href="/en" class="text-sky-400 hover:underline">English Biography</a>, tra cứu <a href="/articles/" class="text-sky-400 hover:underline">Danh mục Bài viết</a>, hoặc khám phá tuyển tập 128 tập ký sự sự cố production tại <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline font-semibold">Kido Chronicles</a>.
+          </div>
+        </div>
+        
+
+    <!-- Article Body Prose -->
+    <article class="prose prose-invert max-w-none text-zinc-300 leading-relaxed font-normal text-sm sm:text-base border-t border-white/[0.06] pt-6">
+      <h2 id="1-bối-cảnh-thực-tế-08-30-sáng-ủa-em-vừa-bấm-vào-ca-xong-sao-màn-hình-lại-bắt-bấm-lại" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>1. Bối cảnh thực tế 08:30 sáng: "Ủa em vừa bấm Vào ca xong sao màn hình lại bắt bấm lại?"</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Đúng 08:30 sáng tại chuỗi cửa hàng bán lẻ, hàng chục nhân viên siêu thị mở ứng dụng Mobile PWA trên điện thoại cá nhân để thực hiện điểm danh vào ca làm việc buổi sáng.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Một bạn nhân viên bấm nút <strong class="text-white font-semibold">"Vào ca"</strong>. Vòng xoay xoay nhẹ, và ngay lập tức một thông báo màu xanh lục hiện lên:</p>
+<p class="leading-relaxed my-3.5 text-zinc-300"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">&quot;Điểm danh thành công! (HTTP 200 OK)&quot;</code>. Màn hình PWA mượt mà chuyển sang trạng thái: <strong class="text-white font-semibold">"Đang trong ca làm việc"</strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Thế nhưng, đúng <strong class="text-white font-semibold">1 giây sau</strong> — một hiện tượng ma quái xảy ra:</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Giao diện bỗng nhiên giật giật, thanh trạng thái <strong class="text-white font-semibold">tụt lùi về trạng thái "Chưa vào ca"</strong>, và nút bấm check-in lại hiện ra lù lù như thể chưa hề có cuộc điểm danh nào diễn ra!</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Bạn nhân viên hoang mang, tưởng mạng lag chưa ăn lệnh nên vội vàng đưa ngón tay <strong class="text-white font-semibold">bấm tiếp lần thứ hai</strong>. Lần này, hệ thống tát thẳng vào mặt một lỗi đỏ chót:</p>
+<p class="leading-relaxed my-3.5 text-zinc-300"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 400 Bad Request: &quot;Bạn đã vào ca làm việc rồi!&quot;</code>.</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code>[Nhân viên hoang mang]
+- Màn hình bảo: &quot;Chưa vào ca, bấm đi!&quot;
+- Bấm vào thì bảo: &quot;Mày vào ca rồi, bấm gì nữa?!&quot;</code></pre>
+<p class="leading-relaxed my-3.5 text-zinc-300">Mình là <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (trong cộng đồng kỹ thuật anh em thường gọi là <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong>, <strong class="text-white font-semibold">Kido</strong> hay <strong class="text-white font-semibold">Khánh Dương</strong> — <a href="https://github.com/khanhduong22" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">@khanhduong22</a> / <a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp.com</a>). Sau hơn 7 năm gắn bó với kiến trúc hệ thống phân tán và các bài toán concurrency — từ 6 năm thiết kế hạ tầng tài chính tại <em class="italic text-zinc-200">FPT Software (SBI Lab)</em> đến vị trí <em class="italic text-zinc-200">Senior AI-Native Lead & Systems Architect</em> tại <em class="italic text-zinc-200">Tech Pulse</em> — bài viết này được trích từ tập 115 trong bộ biên niên sử sự cố <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles</a></strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Hôm nay, mình sẽ cùng anh em mổ xẻ <strong class="text-white font-semibold">Tử Thi Kỹ Thuật (Postmortem)</strong> của vụ án này: Sự kết hợp chết người giữa <strong class="text-white font-semibold">HTTP 304 Not Modified trong cơ chế SWR Revalidation</strong>, <strong class="text-white font-semibold">SingleFlight Cache Race</strong>, và cách đội ngũ của <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> dập tắt triệt để bằng <strong class="text-white font-semibold">Confirmed Mutation Ledger</strong> cùng <strong class="text-white font-semibold">InFlight Mutation Epochs</strong>.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="2-giải-phẫu-tử-thi-1-cú-lừa-ngoạn-mục-của-http-304-not-modified-swr" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>2. Giải phẫu Tử Thi 1: Cú lừa ngoạn mục của HTTP 304 Not Modified & SWR</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Tại sao một request <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">POST /api/checkins</code> đã trả về <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 200 OK</code> thành công rực rỡ, mà chỉ sau 1 giây dữ liệu lại biến mất không dấu vết?</p>
+<h3 id="cơ-chế-ngầm-của-swr-react-query-trên-pwa" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Cơ chế ngầm của SWR / React Query trên PWA</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Trong các Single Page Application (SPA) hiện đại, sau khi người dùng thực hiện một hành động ghi (Mutation) như check-in, chúng ta thường gọi hàm revalidate hoặc SWR tự động kích hoạt background revalidation cho endpoint lấy dữ liệu trang chủ: <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">GET /api/staff/home-data</code>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Luồng chạy tưởng chừng như rất mẫu mực:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">t = 0ms</code>: Client gửi <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">POST /api/checkins</code>.</li>
+<li><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">t = 80ms</code>: Server xử lý xong, lưu DB, ghi log, trả về <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 200 OK</code> kèm payload trạng thái mới. React state cập nhật: <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">isInShift = true</code>.</li>
+<li><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">t = 500ms</code>: SWR kích hoạt background fetch <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">GET /api/staff/home-data</code> để kéo toàn bộ dữ liệu mới nhất.</li>
+<li><strong class="text-white font-semibold">BẪY CHẾT NGƯỜI</strong>: Trình duyệt di động (iOS Safari / Chrome Android) tự động đính kèm header điều kiện:</li>
+</ol>
+<p class="leading-relaxed my-3.5 text-zinc-300"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">If-None-Match: &quot;W/1a2b3c4d-old&quot;</code> (ETag của lần fetch trước đó lúc nhân viên chưa vào ca).</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-mermaid">sequenceDiagram
+    autonumber
+    actor Staff as Nhân viên (PWA)
+    participant SWR as SWR / React State
+    participant BrowserCache as HTTP Cache Trình duyệt
+    participant API as API Server (Hono / NestJS)
+    participant Storage as DB Replica / Cache
+
+    Staff-&gt;&gt;API: POST /api/checkins (Check-in vào ca)
+    API-&gt;&gt;Storage: Ghi DB + Invalidate Redis Cache
+    API--&gt;&gt;Staff: 200 OK { status: &quot;ACTIVE&quot;, shift: &quot;Ca Sáng&quot; }
+    Note over SWR: Giao diện cập nhật: &quot;Đang trong ca&quot; (0ms lag)
+
+    par SWR Background Revalidation
+        SWR-&gt;&gt;BrowserCache: GET /api/staff/home-data
+        BrowserCache-&gt;&gt;API: GET kèm If-None-Match: &quot;W/old-etag&quot;
+        Note over API,Storage: Query trúng Replica lag 50ms hoặc Cache cũ
+        API--&gt;&gt;BrowserCache: HTTP 304 Not Modified (Body rỗng)
+        Note over BrowserCache: Trình duyệt móc payload CŨ trong cache ra trả cho SWR!
+        BrowserCache--&gt;&gt;SWR: Trả về payload cũ (chưa check-in)
+        Note over SWR: SWR ĐÈ NGƯỢC DỮ LIỆU CŨ LÊN REACT STATE!
+        SWR--&gt;&gt;Staff: Giao diện tụt lùi về: &quot;Chưa vào ca&quot;!
+    end</code></pre>
+<h3 id="điểm-gãy-kỹ-thuật-tại-sao-server-lại-trả-về-http-304" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Điểm gãy kỹ thuật: Tại sao Server lại trả về HTTP 304?</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">ETag Middleware của backend tính hash dựa trên response body của hàm xử lý. Nhưng tại thời điểm <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">GET /api/staff/home-data</code> chạy:</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">Database Replication Lag</strong>: Request đọc được định tuyến tới PostgreSQL Read Replica. Do độ trễ replication vật lý (~30–50ms), replica chưa kịp nhận WAL log từ Primary Node.</li>
+<li><strong class="text-white font-semibold">Hoặc Cache Layer chưa xả sạch</strong>: Hoặc middleware ETag sinh ra hash dựa trên dữ liệu cũ vừa đọc được.</li>
+<li>Khi hash tính ra vẫn trùng với <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">W/old-etag</code> trong <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">If-None-Match</code>, Server nghĩ rằng: <em class="italic text-zinc-200">"À, client đã có dữ liệu mới nhất rồi, không cần tốn băng thông gửi lại body đâu!"</em> và nhanh nhảu ném về mã <strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 304 Not Modified</code></strong>!</li>
+</ul>
+<h3 id="cú-đâm-lén-từ-phía-sau" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Cú đâm lén từ phía sau:</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Khi SWR nhận mã <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 304</code>, theo đúng đặc tả RFC 7234, nó hiểu rằng dữ liệu trong <strong class="text-white font-semibold">HTTP Cache của trình duyệt vẫn hoàn toàn chính xác</strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Trình duyệt liền lôi cục JSON cũ rích (lúc nhân viên chưa bấm check-in) ném ngược lại cho SWR. SWR vô tư <strong class="text-white font-semibold">ghi đè (overwrite) toàn bộ React State</strong> bằng dữ liệu cũ đó!</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Thế là bản ghi check-in vừa hiển thị được 1 giây đã bị "bốc hơi" hoàn toàn khỏi mắt người dùng!</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="3-giải-phẫu-tử-thi-2-singleflight-cache-race-slow-read-trừng-phạt-fast-mutation" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>3. Giải phẫu Tử Thi 2: SingleFlight Cache Race (Slow Read trừng phạt Fast Mutation)</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Nếu anh em nghĩ chỉ cần tắt ETag là bài toán được giải quyết, thì chào mừng anh em đến với <strong class="text-white font-semibold">Cơn ác mộng thứ hai</strong> ở tầng Backend: <strong class="text-white font-semibold">SingleFlight Cache Race</strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Để chống hiện tượng <strong class="text-white font-semibold">Cache Stampede (Thundering Herd)</strong> khi hàng ngàn người truy cập cùng lúc, hệ thống sử dụng pattern <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">SingleFlight</code> (hay <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">InFlightManager</code>): gom các request đọc đồng thời có cùng Cache Key vào chung một Promise duy nhất, chỉ cho đúng 1 request chạy xuống Database, còn lại chia sẻ chung kết quả.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Pattern này cực kỳ kinh điển, nhưng nó ẩn chứa một <strong class="text-white font-semibold">lỗ hổng thời gian (Race Window)</strong> chí mạng khi có Mutation xen ngang:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code>Timeline của cuộc đua kỳ thú:
+
+t = 0ms:    Request A (GET /api/staff/home-data) bắt đầu. 
+            Do DB đang chịu tải, câu SQL JOIN phức tạp mất 150ms.
+            Request A đăng ký vào InFlightManager với Key &quot;cache:staff:123&quot;.
+
+t = 50ms:   Nhân viên bấm Check-in -&gt; Request B (POST /api/checkins) tới.
+            Ghi DB nhanh chóng mất 20ms.
+
+t = 70ms:   Request B thực hiện Invalidate Cache:
+            await redis.del(&quot;cache:staff:123&quot;); 
+            Request B trả về 200 OK thành công! Cache Redis lúc này ĐANG TRỐNG.
+
+t = 150ms:  Request A (chạy từ t=0) lúc này MỚI XONG câu SQL nặng.
+            Request A không hề biết trời đất đã đổi thay sau 150ms vừa qua!
+            Nó đinh ninh mình là người mang chân lý về, liền gọi:
+            await redis.set(&quot;cache:staff:123&quot;, oldStaleData, &#x27;EX&#x27;, 300);
+
+HẬU QUẢ:    Redis Cache vừa bị xoá lúc 70ms, lại bị Request A ghi đè 
+            dữ liệu CŨ RÍCH vào lúc 150ms!</code></pre>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-mermaid">sequenceDiagram
+    autonumber
+    participant Client
+    participant InFlight as InFlightManager (SingleFlight)
+    participant Redis as Valkey / Redis
+    participant DB as PostgreSQL Primary
+
+    Note over Client,DB: t = 0ms: Request A (GET) bắt đầu
+    Client-&gt;&gt;InFlight: GET /api/staff/home-data
+    InFlight-&gt;&gt;DB: Query SQL phức tạp (tốn 150ms)
+    
+    Note over Client,DB: t = 50ms: Request B (POST Mutation) đến
+    Client-&gt;&gt;DB: POST /api/checkins (Ghi DB mất 20ms)
+    DB--&gt;&gt;Client: Ghi DB thành công (t = 70ms)
+    Client-&gt;&gt;Redis: redis.del(&quot;cache:staff:123&quot;) (Xóa cache thành công!)
+
+    Note over Client,DB: t = 150ms: Request A mới query xong SQL cũ!
+    DB--&gt;&gt;InFlight: Trả về kết quả SQL cũ
+    InFlight-&gt;&gt;Redis: redis.set(&quot;cache:staff:123&quot;, STALE_DATA, &#x27;EX&#x27;, 300)
+    Note over Redis: DỮ LIỆU CŨ ĐÃ SỐNG LẠI TRONG REDIS SUỐT 5 PHÚT!</code></pre>
+<p class="leading-relaxed my-3.5 text-zinc-300">Một request đọc xuất phát trước nhưng về đích sau đã trừng phạt thẳng tay một request ghi vừa commit thành công! Người dùng sau đó dù có F5 tải lại trang thì vẫn tiếp tục đọc phải đống dữ liệu rác này từ Redis.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="4-lời-giải-kiến-trúc-hệ-thống-phòng-thủ-4-tầng-của-dương-phúc-khánh" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>4. Lời giải Kiến trúc: Hệ Thống Phòng Thủ 4 Tầng của Dương Phúc Khánh</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Đối mặt với sự cố trên, triết lý kỹ thuật của <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> là: <strong class="text-white font-semibold">"Fix tận gốc rễ nguyên nhân (Root Cause), không bao giờ vá víu phần ngọn (Symptom)"</strong>. Không thể bảo nhân viên <em class="italic text-zinc-200">"Anh em chịu khó F5 hai lần nhé"</em> hay dùng mấy trò <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">setTimeout(() =&gt; refetch(), 2000)</code> vô trách nhiệm.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Chúng ta thiết lập một hệ thống phòng thủ đa tầng (Defense-in-Depth) gồm 4 chốt chặn vững chắc:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code>┌─────────────────────────────────────────────────────────────┐
+│ TẦNG 1 (CLIENT): Confirmed Mutation Ledger (Local Storage)   │
+│ - Tự động hòa trộn dữ liệu cục bộ, bất chấp server trả gì   │
+├─────────────────────────────────────────────────────────────┤
+│ TẦNG 2 (SERVER): InFlight Mutation Epochs (resilient-cache) │
+│ - Đánh dấu số thế hệ (Epoch), hủy ghi đè cache lỗi thời     │
+├─────────────────────────────────────────────────────────────┤
+│ TẦNG 3 (INGRESS): Anti-304 Realtime Route Mandate           │
+│ - Ép Cache-Control: no-store, loại trừ ETag trên route nhạy │
+├─────────────────────────────────────────────────────────────┤
+│ TẦNG 4 (IDEMPOTENCY): 15-Second Double-Tap Soft Cushion     │
+│ - Hóa giải triệt để ngón tay bấm vội, trả 200 thay vì 400   │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+<hr class="border-white/[0.08] my-8" />
+<h3 id="tầng-1-confirmed-mutation-ledger-tại-client-kt-spa-version-guard" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Tầng 1: Confirmed Mutation Ledger tại Client (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">@kt/spa-version-guard</code>)</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Không bao giờ tin tưởng tuyệt đối vào tính thời điểm của một network response từ mobile mạng 4G.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Tại client, mình xây dựng cơ chế <strong class="text-white font-semibold">Confirmed Mutation Ledger</strong>:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>Khi request <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">POST /api/checkins</code> thành công, client lập tức ghi nhận một bản ghi xác thực vào <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">localStorage</code> kèm thời gian sống (TTL) 12–24 giờ.</li>
+<li>Bất kể khi nào SWR thực hiện fetch dữ liệu từ server (dù server có trả về dữ liệu cũ hay dính mã 304), trước khi đẩy dữ liệu vào React State, nó đều phải đi qua bộ hòa trộn <strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">reconcileWithConfirmedLedger</code></strong>.</li>
+<li>Nếu phát hiện trong Ledger cục bộ đã có sự kiện check-in với timestamp mới hơn dữ liệu server trả về, client tự động đè trạng thái check-in hợp lệ lên trên!</li>
+<li>Đồng thời, ép cứng <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">cache: &#x27;no-store&#x27;</code> trên các request API nhạy cảm và dọn sạch các cache bucket cũ của Service Worker (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">caches.delete(&#x27;legacy-api-cache&#x27;)</code>).</li>
+</ol>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-typescript">// Trích xuất từ slice pwa-swr trong gói @kt/spa-version-guard
+export interface ConfirmedRecord {
+  id: string;
+  type: &#x27;CHECK_IN&#x27; | &#x27;CHECK_OUT&#x27;;
+  confirmedAt: number;
+  payload: Record&lt;string, unknown&gt;;
+}
+
+export class ConfirmedMutationLedger {
+  private readonly storageKey = &#x27;kt_confirmed_mutation_ledger_v1&#x27;;
+  private readonly ttlMs = 12 * 60 * 60 * 1000; // 12 giờ
+
+  recordMutation(type: ConfirmedRecord[&#x27;type&#x27;], payload: Record&lt;string, unknown&gt;): void {
+    const records = this.getActiveRecords();
+    records.push({
+      id: crypto.randomUUID(),
+      type,
+      confirmedAt: Date.now(),
+      payload
+    });
+    localStorage.setItem(this.storageKey, JSON.stringify(records));
+  }
+
+  // Hòa trộn thông minh: Không một gói tin cũ nào có thể lật đổ trạng thái đã xác nhận
+  reconcileHomeData&lt;T extends { isCheckedIn: boolean; lastActionAt?: number }&gt;(serverData: T): T {
+    const activeRecords = this.getActiveRecords();
+    const latestCheckin = activeRecords
+      .filter(r =&gt; r.type === &#x27;CHECK_IN&#x27;)
+      .sort((a, b) =&gt; b.confirmedAt - a.confirmedAt)[0];
+
+    if (!latestCheckin) return serverData;
+
+    // Nếu server báo chưa check-in hoặc timestamp của server cũ hơn mutation đã ghi nhận
+    const serverTimestamp = serverData.lastActionAt ?? 0;
+    if (!serverData.isCheckedIn &amp;&amp; latestCheckin.confirmedAt &gt; serverTimestamp) {
+      return {
+        ...serverData,
+        isCheckedIn: true,
+        lastActionAt: latestCheckin.confirmedAt,
+        ...latestCheckin.payload
+      };
+    }
+
+    return serverData;
+  }
+
+  private getActiveRecords(): ConfirmedRecord[] {
+    try {
+      const raw = localStorage.getItem(this.storageKey);
+      if (!raw) return [];
+      const parsed: ConfirmedRecord[] = JSON.parse(raw);
+      const now = Date.now();
+      return parsed.filter(item =&gt; now - item.confirmedAt &lt; this.ttlMs);
+    } catch {
+      return [];
+    }
+  }
+}</code></pre>
+<hr class="border-white/[0.08] my-8" />
+<h3 id="tầng-2-inflight-mutation-epochs-counter-kt-resilient-cache" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Tầng 2: InFlight Mutation Epochs Counter (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">@kt/resilient-cache</code>)</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Để tiêu diệt triệt để lỗi <strong class="text-white font-semibold">SingleFlight Cache Race</strong>, mình bổ sung cơ chế <strong class="text-white font-semibold">Số thế hệ đột biến (Mutation Epoch)</strong> vào <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">InFlightManager</code>:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>Mỗi khi một key hoặc một pattern cache bị invalidate (bởi một lệnh <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">POST</code>, <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">PUT</code>, <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">DELETE</code>), biến atomic <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">cacheMutationEpoch</code> sẽ tăng thêm 1 đơn vị (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">epoch++</code>).</li>
+<li>Đồng thời, <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">InFlightManager</code> lập tức ngắt liên kết (unlink/detach) toàn bộ các in-flight promises đang chạy dở dang của key/pattern đó.</li>
+<li>Mỗi read task khi khởi chạy sẽ mang theo <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">snapshotEpoch = currentEpoch</code>.</li>
+<li>Khi câu query SQL nặng chạy xong: nó kiểm tra <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">if (this.currentEpoch !== snapshotEpoch)</code>. Nếu phát hiện trong lúc nó đang query mà có một mutation đã xảy ra, <strong class="text-white font-semibold">nó lập tức từ bỏ quyền ghi vào Redis!</strong></li>
+</ol>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-typescript">// Trích xuất kiến trúc InFlightManager trong @kt/resilient-cache
+export class InFlightManager {
+  private inFlightPromises = new Map&lt;string, Promise&lt;unknown&gt;&gt;();
+  private mutationEpoch = 0;
+
+  bumpMutationEpoch(pattern?: string): number {
+    this.mutationEpoch++;
+    
+    // Hủy liên kết toàn bộ in-flight promises khớp với pattern bị xoá
+    if (pattern) {
+      for (const key of this.inFlightPromises.keys()) {
+        if (this.matchPattern(key, pattern)) {
+          this.inFlightPromises.delete(key);
+        }
+      }
+    } else {
+      this.inFlightPromises.clear();
+    }
+    
+    return this.mutationEpoch;
+  }
+
+  async dedupeWithEpoch&lt;T&gt;(
+    key: string,
+    fetcher: () =&gt; Promise&lt;T&gt;,
+    onCommitToCache: (data: T) =&gt; Promise&lt;void&gt;
+  ): Promise&lt;T&gt; {
+    const startEpoch = this.mutationEpoch;
+
+    if (this.inFlightPromises.has(key)) {
+      return this.inFlightPromises.get(key) as Promise&lt;T&gt;;
+    }
+
+    const promise = (async () =&gt; {
+      try {
+        const result = await fetcher();
+        
+        // KIỂM TRA BẢO VỆ: Nếu trong lúc fetch có mutation xảy ra -&gt; BỎ QUA GHI CACHE
+        if (this.mutationEpoch === startEpoch) {
+          await onCommitToCache(result);
+        } else {
+          console.warn(`[InFlightGuard] Discarded stale write for key &quot;${key}&quot;. Epoch shifted: ${startEpoch} -&gt; ${this.mutationEpoch}`);
+        }
+        
+        return result;
+      } finally {
+        this.inFlightPromises.delete(key);
+      }
+    })();
+
+    this.inFlightPromises.set(key, promise);
+    return promise;
+  }
+
+  private matchPattern(key: string, pattern: string): boolean {
+    const regex = new RegExp(&#x27;^&#x27; + pattern.replace(/\*/g, &#x27;.*&#x27;) + &#x27;$&#x27;);
+    return regex.test(key);
+  }
+}</code></pre>
+<hr class="border-white/[0.08] my-8" />
+<h3 id="tầng-3-anti-304-realtime-route-mandate" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Tầng 3: Anti-304 Realtime Route Mandate</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Trên toàn bộ các router trạng thái chấm công (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">/api/checkins/today</code>, <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">/api/checkins/status</code>, <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">/api/ip-status</code>):</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>Bắt buộc trả về các HTTP headers triệt tiêu cache của mọi tầng trung gian:</li>
+</ul>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-http">  Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate
+  Pragma: no-cache
+  Expires: 0
+  Surrogate-Control: no-store</code></pre>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>Cấu hình Middleware ETag: <strong class="text-white font-semibold">Tuyệt đối loại trừ các route realtime động</strong> khỏi việc tính toán ETag header. Nếu không có ETag từ server, trình duyệt sẽ không bao giờ gửi header <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">If-None-Match</code>, triệt tiêu hoàn toàn khả năng sinh mã <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 304</code>.</li>
+</ul>
+<hr class="border-white/[0.08] my-8" />
+<h3 id="tầng-4-đệm-idempotent-double-tap-15-giây-trải-nghiệm-êm-dịu" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Tầng 4: Đệm Idempotent Double-Tap 15 giây (Trải nghiệm êm dịu)</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Để bảo vệ nhân viên khỏi những cú giật mình khi lỡ tay bấm 2 lần:</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>Thay vì ném mã lỗi <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">400 Bad Request: Bạn đã vào ca rồi</code>, API kiểm tra: nếu user gửi cùng một loại yêu cầu check-in trong vòng <strong class="text-white font-semibold">15 giây</strong> kể từ lần check-in hợp lệ gần nhất, API sẽ:</li>
+<li>Trả về mã <strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 200 OK</code></strong>.</li>
+<li>Đính kèm cờ <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">deduplicated: true</code>.</li>
+<li>Trả lại chính bản ghi ca làm việc vừa được tạo trước đó.</li>
+<li>Nhân viên thấy màn hình vẫn xanh mượt, ca làm việc được bảo toàn, trải nghiệm người dùng đạt điểm 10 tuyệt đối!</li>
+</ul>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="5-kết-quả-thực-chiến-trên-hệ-thống-production" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>5. Kết quả thực chiến trên Hệ thống Production</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Sau khi đưa trọn bộ giải pháp 4 tầng này lên production trong đợt triển khai vừa qua:</p>
+<div class="overflow-x-auto my-6 border border-white/10 rounded-lg">
+<table class="w-full text-left text-xs text-zinc-300 border-collapse">
+<thead class="bg-white/[0.04] text-[11px] font-mono uppercase tracking-wider text-zinc-400 border-b border-white/10">
+<tr>
+<th class="p-3">Chỉ số đo lường</th>
+<th class="p-3">Trước khi xử lý</th>
+<th class="p-3">Sau khi kích hoạt Hệ thống 4 Tầng</th>
+</tr></thead><tbody class="divide-y divide-white/[0.06]">
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">Tỷ lệ giật lùi trạng thái (State Rollback)</strong></td>
+<td class="p-3"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">~14.2%</code> số lượt check-in</td>
+<td class="p-3"><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">0.00%</code> (Triệt tiêu vĩnh viễn)</strong></td>
+</tr>
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">Tần suất dính Stale Cache trong Redis</strong></td>
+<td class="p-3"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">8.5%</code> sau các đợt mutation</td>
+<td class="p-3"><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">0.00%</code> (Bảo vệ bởi Mutation Epoch)</strong></td>
+</tr>
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">Lỗi 400 do ngón tay bấm kép (Double-Tap)</strong></td>
+<td class="p-3">Ghi nhận hàng ngày</td>
+<td class="p-3"><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">0 trường hợp</code> (Nhờ đệm Idempotent)</strong></td>
+</tr>
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">Khiếu nại hỗ trợ từ nhân sự & cửa hàng</strong></td>
+<td class="p-3">Trung bình 5–7 ca/ngày</td>
+<td class="p-3"><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">0 khiếu nại</code></strong></td>
+</tr>
+</tbody></table></div>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="6-bài-học-kiến-trúc-đúc-kết" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>6. Bài học kiến trúc đúc kết</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Qua sự cố tưởng như nhỏ bé nhưng làm đau đầu biết bao kỹ sư này, <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> muốn gửi gắm 3 nguyên lý bất biến khi thiết kế các ứng dụng Web/PWA hiện đại:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">HTTP 304 là con dao hai lưỡi trong kỷ nguyên SPA</strong>: Caching HTTP rất tuyệt vời cho tài nguyên tĩnh, nhưng với dữ liệu mutation thời gian thực, cơ chế revalidation tự động của SWR/React Query kết hợp với HTTP 304 có thể biến thành cỗ máy xóa sạch state của bạn.</li>
+<li><strong class="text-white font-semibold">SingleFlight phải luôn đi kèm Epoch hoặc Version Guard</strong>: Gom request để chống sập database là đúng, nhưng gom mà không có cơ chế hủy ghi khi có mutation xen ngang là bạn đang tự tay bơm dữ liệu rác vào Redis.</li>
+<li><strong class="text-white font-semibold">Luôn thiết kế với tư duy Offline-First / Confirmed Ledger</strong>: Trình duyệt di động hoạt động trong môi trường mạng vô cùng khắc nghiệt. Hãy để client có tiếng nói quyết định đối với những hành động nó vừa hoàn thành thành công.</li>
+</ol>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="7-tài-liệu-tham-khảo-hệ-sinh-thái-kido" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>7. Tài liệu tham khảo & Hệ sinh thái Kido</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Nếu anh em đam mê các bài viết phân tích sâu kiến trúc thực chiến, concurrency và tối ưu hóa hệ thống tải cao:</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>🌐 <strong class="text-white font-semibold">Engineering Hub & Case Studies</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (<strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong>)</li>
+<li>📖 <strong class="text-white font-semibold">Hồ sơ Năng lực & Tiểu sử</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Tiểu sử & Hồ sơ Kiến trúc Dương Phúc Khánh</a></strong> (hoặc xem <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Hồ sơ tiểu sử Dương Phúc Khánh</a></strong>)</li>
+<li>🔥 <strong class="text-white font-semibold">Kido Chronicles (127 tập nhật ký giải phẫu sự cố production)</strong>: <a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">https://truyen.khanhdp.com</a></li>
+<li>💻 <strong class="text-white font-semibold">Open-Source Multi-Agent Framework</strong>: <a href="https://github.com/khanhduong22/agent-harness-kit" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">github.com/khanhduong22/agent-harness-kit</a></li>
+</ul>
+    </article>
+
+    <!-- Contextual Kido Chronicles Episodes (Deep Links) -->
+    <section class="mt-16 pt-8 border-t border-white/[0.06] space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          <span>Biên Niên Sử Liên Quan (Kido Chronicles)</span>
+        </h2>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-xs font-mono text-purple-300 hover:text-purple-200 hover:underline">
+          View all 128 episodes ↗
+        </a>
+      </div>
+      <p class="text-xs text-zinc-400">
+        Curated real-world war stories and incident postmortems authored by Duong Phuc Khanh on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">truyen.khanhdp.com</a> related to this topic:
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+        
+        <a href="https://truyen.khanhdp.com/tap/tap-116-dai-phau-thuat-state-management-zustand-tanstack-query/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Architecture</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 116 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 116: Đại Phẫu Thuật State Management Zustand & TanStack Query
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Phân định rạch ròi giữa Server State và Client State, xóa bỏ anti-pattern nhồi nhét API cache vào global state.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-118-cuoc-khai-tu-6400-dong-redux-cu-lat-do-the-ky-cua-zustand-tanstack-query/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Code Refactor</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 118 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 118: Khai Tử 6400 Dòng Redux Cũ — Cuộc Đảo Chính Của Zustand
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Hành trình xẻ thịt khối mã nguồn cồng kềnh, giảm 42KB bundle size và tăng tốc độ phản hồi UI lên 60FPS.
+          </div>
+        </a>
+        
+      </div>
+    </section>
+
+    <!-- Author Bio & Entity Verification Card (Bottom) -->
+    <section class="mt-12 p-6 rounded-2xl border border-white/10 bg-[#121212] space-y-4">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+        <img
+          src="/duong-phuc-khanh.jpg"
+          alt="Duong Phuc Khanh (Dương Phúc Khánh · Kido)"
+          width="88"
+          height="88"
+          style="width:88px;height:88px;object-fit:cover;"
+          class="rounded-xl border border-white/15 shrink-0"
+        />
+        <div class="space-y-2 text-center sm:text-left flex-1">
+          <h3 class="text-base font-semibold text-zinc-100">Về Tác Giả: Dương Phúc Khánh (khanhdp · Kido)</h3>
+          
+        <p class="text-sm text-zinc-300 leading-relaxed mb-3">
+          <strong>Dương Phúc Khánh</strong> (sinh năm 1995 tại Đà Nẵng, định danh: <em>khanhdp</em>, moniker: <em>Kido</em>) là Kỹ sư Phần mềm Cao cấp và Kiến trúc sư Hệ thống tại <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>. Cựu sinh viên Đại học Kinh tế – Đại học Đà Nẵng, Quán quân Startup Runway 2018 (vinh danh trên Báo Đà Nẵng), 6 năm Tech Lead &amp; PM tại FPT Software SBI Lab (3 năm liên tiếp Best Performance Award 2022–2024). Anh là tác giả của <a href="https://vantoicalis.com" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Winter Arc</a>, tuyển tập 128 tập <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a> và bộ khung điều phối <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Agent Harness Kit</a>.
+        </p>
+        
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs font-mono pt-1">
+            <a href="https://khanhdp.com" class="text-sky-400 hover:underline">Home</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/en" class="text-sky-400 hover:underline">Biography (EN)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/about" class="text-sky-400 hover:underline">Tiểu sử (VI)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Wikidata</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">ORCID</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="border-t border-white/[0.06] bg-[#080808] text-xs font-mono text-zinc-500 py-12">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <a href="https://khanhdp.com" class="text-zinc-300 hover:text-white font-semibold uppercase transition-colors">DUONG PHUC KHANH (KIDO)</a>
+      </div>
+      <div class="flex items-center gap-4 text-zinc-400 flex-wrap">
+        <a href="/" class="hover:text-white transition-colors">Overview</a>
+        <a href="/en" class="hover:text-white transition-colors">Biography (EN)</a>
+        <a href="/about" class="hover:text-white transition-colors">Tiểu sử (VI)</a>
+        <a href="/articles/" class="text-white hover:text-emerald-400 transition-colors">Articles</a>
+        <a href="/portfolio" class="hover:text-white transition-colors">Portfolio</a>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Chronicles</a>
+        <a href="https://github.com/khanhduong22" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://www.linkedin.com/in/duong-phuc-khanh/" target="_blank" rel="noopener" class="hover:text-white transition-colors">LinkedIn</a>
+      </div>
+    </div>
+    <div class="max-w-5xl mx-auto px-6 mt-4 text-[11px] text-zinc-600 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>© 2026 Duong Phuc Khanh (khanhdp · Kido). All rights reserved.</p>
+      <p>Crafted with quiet confidence</p>
+    </div>
+  </footer>
+
+  <!-- Scroll Progress Script -->
+  <script>
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar) progressBar.style.width = scrolled + '%';
+    }, { passive: true });
+
+    document.addEventListener("click", (e) => {
+      let a = e.target.closest("a[href]");
+      if (a) {
+        let h = a.getAttribute("href");
+        if (h && (h.startsWith("http://") || h.startsWith("https://")) && !h.includes(window.location.hostname)) {
+          let t = (a.getAttribute("title") || a.textContent || h).trim().slice(0, 60);
+          if (window.trackEvent) window.trackEvent("outbound_click", { event_category: "outbound", destination_url: h, link_text: t });
+        } else if (h && (h.startsWith("#") || h.startsWith("/"))) {
+          let t = (a.textContent || h).trim().slice(0, 40);
+          if (window.trackEvent) window.trackEvent("nav_click", { event_category: "navigation", destination: h, link_text: t });
+        }
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>

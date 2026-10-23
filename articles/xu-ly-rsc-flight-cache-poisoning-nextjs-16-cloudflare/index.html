@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giải Phẫu Sự Cố Cloudflare Edge & Next.js 16: Triệt Tiêu Thảm Họa RSC Flight Payload Cache Poisoning — Dương Phúc Khánh (Duong Phuc Khanh · Kido)</title>
+  <meta name="description" content="Cách header client navigation (RSC: 1) của Next.js App Router đầu độc bộ nhớ đệm Cloudflare Edge Cache biến PWA thành màn hình trắng xóa trên iOS Safari, và kiến trúc phòng thủ 3 lớp zero-downtime của Dương Phúc Khánh." />
+
+  <!-- Canonical Tag -->
+  <link rel="canonical" href="https://khanhdp.com/articles/xu-ly-rsc-flight-cache-poisoning-nextjs-16-cloudflare/" />
+
+  <!-- Favicons & Brand Suite -->
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="144x144" href="/favicon-144x144.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- OpenGraph Metadata -->
+  <meta property="og:title" content="Giải Phẫu Sự Cố Cloudflare Edge &amp; Next.js 16: Triệt Tiêu Thảm Họa RSC Flight Payload Cache Poisoning — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta property="og:description" content="Cách header client navigation (RSC: 1) của Next.js App Router đầu độc bộ nhớ đệm Cloudflare Edge Cache biến PWA thành màn hình trắng xóa trên iOS Safari, và kiến trúc phòng thủ 3 lớp zero-downtime của Dương Phúc Khánh." />
+  <meta property="og:url" content="https://khanhdp.com/articles/xu-ly-rsc-flight-cache-poisoning-nextjs-16-cloudflare/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content="vi_VN" />
+  <meta property="og:site_name" content="Dương Phúc Khánh (khanhdp · Kido)" />
+  <meta property="og:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Giải Phẫu Sự Cố Cloudflare Edge &amp; Next.js 16: Triệt Tiêu Thảm Họa RSC Flight Payload Cache Poisoning — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta name="twitter:description" content="Cách header client navigation (RSC: 1) của Next.js App Router đầu độc bộ nhớ đệm Cloudflare Edge Cache biến PWA thành màn hình trắng xóa trên iOS Safari, và kiến trúc phòng thủ 3 lớp zero-downtime của Dương Phúc Khánh." />
+  <meta name="twitter:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+
+  <!-- Deferred Lossless Telemetry -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-RMEP3RZB14');
+    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
+    window.clarity = window.clarity || function() { (window.clarity.q = window.clarity.q || []).push(arguments); };
+
+    window.addEventListener('error', function(e) {
+      if (window.Sentry && typeof window.Sentry.captureException === 'function') {
+        var id = window.Sentry.captureException(e.error || e.message);
+        if (id && window.clarity) window.clarity('set', 'sentry_event_id', id);
+      }
+    });
+
+    window.trackEvent = function(eventName, params) {
+      params = params || {};
+      if (typeof window.gtag === 'function') window.gtag('event', eventName, params);
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', eventName);
+        var label = params.event_label || params.label || params.destination_url || params.category;
+        if (label) window.clarity('set', eventName, String(label).slice(0, 50));
+      }
+    };
+
+    (function(w, d) {
+      var isLoaded = false;
+      function injectScript(src, id) {
+        if (id && d.getElementById(id)) return;
+        if (d.querySelector('script[src="' + src + '"]')) return;
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = src;
+        if (id) s.id = id;
+        (d.head || d.body).appendChild(s);
+      }
+      var events = ['scroll', 'touchstart', 'pointerdown', 'keydown', 'wheel'];
+      function triggerDeferredLoad() {
+        if (isLoaded) return;
+        isLoaded = true;
+        events.forEach(function(e) { w.removeEventListener(e, triggerDeferredLoad); });
+        injectScript('https://www.googletagmanager.com/gtag/js?id=G-RMEP3RZB14', 'ga4-deferred-script');
+        injectScript('https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355', 'gtm-deferred-script');
+        injectScript('https://www.clarity.ms/tag/yy4l1xv1a9', 'clarity-deferred-script');
+      }
+      events.forEach(function(e) {
+        w.addEventListener(e, triggerDeferredLoad, { passive: true, once: true });
+      });
+    })(window, document);
+  </script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://khanhdp.com/articles/xu-ly-rsc-flight-cache-poisoning-nextjs-16-cloudflare/#article",
+      "headline": "Giải Phẫu Sự Cố Cloudflare Edge & Next.js 16: Triệt Tiêu Thảm Họa RSC Flight Payload Cache Poisoning",
+      "name": "Giải Phẫu Sự Cố Cloudflare Edge & Next.js 16: Triệt Tiêu Thảm Họa RSC Flight Payload Cache Poisoning — Dương Phúc Khánh (Duong Phuc Khanh · Kido)",
+      "description": "Cách header client navigation (RSC: 1) của Next.js App Router đầu độc bộ nhớ đệm Cloudflare Edge Cache biến PWA thành màn hình trắng xóa trên iOS Safari, và kiến trúc phòng thủ 3 lớp zero-downtime của Dương Phúc Khánh.",
+      "url": "https://khanhdp.com/articles/xu-ly-rsc-flight-cache-poisoning-nextjs-16-cloudflare/",
+      "mainEntityOfPage": "https://khanhdp.com/articles/xu-ly-rsc-flight-cache-poisoning-nextjs-16-cloudflare/",
+      "inLanguage": "vi",
+      "datePublished": "2026-10-20",
+      "dateModified": "2026-10-23",
+      "author": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "publisher": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "articleSection": "Edge & Next.js"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://khanhdp.com/#person",
+      "name": "Dương Phúc Khánh",
+      "givenName": "Khánh",
+      "familyName": "Dương",
+      "additionalName": "Phúc",
+      "alternateName": [
+        "Duong Phuc Khanh",
+        "khanhdp",
+        "Kido",
+        "Khánh Dương",
+        "Khanh Duong",
+        "khanhduong22",
+        "phuckhanh22",
+        "kode.x.kido",
+        "kodexkido"
+      ],
+      "jobTitle": "Senior Software Engineer & Systems Architect",
+      "url": "https://khanhdp.com",
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "birthDate": "1995",
+      "identifier": [
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Google Knowledge Graph ID",
+          "value": "/g/11zyg5zq1c"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Wikidata",
+          "value": "Q141718572"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "ORCID",
+          "value": "0009-0005-7192-2664"
+        }
+      ],
+      "sameAs": [
+        "https://www.google.com/search?kgmid=/g/11zyg5zq1c",
+        "https://g.co/kg/g/11zyg5zq1c",
+        "https://khanhdp.com",
+        "https://khanhdp.com/about",
+        "https://khanhdp.com/en",
+        "https://duongphuckhanh.dev",
+        "https://www.wikidata.org/wiki/Q141718572",
+        "https://orcid.org/0009-0005-7192-2664",
+        "https://baodanang.vn/goi-mon-an-bang-dien-thoai-thong-minh-3174905.html",
+        "https://github.com/khanhduong22",
+        "https://dev.to/khanhduong22",
+        "https://viblo.asia/u/khanhdp",
+        "https://linkedin.com/in/duong-phuc-khanh/",
+        "https://x.com/duongphuckhanh",
+        "https://facebook.com/khanhduong2295/",
+        "https://truyen.khanhdp.com"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://khanhdp.com/articles/xu-ly-rsc-flight-cache-poisoning-nextjs-16-cloudflare/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://khanhdp.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Technical Articles",
+          "item": "https://khanhdp.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Giải Phẫu Sự Cố Cloudflare Edge & Next.js 16: Triệt Tiêu Thảm Họa RSC Flight Payload Cache Poisoning",
+          "item": "https://khanhdp.com/articles/xu-ly-rsc-flight-cache-poisoning-nextjs-16-cloudflare/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="preload" href="/fonts/inter-vietnamese.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/index.min.css" />
+</head>
+<body class="bg-craft-bg text-craft-text font-sans antialiased selection:bg-white/20 selection:text-white min-h-screen relative">
+  <!-- Top Reading Progress Indicator -->
+  <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-zinc-500 via-zinc-200 to-white z-50 transition-all duration-100 ease-out" style="width: 0%;"></div>
+
+  <!-- Ambient Light Header Radial -->
+  <div class="absolute inset-x-0 top-0 h-[480px] ambient-glow pointer-events-none"></div>
+
+  <!-- Sticky Minimal Navigation Bar -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-[#0a0a0a]/85 border-b border-white/[0.06] transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="/" class="group flex items-center gap-2.5 text-zinc-100 hover:text-white transition-colors">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse"></span>
+        <span class="font-mono text-xs tracking-wider uppercase font-semibold text-zinc-200">DUONG PHUC KHANH · KIDO</span>
+      </a>
+
+      <nav class="flex items-center gap-4 text-xs font-mono">
+        <div class="hidden sm:flex items-center gap-4 text-zinc-400">
+          <a href="/" class="hover:text-zinc-200 transition-colors">Overview</a>
+          <a href="/en" class="hover:text-zinc-200 transition-colors">Biography (EN)</a>
+          <a href="/about" class="hover:text-zinc-200 transition-colors">Tiểu sử (VI)</a>
+          <a href="/articles/" class="text-white font-semibold flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Articles
+          </a>
+          <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-zinc-200 transition-colors">Chronicles</a>
+          <a href="/portfolio" class="px-2.5 py-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all font-semibold flex items-center gap-1.5">
+            SME Portfolio
+          </a>
+        </div>
+
+        <div class="h-3 w-[1px] bg-white/10 hidden sm:block"></div>
+
+        <a href="mailto:phuckhanh22@gmail.com" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-zinc-300 hover:text-zinc-100 transition-all text-xs font-mono">
+          <span>Contact</span>
+          <span>↗</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Article Container -->
+  <main class="max-w-4xl mx-auto px-6 pt-12 pb-24">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-xs font-mono text-zinc-500 tracking-wider uppercase mb-6 pb-3 border-b border-white/[0.06] overflow-x-auto">
+      <a href="/" class="hover:text-zinc-300 transition-colors shrink-0">KHANHDP.COM</a>
+      <span>/</span>
+      <a href="/articles/" class="hover:text-zinc-300 transition-colors shrink-0">ARTICLES</a>
+      <span>/</span>
+      <span class="text-zinc-400 shrink-0">EDGE & NEXT.JS</span>
+    </div>
+
+    <!-- Article Header -->
+    <header class="space-y-4 mb-8">
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Edge & Next.js</span>
+        <span class="text-zinc-500">2026-10-20</span>
+        <span class="text-zinc-600">·</span>
+        <span class="text-zinc-400">By Dương Phúc Khánh (Kido)</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-semibold tracking-tight text-zinc-100 leading-tight">
+        Giải Phẫu Sự Cố Cloudflare Edge & Next.js 16: Triệt Tiêu Thảm Họa RSC Flight Payload Cache Poisoning
+      </h1>
+
+      <p class="text-base sm:text-lg text-zinc-400 leading-relaxed">
+        Cách header client navigation (RSC: 1) của Next.js App Router đầu độc bộ nhớ đệm Cloudflare Edge Cache biến PWA thành màn hình trắng xóa trên iOS Safari, và kiến trúc phòng thủ 3 lớp zero-downtime của Dương Phúc Khánh.
+      </p>
+    </header>
+
+    
+        <!-- Top Author & Entity Verification Ribbon -->
+        <div class="border border-emerald-500/30 bg-emerald-950/20 rounded-xl p-4 my-6 text-xs font-mono text-zinc-300">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-500/20 pb-2.5 mb-2.5">
+            <div class="flex items-center gap-2 text-emerald-400 font-semibold uppercase tracking-wider text-[11px]">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Chuyên Khảo Kiến Trúc Hệ Thống</span>
+            </div>
+            <div class="flex items-center gap-3 text-zinc-400 text-[11px]">
+              <span>Định danh thực thể:</span>
+              <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Wikidata Q141718572</a>
+              <span>·</span>
+              <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-sky-400 hover:underline">ORCID 0009-0005-7192-2664</a>
+            </div>
+          </div>
+          <div class="text-[12px] leading-relaxed text-zinc-300">
+            Tác giả: <strong class="text-white">Dương Phúc Khánh</strong> (tiếng Anh: <strong class="text-zinc-200">Duong Phuc Khanh</strong> · <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>), Kỹ sư Phần mềm Cao cấp &amp; Kiến trúc sư Hệ thống. Đọc <a href="/about" class="text-sky-400 hover:underline font-semibold">Tiểu sử Tiếng Việt</a>, xem bản <a href="/en" class="text-sky-400 hover:underline">English Biography</a>, tra cứu <a href="/articles/" class="text-sky-400 hover:underline">Danh mục Bài viết</a>, hoặc khám phá tuyển tập 128 tập ký sự sự cố production tại <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline font-semibold">Kido Chronicles</a>.
+          </div>
+        </div>
+        
+
+    <!-- Article Body Prose -->
+    <article class="prose prose-invert max-w-none text-zinc-300 leading-relaxed font-normal text-sm sm:text-base border-t border-white/[0.06] pt-6">
+      <p class="leading-relaxed my-3.5 text-zinc-300">Đúng 09:14 sáng một ngày đầu tuần, kênh hỗ trợ khách hàng của hệ thống tiếp nhận hàng loạt phản ánh khẩn cấp từ người dùng:</p>
+<blockquote class="border-l-2 border-emerald-400 pl-4 py-1.5 my-4 bg-white/[0.02] rounded-r text-zinc-300 italic text-sm"><em class="italic text-zinc-200">"Ứng dụng trên iPhone không mở được! Màn hình trắng xóa toàn ký tự lạ như <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">:HL[\&quot;/static/css/...\&quot;]</code> và <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">1:I[\&quot;$Sreact.fragment\&quot;...]</code>."</em></blockquote>
+<p class="leading-relaxed my-3.5 text-zinc-300">Người dùng khởi động ứng dụng Progressive Web App (PWA) từ màn hình chính iOS Home Screen chỉ thấy một chuỗi dữ liệu thô dạng văn bản của giao thức React Server Component (RSC) Flight thay vì giao diện HTML hoàn chỉnh. Ngay cả người dùng máy tính để bàn khi nhấn tổ hợp phím tải lại trang (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Ctrl + F5</code>) cũng gặp hiện tượng tương tự.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Tuy nhiên, bảng điều khiển hệ thống nội bộ lại hiển thị <strong class="text-white font-semibold">100% màu xanh</strong>. CPU máy chủ Node.js chỉ ở mức 4%, không có ngoại lệ nào chưa được xử lý, và API nội bộ phản hồi cực nhanh dưới 8ms.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Hệ thống đã rơi vào chiếc bẫy nguy hiểm mang tên: <strong class="text-white font-semibold">RSC Flight Payload Cache Poisoning tại Edge CDN</strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Tôi là <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (được biết đến trong cộng đồng kỹ sư với tên gọi <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong> hoặc <strong class="text-white font-semibold">Kido</strong>, <a href="https://github.com/khanhduong22" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">@khanhduong22</a>). Trong vai trò Senior Systems Architect tại Tech Pulse và tác giả của 128 tập biên niên sử kỹ thuật <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles</a></strong>, tôi đã trực tiếp mổ xẻ và xử lý triệt để sự cố này.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="1-cơ-chế-điều-hướng-của-next-js-app-router-html-stream-vs-flight-wire-data" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>1. Cơ Chế Điều Hướng Của Next.js App Router: HTML Stream vs Flight Wire Data</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Trong kiến trúc Next.js App Router, cùng một URL (ví dụ: <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">/dashboard</code>) có thể trả về hai định dạng dữ liệu hoàn toàn khác biệt tùy thuộc vào ngữ cảnh gửi yêu cầu:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">Full Document Navigation (Yêu cầu HTML ban đầu):</strong> Khi người dùng gõ URL vào thanh địa chỉ hoặc mở PWA lần đầu, trình duyệt gửi request với header <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Accept: text/html</code>. Máy chủ Next.js render mã HTML hoàn chỉnh kèm theo dữ liệu Flight để thực hiện Hydration.</li>
+<li><strong class="text-white font-semibold">Soft Client Navigation (Chuyển trang nội bộ qua Next Link):</strong> Khi người dùng nhấp vào thẻ <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">&lt;Link href=&quot;/dashboard&quot;&gt;</code>, router phía client của Next.js không tải lại toàn bộ trang mà chỉ gửi một yêu cầu nền kèm theo header đặc biệt:</li>
+</ol>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-http">   RSC: 1
+   Next-Router-State-Tree: ...
+   Accept: text/x-component</code></pre>
+<p class="leading-relaxed my-3.5 text-zinc-300">Lúc này, Next.js bỏ qua phần vỏ HTML và chỉ trả về <strong class="text-white font-semibold">Flight Payload</strong> thuần túy chứa danh sách Virtual DOM diff để client cập nhật giao diện.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="2-điểm-mù-của-edge-cache-tại-sao-cloudflare-lưu-nhầm-flight-data" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>2. Điểm Mù Của Edge Cache: Tại Sao Cloudflare Lưu Nhầm Flight Data?</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Theo mặc định của hầu hết các dịch vụ CDN (bao gồm Cloudflare, Fastly, AWS CloudFront), khóa định danh bộ nhớ đệm (Cache Key) chỉ bao gồm:</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">$$\text{Cache Key} = \text{Scheme} + \text{Host} + \text{URI Path}$$</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Nếu quản trị viên thiết lập một quy tắc lưu đệm Edge Cache (ví dụ: <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Cache-Control: public, max-age=3600</code>) cho các trang công khai mà không phân biệt header <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">RSC</code>, thảm họa sẽ xảy ra theo kịch bản sau:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">Bước 1:</strong> Một người dùng đang lướt trang web nhấp vào link nội bộ. Trình duyệt gửi request tới <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">/articles/</code> với header <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">RSC: 1</code>.</li>
+<li><strong class="text-white font-semibold">Bước 2:</strong> Yêu cầu đi qua Edge CDN và chạm tới máy chủ Next.js. Next.js trả về nội dung Flight Payload kèm header <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Content-Type: text/x-component</code>.</li>
+<li><strong class="text-white font-semibold">Bước 3:</strong> Edge CDN lưu trữ nội dung Flight Payload này vào Cache Key: <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">https://khanhdp.com/articles/</code>.</li>
+<li><strong class="text-white font-semibold">Bước 4 (Đầu độc thành công):</strong> Một người dùng mới truy cập trực tiếp bằng Safari hoặc mở PWA. Trình duyệt mong đợi nhận được HTML (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Accept: text/html</code>), nhưng Edge CDN ngay lập tức trả về Flight Payload dạng text đang được lưu trong cache! Trình duyệt render chuỗi text thô ra màn hình thay vì giao diện Web.</li>
+</ol>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="3-kiến-trúc-phòng-thủ-3-lớp-3-layer-edge-defense-architecture" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>3. Kiến Trúc Phòng Thủ 3 Lớp (3-Layer Edge Defense Architecture)</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Để triệt tiêu vĩnh viễn nguy cơ đầu độc bộ nhớ đệm mà không làm mất đi lợi thế tăng tốc của Edge CDN, chúng tôi đã triển khai kiến trúc bảo vệ đa tầng:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code>[Client Request] 
+       │
+       ▼
+[Layer 1: Cloudflare Custom Cache Key] ➔ Tách biệt Cache Key theo Header (RSC: 0 vs 1)
+       │
+       ▼
+[Layer 2: Reverse Proxy (Caddy 2)]    ➔ Thêm Vary: RSC, Next-Router-State-Tree, Accept
+       │
+       ▼
+[Layer 3: Next.js Response Guard]     ➔ Tự động hạ cấp Cache-Control: private nếu có RSC header</code></pre>
+<h3 id="lớp-1-cấu-hình-cache-key-partitioning-trên-cloudflare" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Lớp 1: Cấu Hình Cache Key Partitioning Trên Cloudflare</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Sử dụng Cloudflare Cache Rules để phân tách khóa lưu đệm dựa trên sự hiện diện của header <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">RSC</code>:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code>Expression: (http.request.uri.path eq &quot;/articles&quot; and http.request.headers[&quot;rsc&quot;] eq &quot;1&quot;)
+Action:
+  - Cache Key: Include Header &quot;RSC&quot;
+  - Edge Cache TTL: 0 (Bypass Cache for dynamic RSC transitions)</code></pre>
+<h3 id="lớp-2-chuẩn-hóa-header-vary-tại-reverse-proxy-caddyfile" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Lớp 2: Chuẩn Hóa Header Vary Tại Reverse Proxy (Caddyfile)</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Reverse Proxy phải luôn luôn đính kèm chỉ thị <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Vary</code> để báo hiệu cho mọi tầng proxy trung gian biết rằng nội dung thay đổi theo header:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-caddy">khanhdp.com {
+    @is_rsc {
+        header RSC 1
+    }
+
+    handle {
+        header {
+            # Bắt buộc CDN và Browser phải tách cache theo RSC và Accept
+            Vary &quot;Accept, RSC, Next-Router-State-Tree&quot;
+            # Bảo vệ chống clickjacking và mime-sniffing
+            X-Content-Type-Options &quot;nosniff&quot;
+        }
+        reverse_proxy localhost:3000
+    }
+}</code></pre>
+<h3 id="lớp-3-response-header-interceptor-tại-next-js-middleware" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Lớp 3: Response Header Interceptor Tại Next.js Middleware</h3>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-typescript">// middleware.ts
+import { NextResponse } from &#x27;next/server&#x27;;
+import type { NextRequest } from &#x27;next/server&#x27;;
+
+export function middleware(request: NextRequest) {
+  const isRSC = request.headers.has(&#x27;rsc&#x27;);
+  const response = NextResponse.next();
+
+  // Đảm bảo header Vary luôn hiện diện
+  response.headers.append(&#x27;Vary&#x27;, &#x27;RSC&#x27;);
+  response.headers.append(&#x27;Vary&#x27;, &#x27;Next-Router-State-Tree&#x27;);
+  response.headers.append(&#x27;Vary&#x27;, &#x27;Accept&#x27;);
+
+  // Nếu là RSC request, tuyệt đối không cho phép CDN cache công khai
+  if (isRSC) {
+    response.headers.set(
+      &#x27;Cache-Control&#x27;,
+      &#x27;private, no-cache, no-store, max-age=0, must-revalidate&#x27;
+    );
+  }
+
+  return response;
+}</code></pre>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="4-kết-quả-xác-minh-bằng-kiểm-thử-tự-động-playwright-e2e" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>4. Kết Quả Xác Minh Bằng Kiểm Thử Tự Động Playwright E2E</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Sau khi triển khai bộ lọc 3 lớp, chúng tôi thiết lập kịch bản kiểm thử hồi quy tự động trong Playwright để đảm bảo lỗi không bao giờ tái diễn:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>Thực hiện Soft Navigation giả lập header <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">RSC: 1</code> để ghi cache tại Edge.</li>
+<li>Thực hiện Hard Navigation ngay sau đó với header <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Accept: text/html</code>.</li>
+<li>Kiểm tra mã phản hồi HTTP phải là 200, header <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Content-Type</code> phải chứa <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">text/html</code>, và DOM phải render đầy đủ thẻ <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">&lt;main&gt;</code> mà không chứa bất kỳ ký tự raw Flight nào.</li>
+</ol>
+<p class="leading-relaxed my-3.5 text-zinc-300">Toàn bộ 100% ca kiểm thử đã vượt qua xuất sắc trên cả Safari di động và Chrome máy tính để bàn.</p>
+    </article>
+
+    <!-- Contextual Kido Chronicles Episodes (Deep Links) -->
+    <section class="mt-16 pt-8 border-t border-white/[0.06] space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          <span>Biên Niên Sử Liên Quan (Kido Chronicles)</span>
+        </h2>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-xs font-mono text-purple-300 hover:text-purple-200 hover:underline">
+          View all 128 episodes ↗
+        </a>
+      </div>
+      <p class="text-xs text-zinc-400">
+        Curated real-world war stories and incident postmortems authored by Duong Phuc Khanh on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">truyen.khanhdp.com</a> related to this topic:
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+        
+        <a href="https://truyen.khanhdp.com/tap/tap-120-xoa-bo-loading-tsx-cua-nextjs-bi-kip-zero-streaming-fallback-va-frame-0-skeleton/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Next.js</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 120 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 120: Xóa Bỏ loading.tsx Của Next.js & Frame-0 Skeleton
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Khắc phục triệt để hiện tượng giật màn hình (CLS) khi Next.js chuyển trang bằng Skeleton đồng bộ Frame-0.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-124-vu-an-dau-doc-bo-nho-dem-rsc-service-worker-v7-va-accessibility-100-tuyet-doi/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Edge & PWA</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 124 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 124: Vụ Án Đầu Độc Bộ Nhớ Đệm RSC & Service Worker v7
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Phân tích cú xung đột giữa Service Worker Cache và Next.js RSC Flight Header khiến iOS Safari bị crash trắng xóa.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-131-dao-trung-o-bug-multi-temporal-tenancy-khi-asia-saigon-troi-day-va-cu-lua-ip-cloudflare/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Distributed Systems</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 131 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 131: Đào Trúng Ổ Bug Multi-Temporal Tenancy & Cú Lừa IP Cloudflare
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Xử lý sai lệch múi giờ đa quốc gia của vận động viên quốc tế và cách bóc tách IP gốc qua Cloudflare Header.
+          </div>
+        </a>
+        
+      </div>
+    </section>
+
+    <!-- Author Bio & Entity Verification Card (Bottom) -->
+    <section class="mt-12 p-6 rounded-2xl border border-white/10 bg-[#121212] space-y-4">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+        <img
+          src="/duong-phuc-khanh.jpg"
+          alt="Duong Phuc Khanh (Dương Phúc Khánh · Kido)"
+          width="88"
+          height="88"
+          style="width:88px;height:88px;object-fit:cover;"
+          class="rounded-xl border border-white/15 shrink-0"
+        />
+        <div class="space-y-2 text-center sm:text-left flex-1">
+          <h3 class="text-base font-semibold text-zinc-100">Về Tác Giả: Dương Phúc Khánh (khanhdp · Kido)</h3>
+          
+        <p class="text-sm text-zinc-300 leading-relaxed mb-3">
+          <strong>Dương Phúc Khánh</strong> (sinh năm 1995 tại Đà Nẵng, định danh: <em>khanhdp</em>, moniker: <em>Kido</em>) là Kỹ sư Phần mềm Cao cấp và Kiến trúc sư Hệ thống tại <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>. Cựu sinh viên Đại học Kinh tế – Đại học Đà Nẵng, Quán quân Startup Runway 2018 (vinh danh trên Báo Đà Nẵng), 6 năm Tech Lead &amp; PM tại FPT Software SBI Lab (3 năm liên tiếp Best Performance Award 2022–2024). Anh là tác giả của <a href="https://vantoicalis.com" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Winter Arc</a>, tuyển tập 128 tập <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a> và bộ khung điều phối <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Agent Harness Kit</a>.
+        </p>
+        
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs font-mono pt-1">
+            <a href="https://khanhdp.com" class="text-sky-400 hover:underline">Home</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/en" class="text-sky-400 hover:underline">Biography (EN)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/about" class="text-sky-400 hover:underline">Tiểu sử (VI)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Wikidata</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">ORCID</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="border-t border-white/[0.06] bg-[#080808] text-xs font-mono text-zinc-500 py-12">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <a href="https://khanhdp.com" class="text-zinc-300 hover:text-white font-semibold uppercase transition-colors">DUONG PHUC KHANH (KIDO)</a>
+      </div>
+      <div class="flex items-center gap-4 text-zinc-400 flex-wrap">
+        <a href="/" class="hover:text-white transition-colors">Overview</a>
+        <a href="/en" class="hover:text-white transition-colors">Biography (EN)</a>
+        <a href="/about" class="hover:text-white transition-colors">Tiểu sử (VI)</a>
+        <a href="/articles/" class="text-white hover:text-emerald-400 transition-colors">Articles</a>
+        <a href="/portfolio" class="hover:text-white transition-colors">Portfolio</a>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Chronicles</a>
+        <a href="https://github.com/khanhduong22" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://www.linkedin.com/in/duong-phuc-khanh/" target="_blank" rel="noopener" class="hover:text-white transition-colors">LinkedIn</a>
+      </div>
+    </div>
+    <div class="max-w-5xl mx-auto px-6 mt-4 text-[11px] text-zinc-600 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>© 2026 Duong Phuc Khanh (khanhdp · Kido). All rights reserved.</p>
+      <p>Crafted with quiet confidence</p>
+    </div>
+  </footer>
+
+  <!-- Scroll Progress Script -->
+  <script>
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar) progressBar.style.width = scrolled + '%';
+    }, { passive: true });
+
+    document.addEventListener("click", (e) => {
+      let a = e.target.closest("a[href]");
+      if (a) {
+        let h = a.getAttribute("href");
+        if (h && (h.startsWith("http://") || h.startsWith("https://")) && !h.includes(window.location.hostname)) {
+          let t = (a.getAttribute("title") || a.textContent || h).trim().slice(0, 60);
+          if (window.trackEvent) window.trackEvent("outbound_click", { event_category: "outbound", destination_url: h, link_text: t });
+        } else if (h && (h.startsWith("#") || h.startsWith("/"))) {
+          let t = (a.textContent || h).trim().slice(0, 40);
+          if (window.trackEvent) window.trackEvent("nav_click", { event_category: "navigation", destination: h, link_text: t });
+        }
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why HTTP 304 Not Modified Quietly Erased Our PWA State (And How We Fixed SingleFlight Cache Races with Mutation Epochs) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)</title>
+  <meta name="description" content="How a 50ms replica lag combined with SWR background revalidation erased staff check-in states, and how we solved SingleFlight cache races using Client Mutation Ledgers and Server Mutation Epochs." />
+
+  <!-- Canonical Tag -->
+  <link rel="canonical" href="https://khanhdp.com/articles/http-304-singleflight-cache-races-mutation-epochs/" />
+
+  <!-- Favicons & Brand Suite -->
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="144x144" href="/favicon-144x144.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- OpenGraph Metadata -->
+  <meta property="og:title" content="Why HTTP 304 Not Modified Quietly Erased Our PWA State (And How We Fixed SingleFlight Cache Races with Mutation Epochs) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta property="og:description" content="How a 50ms replica lag combined with SWR background revalidation erased staff check-in states, and how we solved SingleFlight cache races using Client Mutation Ledgers and Server Mutation Epochs." />
+  <meta property="og:url" content="https://khanhdp.com/articles/http-304-singleflight-cache-races-mutation-epochs/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Dương Phúc Khánh (khanhdp · Kido)" />
+  <meta property="og:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Why HTTP 304 Not Modified Quietly Erased Our PWA State (And How We Fixed SingleFlight Cache Races with Mutation Epochs) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta name="twitter:description" content="How a 50ms replica lag combined with SWR background revalidation erased staff check-in states, and how we solved SingleFlight cache races using Client Mutation Ledgers and Server Mutation Epochs." />
+  <meta name="twitter:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+
+  <!-- Deferred Lossless Telemetry -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-RMEP3RZB14');
+    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
+    window.clarity = window.clarity || function() { (window.clarity.q = window.clarity.q || []).push(arguments); };
+
+    window.addEventListener('error', function(e) {
+      if (window.Sentry && typeof window.Sentry.captureException === 'function') {
+        var id = window.Sentry.captureException(e.error || e.message);
+        if (id && window.clarity) window.clarity('set', 'sentry_event_id', id);
+      }
+    });
+
+    window.trackEvent = function(eventName, params) {
+      params = params || {};
+      if (typeof window.gtag === 'function') window.gtag('event', eventName, params);
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', eventName);
+        var label = params.event_label || params.label || params.destination_url || params.category;
+        if (label) window.clarity('set', eventName, String(label).slice(0, 50));
+      }
+    };
+
+    (function(w, d) {
+      var isLoaded = false;
+      function injectScript(src, id) {
+        if (id && d.getElementById(id)) return;
+        if (d.querySelector('script[src="' + src + '"]')) return;
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = src;
+        if (id) s.id = id;
+        (d.head || d.body).appendChild(s);
+      }
+      var events = ['scroll', 'touchstart', 'pointerdown', 'keydown', 'wheel'];
+      function triggerDeferredLoad() {
+        if (isLoaded) return;
+        isLoaded = true;
+        events.forEach(function(e) { w.removeEventListener(e, triggerDeferredLoad); });
+        injectScript('https://www.googletagmanager.com/gtag/js?id=G-RMEP3RZB14', 'ga4-deferred-script');
+        injectScript('https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355', 'gtm-deferred-script');
+        injectScript('https://www.clarity.ms/tag/yy4l1xv1a9', 'clarity-deferred-script');
+      }
+      events.forEach(function(e) {
+        w.addEventListener(e, triggerDeferredLoad, { passive: true, once: true });
+      });
+    })(window, document);
+  </script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://khanhdp.com/articles/http-304-singleflight-cache-races-mutation-epochs/#article",
+      "headline": "Why HTTP 304 Not Modified Quietly Erased Our PWA State (And How We Fixed SingleFlight Cache Races with Mutation Epochs)",
+      "name": "Why HTTP 304 Not Modified Quietly Erased Our PWA State (And How We Fixed SingleFlight Cache Races with Mutation Epochs) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)",
+      "description": "How a 50ms replica lag combined with SWR background revalidation erased staff check-in states, and how we solved SingleFlight cache races using Client Mutation Ledgers and Server Mutation Epochs.",
+      "url": "https://khanhdp.com/articles/http-304-singleflight-cache-races-mutation-epochs/",
+      "mainEntityOfPage": "https://khanhdp.com/articles/http-304-singleflight-cache-races-mutation-epochs/",
+      "inLanguage": "en",
+      "datePublished": "2026-10-20",
+      "dateModified": "2026-10-23",
+      "author": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "publisher": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "articleSection": "Cache & Concurrency"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://khanhdp.com/#person",
+      "name": "Dương Phúc Khánh",
+      "givenName": "Khánh",
+      "familyName": "Dương",
+      "additionalName": "Phúc",
+      "alternateName": [
+        "Duong Phuc Khanh",
+        "khanhdp",
+        "Kido",
+        "Khánh Dương",
+        "Khanh Duong",
+        "khanhduong22",
+        "phuckhanh22",
+        "kode.x.kido",
+        "kodexkido"
+      ],
+      "jobTitle": "Senior Software Engineer & Systems Architect",
+      "url": "https://khanhdp.com",
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "birthDate": "1995",
+      "identifier": [
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Google Knowledge Graph ID",
+          "value": "/g/11zyg5zq1c"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Wikidata",
+          "value": "Q141718572"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "ORCID",
+          "value": "0009-0005-7192-2664"
+        }
+      ],
+      "sameAs": [
+        "https://www.google.com/search?kgmid=/g/11zyg5zq1c",
+        "https://g.co/kg/g/11zyg5zq1c",
+        "https://khanhdp.com",
+        "https://khanhdp.com/about",
+        "https://khanhdp.com/en",
+        "https://duongphuckhanh.dev",
+        "https://www.wikidata.org/wiki/Q141718572",
+        "https://orcid.org/0009-0005-7192-2664",
+        "https://baodanang.vn/goi-mon-an-bang-dien-thoai-thong-minh-3174905.html",
+        "https://github.com/khanhduong22",
+        "https://dev.to/khanhduong22",
+        "https://viblo.asia/u/khanhdp",
+        "https://linkedin.com/in/duong-phuc-khanh/",
+        "https://x.com/duongphuckhanh",
+        "https://facebook.com/khanhduong2295/",
+        "https://truyen.khanhdp.com"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://khanhdp.com/articles/http-304-singleflight-cache-races-mutation-epochs/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://khanhdp.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Technical Articles",
+          "item": "https://khanhdp.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Why HTTP 304 Not Modified Quietly Erased Our PWA State (And How We Fixed SingleFlight Cache Races with Mutation Epochs)",
+          "item": "https://khanhdp.com/articles/http-304-singleflight-cache-races-mutation-epochs/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="preload" href="/fonts/inter-vietnamese.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/index.min.css" />
+</head>
+<body class="bg-craft-bg text-craft-text font-sans antialiased selection:bg-white/20 selection:text-white min-h-screen relative">
+  <!-- Top Reading Progress Indicator -->
+  <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-zinc-500 via-zinc-200 to-white z-50 transition-all duration-100 ease-out" style="width: 0%;"></div>
+
+  <!-- Ambient Light Header Radial -->
+  <div class="absolute inset-x-0 top-0 h-[480px] ambient-glow pointer-events-none"></div>
+
+  <!-- Sticky Minimal Navigation Bar -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-[#0a0a0a]/85 border-b border-white/[0.06] transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="/" class="group flex items-center gap-2.5 text-zinc-100 hover:text-white transition-colors">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse"></span>
+        <span class="font-mono text-xs tracking-wider uppercase font-semibold text-zinc-200">DUONG PHUC KHANH · KIDO</span>
+      </a>
+
+      <nav class="flex items-center gap-4 text-xs font-mono">
+        <div class="hidden sm:flex items-center gap-4 text-zinc-400">
+          <a href="/" class="hover:text-zinc-200 transition-colors">Overview</a>
+          <a href="/en" class="hover:text-zinc-200 transition-colors">Biography (EN)</a>
+          <a href="/about" class="hover:text-zinc-200 transition-colors">Tiểu sử (VI)</a>
+          <a href="/articles/" class="text-white font-semibold flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Articles
+          </a>
+          <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-zinc-200 transition-colors">Chronicles</a>
+          <a href="/portfolio" class="px-2.5 py-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all font-semibold flex items-center gap-1.5">
+            SME Portfolio
+          </a>
+        </div>
+
+        <div class="h-3 w-[1px] bg-white/10 hidden sm:block"></div>
+
+        <a href="mailto:phuckhanh22@gmail.com" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-zinc-300 hover:text-zinc-100 transition-all text-xs font-mono">
+          <span>Contact</span>
+          <span>↗</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Article Container -->
+  <main class="max-w-4xl mx-auto px-6 pt-12 pb-24">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-xs font-mono text-zinc-500 tracking-wider uppercase mb-6 pb-3 border-b border-white/[0.06] overflow-x-auto">
+      <a href="/" class="hover:text-zinc-300 transition-colors shrink-0">KHANHDP.COM</a>
+      <span>/</span>
+      <a href="/articles/" class="hover:text-zinc-300 transition-colors shrink-0">ARTICLES</a>
+      <span>/</span>
+      <span class="text-zinc-400 shrink-0">CACHE & CONCURRENCY</span>
+    </div>
+
+    <!-- Article Header -->
+    <header class="space-y-4 mb-8">
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Cache & Concurrency</span>
+        <span class="text-zinc-500">2026-10-20</span>
+        <span class="text-zinc-600">·</span>
+        <span class="text-zinc-400">By Dương Phúc Khánh (Kido)</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-semibold tracking-tight text-zinc-100 leading-tight">
+        Why HTTP 304 Not Modified Quietly Erased Our PWA State (And How We Fixed SingleFlight Cache Races with Mutation Epochs)
+      </h1>
+
+      <p class="text-base sm:text-lg text-zinc-400 leading-relaxed">
+        How a 50ms replica lag combined with SWR background revalidation erased staff check-in states, and how we solved SingleFlight cache races using Client Mutation Ledgers and Server Mutation Epochs.
+      </p>
+    </header>
+
+    
+        <!-- Top Author & Entity Verification Ribbon -->
+        <div class="border border-emerald-500/30 bg-emerald-950/20 rounded-xl p-4 my-6 text-xs font-mono text-zinc-300">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-500/20 pb-2.5 mb-2.5">
+            <div class="flex items-center gap-2 text-emerald-400 font-semibold uppercase tracking-wider text-[11px]">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Authoritative Technical Whitepaper</span>
+            </div>
+            <div class="flex items-center gap-3 text-zinc-400 text-[11px]">
+              <span>Verified Entity:</span>
+              <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Wikidata Q141718572</a>
+              <span>·</span>
+              <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-sky-400 hover:underline">ORCID 0009-0005-7192-2664</a>
+            </div>
+          </div>
+          <div class="text-[12px] leading-relaxed text-zinc-300">
+            Authored by <strong class="text-white">Duong Phuc Khanh</strong> (<strong class="text-zinc-200">Dương Phúc Khánh</strong> · <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>), Senior Software Engineer &amp; Systems Architect. Explore the <a href="/en" class="text-sky-400 hover:underline font-semibold">Official English Biography</a>, read the <a href="/about" class="text-sky-400 hover:underline">Tiểu sử Tiếng Việt</a>, browse the <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>, or inspect the 128-episode engineering postmortem anthology on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline font-semibold">Kido Chronicles</a>.
+          </div>
+        </div>
+        
+
+    <!-- Article Body Prose -->
+    <article class="prose prose-invert max-w-none text-zinc-300 leading-relaxed font-normal text-sm sm:text-base border-t border-white/[0.06] pt-6">
+      <p class="leading-relaxed my-3.5 text-zinc-300">At 08:30 AM across a network of retail stores, dozens of employees opened our mobile Progressive Web App (PWA) to clock in for their morning shift.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">A store associate tapped <strong class="text-white font-semibold">"Clock In"</strong>. The spinner flickered for a brief moment, and a crisp green toast appeared:</p>
+<p class="leading-relaxed my-3.5 text-zinc-300"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">&quot;Clock-in Successful (HTTP 200 OK)&quot;</code>. The PWA dashboard immediately transitioned to the active shift screen: <strong class="text-white font-semibold">"Currently On Duty"</strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Then, exactly <strong class="text-white font-semibold">one second later</strong>, something bizarre happened:</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">The UI jerked, the status flipped backward to <strong class="text-white font-semibold">"Not Clocked In"</strong>, and the "Clock In" button reappeared as if nothing had ever taken place!</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Naturally, the employee assumed the network had dropped their action and tapped the button a second time. This time, the server fired back an angry red error banner:</p>
+<p class="leading-relaxed my-3.5 text-zinc-300"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 400 Bad Request: &quot;You are already clocked in for this shift!&quot;</code>.</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code>[The Employee&#x27;s Dilemma]
+- The screen insists: &quot;You haven&#x27;t clocked in yet. Tap to start!&quot;
+- The employee taps it: &quot;Error: You are ALREADY clocked in!&quot;</code></pre>
+<p class="leading-relaxed my-3.5 text-zinc-300">I'm <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (also known internationally as <strong class="text-white font-semibold">Duong Phuc Khanh</strong>, and widely referred to as <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong> or <strong class="text-white font-semibold">Kido</strong>, <a href="https://github.com/khanhduong22" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">@khanhduong22</a>). Over the past 7+ years—from building high-throughput financial trading systems at <em class="italic text-zinc-200">FPT Software (SBI Lab)</em> to serving as <em class="italic text-zinc-200">Senior AI-Native Lead & Systems Architect</em> at <em class="italic text-zinc-200">Tech Pulse</em>—I've documented real-world production postmortems across 127 chapters of <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles</a></strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Today, we are dissecting this exact incident: A textbook collision between <strong class="text-white font-semibold">HTTP 304 Not Modified revalidation in client-side caching libraries</strong>, a <strong class="text-white font-semibold">SingleFlight Cache Race Condition</strong>, and the battle-tested architectural framework we engineered to eradicate it.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="1-autopsy-1-the-http-304-not-modified-revalidation-trap" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>1. Autopsy #1: The HTTP 304 Not Modified Revalidation Trap</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Why did a mutation that returned a successful <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 200 OK</code> vanish from the client screen just 1,000 milliseconds later?</p>
+<h3 id="the-mechanics-of-swr-react-query-on-mobile-pwas" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">The Mechanics of SWR & React Query on Mobile PWAs</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Modern frontend applications rely on "stale-while-revalidate" caching strategies (like <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">swr</code> or TanStack Query). When a user performs an action (e.g. clocking in), the client executes a mutation, updates its local optimistic UI state, and triggers a background revalidation of the primary dashboard data endpoint: <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">GET /api/staff/home-data</code>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Here is the seemingly innocent sequence of events:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">t = 0ms</code>: The client sends <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">POST /api/checkins</code>.</li>
+<li><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">t = 80ms</code>: The backend server commits the shift to PostgreSQL, purges the Redis cache, and returns <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 200 OK</code> with <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">{ status: &quot;ACTIVE&quot; }</code>. React state updates instantly: <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">isOnDuty = true</code>.</li>
+<li><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">t = 500ms</code>: SWR initiates a background revalidation fetch for <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">GET /api/staff/home-data</code>.</li>
+<li><strong class="text-white font-semibold">THE LETHAL TRAP</strong>: The mobile browser engine (iOS WebKit / Android Chromium) automatically attaches conditional HTTP headers from its previous session:</li>
+</ol>
+<p class="leading-relaxed my-3.5 text-zinc-300"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">If-None-Match: &quot;W/old-etag-pre-checkin&quot;</code>.</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-mermaid">sequenceDiagram
+    autonumber
+    actor Staff as Store Associate (Mobile PWA)
+    participant SWR as SWR / React State
+    participant Cache as Mobile Browser HTTP Cache
+    participant API as Backend API (Hono / NestJS)
+    participant DB as PostgreSQL Replica / Redis
+
+    Staff-&gt;&gt;API: 1. POST /api/checkins (Clock-In)
+    API-&gt;&gt;DB: Write to Primary DB + Invalidate Redis
+    API--&gt;&gt;Staff: 200 OK { status: &quot;ACTIVE&quot; }
+    Note over SWR: UI updates immediately: &quot;On Duty&quot; (0ms lag)
+
+    par SWR Background Revalidation
+        SWR-&gt;&gt;Cache: GET /api/staff/home-data
+        Cache-&gt;&gt;API: GET with If-None-Match: &quot;W/old-etag&quot;
+        Note over API,DB: Query hits Read Replica with 50ms lag!
+        API--&gt;&gt;Cache: HTTP 304 Not Modified (0 bytes body)
+        Note over Cache: Browser unpacks STALE JSON from disk cache!
+        Cache--&gt;&gt;SWR: Returns stale pre-checkin data
+        Note over SWR: SWR OVERWRITES REACT STATE WITH STALE DATA!
+        SWR--&gt;&gt;Staff: UI rolls back to: &quot;Not Clocked In&quot; (Glitch!)
+    end</code></pre>
+<h3 id="the-culprit-database-replication-lag-etag-middleware" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">The Culprit: Database Replication Lag & ETag Middleware</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Behind the API gateway, read queries are routed to read replicas or cached application buffers:</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">Replication Lag</strong>: Under burst morning load, the PostgreSQL read replica lagged behind the primary by just <strong class="text-white font-semibold">30–50ms</strong>. WAL logs had not yet applied when the read query executed.</li>
+<li><strong class="text-white font-semibold">ETag Calculation</strong>: The API server calculated an MD5/SHA-1 checksum of the response payload. Because the read replica returned the stale state, the newly computed hash was identical to the client's <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">If-None-Match</code> header.</li>
+<li>The server, complying with RFC 7234, returned <strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 304 Not Modified</code></strong> without a response body.</li>
+</ul>
+<h3 id="the-backstab" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">The Backstab:</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">When the SWR fetcher received an <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 304</code>, the browser intercepted it and served the <strong class="text-white font-semibold">stale cached response from disk</strong>. SWR treated this as fresh, verified truth and <strong class="text-white font-semibold">silently overwritten the live React state</strong>!</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">The freshly confirmed clock-in state was completely erased from the user's viewport by an obsolete cache entry.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="2-autopsy-2-the-singleflight-cache-race-slow-reads-punishing-fast-mutations" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>2. Autopsy #2: The SingleFlight Cache Race (Slow Reads Punishing Fast Mutations)</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Fixing ETag headers alone does not make you immune to concurrency bugs. Under the hood, we discovered an even nastier race condition: <strong class="text-white font-semibold">The SingleFlight Cache Race</strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">To prevent <strong class="text-white font-semibold">Cache Stampede / Thundering Herd</strong> problems when thousands of mobile clients request dashboard data simultaneously, high-performance backends implement the <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">SingleFlight</code> pattern (also known as request coalescing or in-flight promise sharing). If 10 requests arrive for <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">cache:staff:123</code>, only one triggers a database query, while the remaining 9 await the identical promise.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">However, consider what happens when a fast write operation interleaves with a slow read operation:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code>A Timeline of the In-Flight Collision:
+
+t = 0ms:    Request A (GET /api/staff/home-data) begins. 
+            The DB is busy, so the complex multi-table SQL JOIN takes 150ms.
+            Request A registers its in-flight promise for key &quot;cache:staff:123&quot;.
+
+t = 50ms:   User taps Clock In -&gt; Request B (POST /api/checkins) arrives.
+            Writing the new record to PostgreSQL takes only 20ms.
+
+t = 70ms:   Request B purges the cache:
+            await redis.del(&quot;cache:staff:123&quot;);
+            Request B responds with 200 OK! The Redis cache is now EMPTY.
+
+t = 150ms:  Request A finally finishes its 150ms SQL query!
+            Unaware of the mutation that completed at t=70ms, Request A
+            innocently populates the cache with its stale dataset:
+            await redis.set(&quot;cache:staff:123&quot;, stalePreCheckinData, &#x27;EX&#x27;, 300);
+
+THE DAMAGE: The cache, cleanly invalidated at 70ms, was RE-POLLUTED 
+            with stale data at 150ms for the next 5 minutes!</code></pre>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-mermaid">sequenceDiagram
+    autonumber
+    participant Client
+    participant SingleFlight as SingleFlight Manager
+    participant Redis as Valkey / Redis
+    participant DB as PostgreSQL Primary
+
+    Note over Client,DB: t = 0ms: Request A (GET) starts slow query
+    Client-&gt;&gt;SingleFlight: GET /api/staff/home-data
+    SingleFlight-&gt;&gt;DB: Heavy SQL query (takes 150ms)
+    
+    Note over Client,DB: t = 50ms: Request B (POST Mutation) arrives
+    Client-&gt;&gt;DB: POST /api/checkins (takes 20ms)
+    DB--&gt;&gt;Client: Mutation committed (t = 70ms)
+    Client-&gt;&gt;Redis: redis.del(&quot;cache:staff:123&quot;) (Cache purged!)
+
+    Note over Client,DB: t = 150ms: Request A finishes stale query
+    DB--&gt;&gt;SingleFlight: Returns old SQL payload
+    SingleFlight-&gt;&gt;Redis: redis.set(&quot;cache:staff:123&quot;, STALE_DATA, &#x27;EX&#x27;, 300)
+    Note over Redis: STALE DATA RESURRECTED FOR 5 MINUTES!</code></pre>
+<p class="leading-relaxed my-3.5 text-zinc-300">A slow read that started <em class="italic text-zinc-200">before</em> a mutation but finished <em class="italic text-zinc-200">after</em> it completely undid the cache invalidation.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="3-the-4-layer-architectural-defense" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>3. The 4-Layer Architectural Defense</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">To permanently solve this class of failures, <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh (khanhdp · Kido)</a></strong> designed a <strong class="text-white font-semibold">4-Layer Defense-in-Depth Architecture</strong>:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code>┌─────────────────────────────────────────────────────────────┐
+│ LAYER 1 (CLIENT): Confirmed Mutation Ledger (Local Storage) │
+│ - Deterministic client reconciliation, immune to stale 304s │
+├─────────────────────────────────────────────────────────────┤
+│ LAYER 2 (SERVER): InFlight Mutation Epochs (resilient-cache)│
+│ - Aborts stale cache writes whenever an epoch shift occurs  │
+├─────────────────────────────────────────────────────────────┤
+│ LAYER 3 (EDGE): Anti-304 Realtime Route Mandate             │
+│ - Excludes dynamic write-sensitive routes from ETag hashing │
+├─────────────────────────────────────────────────────────────┤
+│ LAYER 4 (IDEMPOTENCY): 15-Second Double-Tap Soft Cushion    │
+│ - Converts panic taps into idempotent 200 OK responses      │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+<hr class="border-white/[0.08] my-8" />
+<h3 id="layer-1-client-confirmed-mutation-ledger-kt-spa-version-guard" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Layer 1: Client Confirmed Mutation Ledger (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">@kt/spa-version-guard</code>)</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Never treat an HTTP response from a cellular network as infallible truth.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">On the client side, we maintain a persistent <strong class="text-white font-semibold">Confirmed Mutation Ledger</strong>:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>When a <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">POST</code> mutation succeeds, the client commits an immutable event to <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">localStorage</code> with a 12-hour expiration window.</li>
+<li>Regardless of what the server or SWR returns on subsequent background revalidations, incoming data must pass through <strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">reconcileWithConfirmedLedger</code></strong>.</li>
+<li>If the local ledger holds a verified clock-in timestamp newer than the server payload, the client overrides the stale server data in memory.</li>
+<li>All dynamic queries enforce <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">cache: &#x27;no-store&#x27;</code>, and legacy Service Worker cache buckets are purged upon boot (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">caches.delete(&#x27;legacy-api-cache&#x27;)</code>).</li>
+</ol>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-typescript">// Production slice from @kt/spa-version-guard
+export interface ConfirmedRecord {
+  id: string;
+  type: &#x27;CHECK_IN&#x27; | &#x27;CHECK_OUT&#x27;;
+  confirmedAt: number;
+  payload: Record&lt;string, unknown&gt;;
+}
+
+export class ConfirmedMutationLedger {
+  private readonly storageKey = &#x27;kt_confirmed_mutation_ledger_v1&#x27;;
+  private readonly ttlMs = 12 * 60 * 60 * 1000; // 12 hours
+
+  recordMutation(type: ConfirmedRecord[&#x27;type&#x27;], payload: Record&lt;string, unknown&gt;): void {
+    const records = this.getActiveRecords();
+    records.push({
+      id: crypto.randomUUID(),
+      type,
+      confirmedAt: Date.now(),
+      payload
+    });
+    localStorage.setItem(this.storageKey, JSON.stringify(records));
+  }
+
+  // Reconcile incoming server payloads against deterministic client truth
+  reconcileHomeData&lt;T extends { isCheckedIn: boolean; lastActionAt?: number }&gt;(serverData: T): T {
+    const activeRecords = this.getActiveRecords();
+    const latestCheckin = activeRecords
+      .filter(r =&gt; r.type === &#x27;CHECK_IN&#x27;)
+      .sort((a, b) =&gt; b.confirmedAt - a.confirmedAt)[0];
+
+    if (!latestCheckin) return serverData;
+
+    const serverTimestamp = serverData.lastActionAt ?? 0;
+    // If server reports false or has an older timestamp, client truth wins!
+    if (!serverData.isCheckedIn &amp;&amp; latestCheckin.confirmedAt &gt; serverTimestamp) {
+      return {
+        ...serverData,
+        isCheckedIn: true,
+        lastActionAt: latestCheckin.confirmedAt,
+        ...latestCheckin.payload
+      };
+    }
+
+    return serverData;
+  }
+
+  private getActiveRecords(): ConfirmedRecord[] {
+    try {
+      const raw = localStorage.getItem(this.storageKey);
+      if (!raw) return [];
+      const parsed: ConfirmedRecord[] = JSON.parse(raw);
+      const now = Date.now();
+      return parsed.filter(item =&gt; now - item.confirmedAt &lt; this.ttlMs);
+    } catch {
+      return [];
+    }
+  }
+}</code></pre>
+<hr class="border-white/[0.08] my-8" />
+<h3 id="layer-2-server-side-inflight-mutation-epochs-kt-resilient-cache" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Layer 2: Server-Side InFlight Mutation Epochs (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">@kt/resilient-cache</code>)</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">To kill the <strong class="text-white font-semibold">SingleFlight Cache Race</strong>, we augmented the coalescing engine with <strong class="text-white font-semibold">Mutation Epoch Counters</strong>:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>An atomic counter, <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">mutationEpoch</code>, tracks all state alterations across the cache partition.</li>
+<li>Whenever a mutation invalidates a key or pattern (e.g. <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">staff:*</code>), <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">bumpMutationEpoch()</code> increments the counter and detaches all active in-flight promises associated with that key.</li>
+<li>Every read operation records a snapshot of <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">startEpoch = currentEpoch</code> before kicking off its database query.</li>
+<li>Before persisting the result into Redis, it verifies: <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">if (this.mutationEpoch !== startEpoch) return;</code>. If a mutation intervened during the read, <strong class="text-white font-semibold">the write is rejected</strong>.</li>
+</ol>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-typescript">// Production architecture of InFlightManager in @kt/resilient-cache
+export class InFlightManager {
+  private inFlightPromises = new Map&lt;string, Promise&lt;unknown&gt;&gt;();
+  private mutationEpoch = 0;
+
+  bumpMutationEpoch(pattern?: string): number {
+    this.mutationEpoch++;
+    
+    // Detach and evict in-flight promises matching the invalidated pattern
+    if (pattern) {
+      for (const key of this.inFlightPromises.keys()) {
+        if (this.matchPattern(key, pattern)) {
+          this.inFlightPromises.delete(key);
+        }
+      }
+    } else {
+      this.inFlightPromises.clear();
+    }
+    
+    return this.mutationEpoch;
+  }
+
+  async dedupeWithEpoch&lt;T&gt;(
+    key: string,
+    fetcher: () =&gt; Promise&lt;T&gt;,
+    onCommitToCache: (data: T) =&gt; Promise&lt;void&gt;
+  ): Promise&lt;T&gt; {
+    const startEpoch = this.mutationEpoch;
+
+    if (this.inFlightPromises.has(key)) {
+      return this.inFlightPromises.get(key) as Promise&lt;T&gt;;
+    }
+
+    const promise = (async () =&gt; {
+      try {
+        const result = await fetcher();
+        
+        // CRITICAL GUARD: Only commit to cache if no mutation occurred in between
+        if (this.mutationEpoch === startEpoch) {
+          await onCommitToCache(result);
+        } else {
+          console.warn(
+            `[InFlightGuard] Discarded stale write for &quot;${key}&quot;. Epoch shifted: ${startEpoch} -&gt; ${this.mutationEpoch}`
+          );
+        }
+        
+        return result;
+      } finally {
+        this.inFlightPromises.delete(key);
+      }
+    })();
+
+    this.inFlightPromises.set(key, promise);
+    return promise;
+  }
+
+  private matchPattern(key: string, pattern: string): boolean {
+    const regex = new RegExp(&#x27;^&#x27; + pattern.replace(/\*/g, &#x27;.*&#x27;) + &#x27;$&#x27;);
+    return regex.test(key);
+  }
+}</code></pre>
+<hr class="border-white/[0.08] my-8" />
+<h3 id="layer-3-anti-304-realtime-route-mandate" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Layer 3: Anti-304 Realtime Route Mandate</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">For state-critical endpoints (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">/api/checkins/today</code>, <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">/api/checkins/status</code>, <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">/api/ip-status</code>):</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>We enforce strict non-cacheable headers that override intermediate proxies and CDNs:</li>
+</ul>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-http">  Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate
+  Pragma: no-cache
+  Expires: 0</code></pre>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>We explicitly exclude these routes from the backend's ETag generation middleware. Without an <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">ETag</code> response header, the browser will never issue an <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">If-None-Match</code> request, making an <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 304</code> structurally impossible.</li>
+</ul>
+<hr class="border-white/[0.08] my-8" />
+<h3 id="layer-4-15-second-idempotent-double-tap-cushion" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Layer 4: 15-Second Idempotent Double-Tap Cushion</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">To safeguard user experience when an employee taps in panic:</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>When a user repeats the exact same check-in action within <strong class="text-white font-semibold">15 seconds</strong> of a successful request, the backend avoids throwing <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">400 Bad Request</code>.</li>
+<li>Instead, it returns <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">HTTP 200 OK</code> with <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">{ deduplicated: true }</code> and returns the previously generated shift record.</li>
+<li>Zero panic, zero confusing errors, and zero support tickets.</li>
+</ul>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="4-production-telemetry-results" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>4. Production Telemetry & Results</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Since shipping this 4-layer defense into production across our retail PWA infrastructure:</p>
+<div class="overflow-x-auto my-6 border border-white/10 rounded-lg">
+<table class="w-full text-left text-xs text-zinc-300 border-collapse">
+<thead class="bg-white/[0.04] text-[11px] font-mono uppercase tracking-wider text-zinc-400 border-b border-white/10">
+<tr>
+<th class="p-3">Metric</th>
+<th class="p-3">Before Implementation</th>
+<th class="p-3">After 4-Layer Defense</th>
+</tr></thead><tbody class="divide-y divide-white/[0.06]">
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">State Rollback Glitch Rate</strong></td>
+<td class="p-3"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">~14.2%</code> of peak check-ins</td>
+<td class="p-3"><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">0.00%</code> (Zero regressions)</strong></td>
+</tr>
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">Redis Stale Cache Resurrections</strong></td>
+<td class="p-3"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">8.5%</code> post-mutation</td>
+<td class="p-3"><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">0.00%</code> (Guarded by Epochs)</strong></td>
+</tr>
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">Accidental 400 Errors on Double-Tap</strong></td>
+<td class="p-3">30–50 events daily</td>
+<td class="p-3"><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">0</code> (Absorbed by 15s Cushion)</strong></td>
+</tr>
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">Customer Support Shift Disputes</strong></td>
+<td class="p-3">5–7 tickets per day</td>
+<td class="p-3"><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">0</code> tickets logged</strong></td>
+</tr>
+</tbody></table></div>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="5-architectural-takeaways" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>5. Architectural Takeaways</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">This postmortem reinforces three fundamental distributed systems principles:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">HTTP 304 is a double-edged sword for Single Page Applications</strong>: HTTP caching is invaluable for static assets, but pairing automatic background revalidation with <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">304 Not Modified</code> on mutable business state is an easy way to accidentally destroy client-side state.</li>
+<li><strong class="text-white font-semibold">Request Coalescing (SingleFlight) requires Mutation Epochs</strong>: Deduplicating concurrent database reads is critical for survival, but without epoch invalidation, slow reads will inevitably overwrite fast writes.</li>
+<li><strong class="text-white font-semibold">Embrace Client-Side Truth for Critical Actions</strong>: Under unpredictable mobile network conditions, client applications should maintain an authoritative local ledger of confirmed mutations rather than being at the mercy of lagging replicas.</li>
+</ol>
+<hr class="border-white/[0.08] my-8" />
+<blockquote class="border-l-2 border-emerald-400 pl-4 py-1.5 my-4 bg-white/[0.02] rounded-r text-zinc-300 italic text-sm"><strong class="text-white font-semibold">About the Author (Tiểu sử tác giả):</strong> <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (canonical handle: <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong>, moniker: <strong class="text-white font-semibold">Kido</strong>) là Kỹ sư Kiến trúc Hệ thống (Senior AI-Native Lead & Systems Architect) tại Đà Nẵng, Việt Nam; cựu Tech Lead 6 năm tại FPT Software (SBI Lab), Quán quân Startup Runway 2018 (ĐH Kinh tế - ĐH Đà Nẵng), tác giả của <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Winter Arc</a></strong>, <strong class="text-white font-semibold"><a href="https://github.com/khanhduong22" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Agent Harness Kit</a></strong> và <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles</a></strong>. Xem đầy đủ tại <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Tiểu sử Dương Phúc Khánh</a></strong> & <strong class="text-white font-semibold"><a href="https://www.wikidata.org/wiki/Q141718572" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Wikidata Q141718572</a></strong>.</blockquote>
+<h2 id="about-the-author-ecosystem" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>About the Author & Ecosystem</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300"><strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (also credited as <strong class="text-white font-semibold">Duong Phuc Khanh</strong>, <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong>, or <strong class="text-white font-semibold">Kido</strong>) is a Senior AI-Native Lead & Systems Architect based in Da Nang, Vietnam, alumnus of <a href="https://vi.wikipedia.org/wiki/Tr%C6%B0%E1%BB%9Dng_%C4%90%E1%BA%A1i_h%E1%BB%8Dc_Kinh_t%E1%BA%BF,_%C4%90%E1%BA%A1i_h%E1%BB%8Dc_%C4%90%C3%A0_N%E1%BA%B5ng" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Da Nang University of Economics (DUE)</a>, and creator of <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">agent-harness-kit</code>.</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>🌐 <strong class="text-white font-semibold">Official Architecture Hub & Case Studies</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (<a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a>)</li>
+<li>🏛️ <strong class="text-white font-semibold">Biography & Engineering Timeline</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh (khanhdp · Kido)</a></strong> (<a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Tiểu sử</a>)</li>
+<li>🔥 <strong class="text-white font-semibold">Kido Chronicles (127 Real Production Postmortems)</strong>: <a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">https://truyen.khanhdp.com</a></li>
+<li>💻 <strong class="text-white font-semibold">Open-Source Multi-Agent Framework</strong>: <a href="https://github.com/khanhduong22/agent-harness-kit" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">github.com/khanhduong22/agent-harness-kit</a></li>
+</ul>
+    </article>
+
+    <!-- Contextual Kido Chronicles Episodes (Deep Links) -->
+    <section class="mt-16 pt-8 border-t border-white/[0.06] space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          <span>Related Production Postmortems (Kido Chronicles)</span>
+        </h2>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-xs font-mono text-purple-300 hover:text-purple-200 hover:underline">
+          View all 128 episodes ↗
+        </a>
+      </div>
+      <p class="text-xs text-zinc-400">
+        Curated real-world war stories and incident postmortems authored by Duong Phuc Khanh on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">truyen.khanhdp.com</a> related to this topic:
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+        
+        <a href="https://truyen.khanhdp.com/tap/tap-116-dai-phau-thuat-state-management-zustand-tanstack-query/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Architecture</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 116 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 116: Đại Phẫu Thuật State Management Zustand & TanStack Query
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Phân định rạch ròi giữa Server State và Client State, xóa bỏ anti-pattern nhồi nhét API cache vào global state.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-118-cuoc-khai-tu-6400-dong-redux-cu-lat-do-the-ky-cua-zustand-tanstack-query/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Code Refactor</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 118 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 118: Khai Tử 6400 Dòng Redux Cũ — Cuộc Đảo Chính Của Zustand
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Hành trình xẻ thịt khối mã nguồn cồng kềnh, giảm 42KB bundle size và tăng tốc độ phản hồi UI lên 60FPS.
+          </div>
+        </a>
+        
+      </div>
+    </section>
+
+    <!-- Author Bio & Entity Verification Card (Bottom) -->
+    <section class="mt-12 p-6 rounded-2xl border border-white/10 bg-[#121212] space-y-4">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+        <img
+          src="/duong-phuc-khanh.jpg"
+          alt="Duong Phuc Khanh (Dương Phúc Khánh · Kido)"
+          width="88"
+          height="88"
+          style="width:88px;height:88px;object-fit:cover;"
+          class="rounded-xl border border-white/15 shrink-0"
+        />
+        <div class="space-y-2 text-center sm:text-left flex-1">
+          <h3 class="text-base font-semibold text-zinc-100">About the Author: Duong Phuc Khanh (khanhdp · Kido)</h3>
+          
+        <p class="text-sm text-zinc-300 leading-relaxed mb-3">
+          <strong>Duong Phuc Khanh</strong> (Vietnamese: <em>Dương Phúc Khánh</em>, born 1995 in Da Nang, Vietnam) is a Senior Software Engineer and Systems Architect at <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>. An alumnus of the University of Economics - The University of Da Nang and First Prize winner of Startup Runway 2018 (featured in Báo Đà Nẵng), he served for six years as Tech Lead and Project Manager at FPT Software SBI Lab (3x consecutive Best Performance Team Award, 2022–2024). He is the creator of <a href="https://vantoicalis.com" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Winter Arc</a>, the 128-episode <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>, and the <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Agent Harness Kit</a>.
+        </p>
+        
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs font-mono pt-1">
+            <a href="https://khanhdp.com" class="text-sky-400 hover:underline">Home</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/en" class="text-sky-400 hover:underline">Biography (EN)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/about" class="text-sky-400 hover:underline">Tiểu sử (VI)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Wikidata</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">ORCID</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="border-t border-white/[0.06] bg-[#080808] text-xs font-mono text-zinc-500 py-12">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <a href="https://khanhdp.com" class="text-zinc-300 hover:text-white font-semibold uppercase transition-colors">DUONG PHUC KHANH (KIDO)</a>
+      </div>
+      <div class="flex items-center gap-4 text-zinc-400 flex-wrap">
+        <a href="/" class="hover:text-white transition-colors">Overview</a>
+        <a href="/en" class="hover:text-white transition-colors">Biography (EN)</a>
+        <a href="/about" class="hover:text-white transition-colors">Tiểu sử (VI)</a>
+        <a href="/articles/" class="text-white hover:text-emerald-400 transition-colors">Articles</a>
+        <a href="/portfolio" class="hover:text-white transition-colors">Portfolio</a>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Chronicles</a>
+        <a href="https://github.com/khanhduong22" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://www.linkedin.com/in/duong-phuc-khanh/" target="_blank" rel="noopener" class="hover:text-white transition-colors">LinkedIn</a>
+      </div>
+    </div>
+    <div class="max-w-5xl mx-auto px-6 mt-4 text-[11px] text-zinc-600 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>© 2026 Duong Phuc Khanh (khanhdp · Kido). All rights reserved.</p>
+      <p>Crafted with quiet confidence</p>
+    </div>
+  </footer>
+
+  <!-- Scroll Progress Script -->
+  <script>
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar) progressBar.style.width = scrolled + '%';
+    }, { passive: true });
+
+    document.addEventListener("click", (e) => {
+      let a = e.target.closest("a[href]");
+      if (a) {
+        let h = a.getAttribute("href");
+        if (h && (h.startsWith("http://") || h.startsWith("https://")) && !h.includes(window.location.hostname)) {
+          let t = (a.getAttribute("title") || a.textContent || h).trim().slice(0, 60);
+          if (window.trackEvent) window.trackEvent("outbound_click", { event_category: "outbound", destination_url: h, link_text: t });
+        } else if (h && (h.startsWith("#") || h.startsWith("/"))) {
+          let t = (a.textContent || h).trim().slice(0, 40);
+          if (window.trackEvent) window.trackEvent("nav_click", { event_category: "navigation", destination: h, link_text: t });
+        }
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>

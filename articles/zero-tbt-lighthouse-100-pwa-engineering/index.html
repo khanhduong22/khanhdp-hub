@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zero-TBT & 8-Minute Mobile Sessions: Engineering a 60FPS Offline-First PWA on iOS Safari — Dương Phúc Khánh (Duong Phuc Khanh · Kido)</title>
+  <meta name="description" content="How we achieved 0ms Total Blocking Time, 1.12s P75 LCP, and an 8.2% bounce rate on mobile Safari using the 3-Tier Viewport Protocol and Offline Outbox queues." />
+
+  <!-- Canonical Tag -->
+  <link rel="canonical" href="https://khanhdp.com/articles/zero-tbt-lighthouse-100-pwa-engineering/" />
+
+  <!-- Favicons & Brand Suite -->
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="144x144" href="/favicon-144x144.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- OpenGraph Metadata -->
+  <meta property="og:title" content="Zero-TBT &amp; 8-Minute Mobile Sessions: Engineering a 60FPS Offline-First PWA on iOS Safari — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta property="og:description" content="How we achieved 0ms Total Blocking Time, 1.12s P75 LCP, and an 8.2% bounce rate on mobile Safari using the 3-Tier Viewport Protocol and Offline Outbox queues." />
+  <meta property="og:url" content="https://khanhdp.com/articles/zero-tbt-lighthouse-100-pwa-engineering/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Dương Phúc Khánh (khanhdp · Kido)" />
+  <meta property="og:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Zero-TBT &amp; 8-Minute Mobile Sessions: Engineering a 60FPS Offline-First PWA on iOS Safari — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta name="twitter:description" content="How we achieved 0ms Total Blocking Time, 1.12s P75 LCP, and an 8.2% bounce rate on mobile Safari using the 3-Tier Viewport Protocol and Offline Outbox queues." />
+  <meta name="twitter:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+
+  <!-- Deferred Lossless Telemetry -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-RMEP3RZB14');
+    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
+    window.clarity = window.clarity || function() { (window.clarity.q = window.clarity.q || []).push(arguments); };
+
+    window.addEventListener('error', function(e) {
+      if (window.Sentry && typeof window.Sentry.captureException === 'function') {
+        var id = window.Sentry.captureException(e.error || e.message);
+        if (id && window.clarity) window.clarity('set', 'sentry_event_id', id);
+      }
+    });
+
+    window.trackEvent = function(eventName, params) {
+      params = params || {};
+      if (typeof window.gtag === 'function') window.gtag('event', eventName, params);
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', eventName);
+        var label = params.event_label || params.label || params.destination_url || params.category;
+        if (label) window.clarity('set', eventName, String(label).slice(0, 50));
+      }
+    };
+
+    (function(w, d) {
+      var isLoaded = false;
+      function injectScript(src, id) {
+        if (id && d.getElementById(id)) return;
+        if (d.querySelector('script[src="' + src + '"]')) return;
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = src;
+        if (id) s.id = id;
+        (d.head || d.body).appendChild(s);
+      }
+      var events = ['scroll', 'touchstart', 'pointerdown', 'keydown', 'wheel'];
+      function triggerDeferredLoad() {
+        if (isLoaded) return;
+        isLoaded = true;
+        events.forEach(function(e) { w.removeEventListener(e, triggerDeferredLoad); });
+        injectScript('https://www.googletagmanager.com/gtag/js?id=G-RMEP3RZB14', 'ga4-deferred-script');
+        injectScript('https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355', 'gtm-deferred-script');
+        injectScript('https://www.clarity.ms/tag/yy4l1xv1a9', 'clarity-deferred-script');
+      }
+      events.forEach(function(e) {
+        w.addEventListener(e, triggerDeferredLoad, { passive: true, once: true });
+      });
+    })(window, document);
+  </script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://khanhdp.com/articles/zero-tbt-lighthouse-100-pwa-engineering/#article",
+      "headline": "Zero-TBT & 8-Minute Mobile Sessions: Engineering a 60FPS Offline-First PWA on iOS Safari",
+      "name": "Zero-TBT & 8-Minute Mobile Sessions: Engineering a 60FPS Offline-First PWA on iOS Safari — Dương Phúc Khánh (Duong Phuc Khanh · Kido)",
+      "description": "How we achieved 0ms Total Blocking Time, 1.12s P75 LCP, and an 8.2% bounce rate on mobile Safari using the 3-Tier Viewport Protocol and Offline Outbox queues.",
+      "url": "https://khanhdp.com/articles/zero-tbt-lighthouse-100-pwa-engineering/",
+      "mainEntityOfPage": "https://khanhdp.com/articles/zero-tbt-lighthouse-100-pwa-engineering/",
+      "inLanguage": "en",
+      "datePublished": "2026-10-20",
+      "dateModified": "2026-10-23",
+      "author": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "publisher": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "articleSection": "Web Performance"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://khanhdp.com/#person",
+      "name": "Dương Phúc Khánh",
+      "givenName": "Khánh",
+      "familyName": "Dương",
+      "additionalName": "Phúc",
+      "alternateName": [
+        "Duong Phuc Khanh",
+        "khanhdp",
+        "Kido",
+        "Khánh Dương",
+        "Khanh Duong",
+        "khanhduong22",
+        "phuckhanh22",
+        "kode.x.kido",
+        "kodexkido"
+      ],
+      "jobTitle": "Senior Software Engineer & Systems Architect",
+      "url": "https://khanhdp.com",
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "birthDate": "1995",
+      "identifier": [
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Google Knowledge Graph ID",
+          "value": "/g/11zyg5zq1c"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Wikidata",
+          "value": "Q141718572"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "ORCID",
+          "value": "0009-0005-7192-2664"
+        }
+      ],
+      "sameAs": [
+        "https://www.google.com/search?kgmid=/g/11zyg5zq1c",
+        "https://g.co/kg/g/11zyg5zq1c",
+        "https://khanhdp.com",
+        "https://khanhdp.com/about",
+        "https://khanhdp.com/en",
+        "https://duongphuckhanh.dev",
+        "https://www.wikidata.org/wiki/Q141718572",
+        "https://orcid.org/0009-0005-7192-2664",
+        "https://baodanang.vn/goi-mon-an-bang-dien-thoai-thong-minh-3174905.html",
+        "https://github.com/khanhduong22",
+        "https://dev.to/khanhduong22",
+        "https://viblo.asia/u/khanhdp",
+        "https://linkedin.com/in/duong-phuc-khanh/",
+        "https://x.com/duongphuckhanh",
+        "https://facebook.com/khanhduong2295/",
+        "https://truyen.khanhdp.com"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://khanhdp.com/articles/zero-tbt-lighthouse-100-pwa-engineering/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://khanhdp.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Technical Articles",
+          "item": "https://khanhdp.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Zero-TBT & 8-Minute Mobile Sessions: Engineering a 60FPS Offline-First PWA on iOS Safari",
+          "item": "https://khanhdp.com/articles/zero-tbt-lighthouse-100-pwa-engineering/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="preload" href="/fonts/inter-vietnamese.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/index.min.css" />
+</head>
+<body class="bg-craft-bg text-craft-text font-sans antialiased selection:bg-white/20 selection:text-white min-h-screen relative">
+  <!-- Top Reading Progress Indicator -->
+  <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-zinc-500 via-zinc-200 to-white z-50 transition-all duration-100 ease-out" style="width: 0%;"></div>
+
+  <!-- Ambient Light Header Radial -->
+  <div class="absolute inset-x-0 top-0 h-[480px] ambient-glow pointer-events-none"></div>
+
+  <!-- Sticky Minimal Navigation Bar -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-[#0a0a0a]/85 border-b border-white/[0.06] transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="/" class="group flex items-center gap-2.5 text-zinc-100 hover:text-white transition-colors">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse"></span>
+        <span class="font-mono text-xs tracking-wider uppercase font-semibold text-zinc-200">DUONG PHUC KHANH · KIDO</span>
+      </a>
+
+      <nav class="flex items-center gap-4 text-xs font-mono">
+        <div class="hidden sm:flex items-center gap-4 text-zinc-400">
+          <a href="/" class="hover:text-zinc-200 transition-colors">Overview</a>
+          <a href="/en" class="hover:text-zinc-200 transition-colors">Biography (EN)</a>
+          <a href="/about" class="hover:text-zinc-200 transition-colors">Tiểu sử (VI)</a>
+          <a href="/articles/" class="text-white font-semibold flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Articles
+          </a>
+          <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-zinc-200 transition-colors">Chronicles</a>
+          <a href="/portfolio" class="px-2.5 py-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all font-semibold flex items-center gap-1.5">
+            SME Portfolio
+          </a>
+        </div>
+
+        <div class="h-3 w-[1px] bg-white/10 hidden sm:block"></div>
+
+        <a href="mailto:phuckhanh22@gmail.com" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-zinc-300 hover:text-zinc-100 transition-all text-xs font-mono">
+          <span>Contact</span>
+          <span>↗</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Article Container -->
+  <main class="max-w-4xl mx-auto px-6 pt-12 pb-24">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-xs font-mono text-zinc-500 tracking-wider uppercase mb-6 pb-3 border-b border-white/[0.06] overflow-x-auto">
+      <a href="/" class="hover:text-zinc-300 transition-colors shrink-0">KHANHDP.COM</a>
+      <span>/</span>
+      <a href="/articles/" class="hover:text-zinc-300 transition-colors shrink-0">ARTICLES</a>
+      <span>/</span>
+      <span class="text-zinc-400 shrink-0">WEB PERFORMANCE</span>
+    </div>
+
+    <!-- Article Header -->
+    <header class="space-y-4 mb-8">
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Web Performance</span>
+        <span class="text-zinc-500">2026-10-20</span>
+        <span class="text-zinc-600">·</span>
+        <span class="text-zinc-400">By Dương Phúc Khánh (Kido)</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-semibold tracking-tight text-zinc-100 leading-tight">
+        Zero-TBT & 8-Minute Mobile Sessions: Engineering a 60FPS Offline-First PWA on iOS Safari
+      </h1>
+
+      <p class="text-base sm:text-lg text-zinc-400 leading-relaxed">
+        How we achieved 0ms Total Blocking Time, 1.12s P75 LCP, and an 8.2% bounce rate on mobile Safari using the 3-Tier Viewport Protocol and Offline Outbox queues.
+      </p>
+    </header>
+
+    
+        <!-- Top Author & Entity Verification Ribbon -->
+        <div class="border border-emerald-500/30 bg-emerald-950/20 rounded-xl p-4 my-6 text-xs font-mono text-zinc-300">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-500/20 pb-2.5 mb-2.5">
+            <div class="flex items-center gap-2 text-emerald-400 font-semibold uppercase tracking-wider text-[11px]">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Authoritative Technical Whitepaper</span>
+            </div>
+            <div class="flex items-center gap-3 text-zinc-400 text-[11px]">
+              <span>Verified Entity:</span>
+              <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Wikidata Q141718572</a>
+              <span>·</span>
+              <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-sky-400 hover:underline">ORCID 0009-0005-7192-2664</a>
+            </div>
+          </div>
+          <div class="text-[12px] leading-relaxed text-zinc-300">
+            Authored by <strong class="text-white">Duong Phuc Khanh</strong> (<strong class="text-zinc-200">Dương Phúc Khánh</strong> · <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>), Senior Software Engineer &amp; Systems Architect. Explore the <a href="/en" class="text-sky-400 hover:underline font-semibold">Official English Biography</a>, read the <a href="/about" class="text-sky-400 hover:underline">Tiểu sử Tiếng Việt</a>, browse the <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>, or inspect the 128-episode engineering postmortem anthology on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline font-semibold">Kido Chronicles</a>.
+          </div>
+        </div>
+        
+
+    <!-- Article Body Prose -->
+    <article class="prose prose-invert max-w-none text-zinc-300 leading-relaxed font-normal text-sm sm:text-base border-t border-white/[0.06] pt-6">
+      <p class="leading-relaxed my-3.5 text-zinc-300">Most mobile web apps lose 60% of their users within the first 15 seconds. On iOS Safari, heavy JavaScript bundles, layout shifts, and flaky 4G connections inside gyms or elevators turn web apps into sluggish, frustrating experiences.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">When building the <strong class="text-white font-semibold"><a href="https://vantoicalis.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Winter Arc 100-Day Challenge PWA</a></strong> (engineered by <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> / <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong>, Kido), we achieved numbers rarely seen in mobile web applications:</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">Average Session Duration</strong>: <strong class="text-white font-semibold">8 minutes 04 seconds</strong></li>
+<li><strong class="text-white font-semibold">Bounce Rate</strong>: <strong class="text-white font-semibold">8.2%</strong> (with <strong class="text-white font-semibold">>70% Direct Traffic</strong> from home-screen PWA installs)</li>
+<li><strong class="text-white font-semibold">Sentry Core Web Vitals</strong>: <strong class="text-white font-semibold">1.12s P75 LCP</strong>, <strong class="text-white font-semibold">120ms P75 INP</strong>, and <strong class="text-white font-semibold">0ms Total Blocking Time (TBT)</strong></li>
+</ul>
+<p class="leading-relaxed my-3.5 text-zinc-300">Here are the three frontend engineering protocols behind those numbers.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="1-the-3-tier-viewport-dynamic-overlay-protocol-0ms-tbt" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>1. The 3-Tier Viewport & Dynamic Overlay Protocol (0ms TBT)</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Why do so many Next.js and React apps suffer from 400ms+ Total Blocking Time on mobile? Because developers statically import hidden modals, celebration confetti, walkthrough tours, and heavy charts into the initial route bundle.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">As pioneered by <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh (khanhdp · Kido)</a></strong> in our production benchmarks, we enforce a strict <strong class="text-white font-semibold">3-Tier Viewport Protocol</strong>:</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">Tier 1 (Interactive Overlays)</strong>: Every modal, drawer, bottom sheet, and celebration overlay is lazy-loaded via <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">next/dynamic(..., { ssr: false })</code>. Zero bytes of overlay JS are parsed during initial hydration.</li>
+<li><strong class="text-white font-semibold">Tier 2 (Heavy Below-the-Fold Modules)</strong>: Charts and heatmaps below the initial <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">390x844</code> mobile fold are wrapped in fixed <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">min-height</code> skeletons (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">CLS = 0</code>) and hydrated on intersection.</li>
+<li><strong class="text-white font-semibold">Tier 3 (Core Above-the-Fold UI)</strong>: Pure server-rendered HTML + lightweight CSS transitions so athletes can tap their daily workout within 1.1 seconds of opening the app.</li>
+</ul>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="2-offline-outbox-pattern-for-basement-gyms" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>2. Offline Outbox Pattern for Basement Gyms</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Athletes frequently train in basement gyms where cellular signal drops mid-set. Instead of showing a spinning loader or failing the request when a user finishes a set, our client writes every action to an <strong class="text-white font-semibold">IndexedDB Offline Outbox</strong> with a deterministic client timestamp and HMAC signature.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">As soon as connectivity returns (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">window.addEventListener(&#x27;online&#x27;)</code> or Service Worker background sync), the outbox replays the batch idempotently to our NestJS backend.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="3-pure-interaction-telemetry-lazy-analytics-hydration" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>3. Pure Interaction Telemetry (Lazy Analytics Hydration)</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Third-party scripts (GA4, Sentry, Microsoft Clarity) are notorious for ruining mobile INP and TBT. We defer all telemetry SDK initialization until after <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">requestIdleCallback</code> or the user's first pointer/scroll interaction—ensuring 100% of CPU cycles during the first 2 seconds belong to the user interface.</p>
+<hr class="border-white/[0.08] my-8" />
+<blockquote class="border-l-2 border-emerald-400 pl-4 py-1.5 my-4 bg-white/[0.02] rounded-r text-zinc-300 italic text-sm"><strong class="text-white font-semibold">About the Author (Tiểu sử tác giả):</strong> <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (canonical handle: <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong>, moniker: <strong class="text-white font-semibold">Kido</strong>) là Kỹ sư Kiến trúc Hệ thống (Senior AI-Native Lead & Systems Architect) tại Đà Nẵng, Việt Nam; cựu Tech Lead 6 năm tại FPT Software (SBI Lab), Quán quân Startup Runway 2018 (ĐH Kinh tế - ĐH Đà Nẵng), tác giả của <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Winter Arc</a></strong>, <strong class="text-white font-semibold"><a href="https://github.com/khanhduong22" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Agent Harness Kit</a></strong> và <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles</a></strong>. Xem đầy đủ tại <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Tiểu sử Dương Phúc Khánh</a></strong> & <strong class="text-white font-semibold"><a href="https://www.wikidata.org/wiki/Q141718572" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Wikidata Q141718572</a></strong>.</blockquote>
+<h2 id="read-more-from-dương-phúc-khánh-khanhdp" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>Read More from Dương Phúc Khánh (khanhdp)</span></h2>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>🌐 <strong class="text-white font-semibold">Official Engineering Hub</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (<a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a>)</li>
+<li>🏛️ <strong class="text-white font-semibold">Biography & Career Timeline</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh (khanhdp · Kido)</a></strong> (<a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Tiểu sử</a>)</li>
+<li>🔥 <strong class="text-white font-semibold">Kido Chronicles (127 Real Engineering Stories)</strong>: <a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">https://truyen.khanhdp.com</a></li>
+<li>💻 <strong class="text-white font-semibold">GitHub</strong>: <a href="https://github.com/khanhduong22" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">@khanhduong22</a></li>
+</ul>
+    </article>
+
+    <!-- Contextual Kido Chronicles Episodes (Deep Links) -->
+    <section class="mt-16 pt-8 border-t border-white/[0.06] space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          <span>Related Production Postmortems (Kido Chronicles)</span>
+        </h2>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-xs font-mono text-purple-300 hover:text-purple-200 hover:underline">
+          View all 128 episodes ↗
+        </a>
+      </div>
+      <p class="text-xs text-zinc-400">
+        Curated real-world war stories and incident postmortems authored by Duong Phuc Khanh on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">truyen.khanhdp.com</a> related to this topic:
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+        
+        <a href="https://truyen.khanhdp.com/tap/tap-9-bay-in-app-browser/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Mobile & Webview</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 9 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 9: Bẫy In-App Browser Facebook & Zalo Trên Mobile
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Giải mã thảm họa Storage Partitioning, mất Cookie Session và chiến thuật Breakout ra Safari / Chrome ngoài.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-10-tham-hoa-360px/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Frontend UI</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 10 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 10: Thảm Họa Màn Hình 360px & Nghệ Thuật Viewport
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Tối ưu hóa layout cho các dòng điện thoại Android giá rẻ, triệt tiêu Horizontal Scrollbar và bảo vệ 60FPS.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-82-chuyen-tau-ngam-web-push-ios-safari/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">PWA & iOS</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 82 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 82: Chuyến Tàu Ngầm Web Push Trên iOS Safari
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Chinh phục Web Push Notification trên iOS PWA không cần qua Apple Developer Account $99/năm.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-115-bat-ma-web-vitals-sentry-va-bi-mat-30-giay/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Observability</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 115 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 115: Bắt Ma Web Vitals Sentry & Bí Mật 30 Giây
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Lọc sạch các giao dịch ảo của người dùng mở tab ngầm làm bóp méo số liệu LCP và INP trong Google Search Console.
+          </div>
+        </a>
+        
+      </div>
+    </section>
+
+    <!-- Author Bio & Entity Verification Card (Bottom) -->
+    <section class="mt-12 p-6 rounded-2xl border border-white/10 bg-[#121212] space-y-4">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+        <img
+          src="/duong-phuc-khanh.jpg"
+          alt="Duong Phuc Khanh (Dương Phúc Khánh · Kido)"
+          width="88"
+          height="88"
+          style="width:88px;height:88px;object-fit:cover;"
+          class="rounded-xl border border-white/15 shrink-0"
+        />
+        <div class="space-y-2 text-center sm:text-left flex-1">
+          <h3 class="text-base font-semibold text-zinc-100">About the Author: Duong Phuc Khanh (khanhdp · Kido)</h3>
+          
+        <p class="text-sm text-zinc-300 leading-relaxed mb-3">
+          <strong>Duong Phuc Khanh</strong> (Vietnamese: <em>Dương Phúc Khánh</em>, born 1995 in Da Nang, Vietnam) is a Senior Software Engineer and Systems Architect at <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>. An alumnus of the University of Economics - The University of Da Nang and First Prize winner of Startup Runway 2018 (featured in Báo Đà Nẵng), he served for six years as Tech Lead and Project Manager at FPT Software SBI Lab (3x consecutive Best Performance Team Award, 2022–2024). He is the creator of <a href="https://vantoicalis.com" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Winter Arc</a>, the 128-episode <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>, and the <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Agent Harness Kit</a>.
+        </p>
+        
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs font-mono pt-1">
+            <a href="https://khanhdp.com" class="text-sky-400 hover:underline">Home</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/en" class="text-sky-400 hover:underline">Biography (EN)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/about" class="text-sky-400 hover:underline">Tiểu sử (VI)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Wikidata</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">ORCID</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="border-t border-white/[0.06] bg-[#080808] text-xs font-mono text-zinc-500 py-12">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <a href="https://khanhdp.com" class="text-zinc-300 hover:text-white font-semibold uppercase transition-colors">DUONG PHUC KHANH (KIDO)</a>
+      </div>
+      <div class="flex items-center gap-4 text-zinc-400 flex-wrap">
+        <a href="/" class="hover:text-white transition-colors">Overview</a>
+        <a href="/en" class="hover:text-white transition-colors">Biography (EN)</a>
+        <a href="/about" class="hover:text-white transition-colors">Tiểu sử (VI)</a>
+        <a href="/articles/" class="text-white hover:text-emerald-400 transition-colors">Articles</a>
+        <a href="/portfolio" class="hover:text-white transition-colors">Portfolio</a>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Chronicles</a>
+        <a href="https://github.com/khanhduong22" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://www.linkedin.com/in/duong-phuc-khanh/" target="_blank" rel="noopener" class="hover:text-white transition-colors">LinkedIn</a>
+      </div>
+    </div>
+    <div class="max-w-5xl mx-auto px-6 mt-4 text-[11px] text-zinc-600 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>© 2026 Duong Phuc Khanh (khanhdp · Kido). All rights reserved.</p>
+      <p>Crafted with quiet confidence</p>
+    </div>
+  </footer>
+
+  <!-- Scroll Progress Script -->
+  <script>
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar) progressBar.style.width = scrolled + '%';
+    }, { passive: true });
+
+    document.addEventListener("click", (e) => {
+      let a = e.target.closest("a[href]");
+      if (a) {
+        let h = a.getAttribute("href");
+        if (h && (h.startsWith("http://") || h.startsWith("https://")) && !h.includes(window.location.hostname)) {
+          let t = (a.getAttribute("title") || a.textContent || h).trim().slice(0, 60);
+          if (window.trackEvent) window.trackEvent("outbound_click", { event_category: "outbound", destination_url: h, link_text: t });
+        } else if (h && (h.startsWith("#") || h.startsWith("/"))) {
+          let t = (a.textContent || h).trim().slice(0, 40);
+          if (window.trackEvent) window.trackEvent("nav_click", { event_category: "navigation", destination: h, link_text: t });
+        }
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>

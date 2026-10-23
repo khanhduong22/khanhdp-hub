@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How I Built a 7-Gate Multi-Agent Engineering Harness (And Survived a 6:00 AM Race Condition Storm) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)</title>
+  <meta name="description" content="Inside the architecture of Duong Phuc Khanh (Kido): Scaling a real-world PWA to 1,100+ weekly active athletes on a single 8GB VPS using Valkey Distributed Locks and Autonomous AI Agents." />
+
+  <!-- Canonical Tag -->
+  <link rel="canonical" href="https://khanhdp.com/articles/7-gate-multi-agent-engineering-harness/" />
+
+  <!-- Favicons & Brand Suite -->
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="144x144" href="/favicon-144x144.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- OpenGraph Metadata -->
+  <meta property="og:title" content="How I Built a 7-Gate Multi-Agent Engineering Harness (And Survived a 6:00 AM Race Condition Storm) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta property="og:description" content="Inside the architecture of Duong Phuc Khanh (Kido): Scaling a real-world PWA to 1,100+ weekly active athletes on a single 8GB VPS using Valkey Distributed Locks and Autonomous AI Agents." />
+  <meta property="og:url" content="https://khanhdp.com/articles/7-gate-multi-agent-engineering-harness/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Dương Phúc Khánh (khanhdp · Kido)" />
+  <meta property="og:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="How I Built a 7-Gate Multi-Agent Engineering Harness (And Survived a 6:00 AM Race Condition Storm) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta name="twitter:description" content="Inside the architecture of Duong Phuc Khanh (Kido): Scaling a real-world PWA to 1,100+ weekly active athletes on a single 8GB VPS using Valkey Distributed Locks and Autonomous AI Agents." />
+  <meta name="twitter:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+
+  <!-- Deferred Lossless Telemetry -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-RMEP3RZB14');
+    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
+    window.clarity = window.clarity || function() { (window.clarity.q = window.clarity.q || []).push(arguments); };
+
+    window.addEventListener('error', function(e) {
+      if (window.Sentry && typeof window.Sentry.captureException === 'function') {
+        var id = window.Sentry.captureException(e.error || e.message);
+        if (id && window.clarity) window.clarity('set', 'sentry_event_id', id);
+      }
+    });
+
+    window.trackEvent = function(eventName, params) {
+      params = params || {};
+      if (typeof window.gtag === 'function') window.gtag('event', eventName, params);
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', eventName);
+        var label = params.event_label || params.label || params.destination_url || params.category;
+        if (label) window.clarity('set', eventName, String(label).slice(0, 50));
+      }
+    };
+
+    (function(w, d) {
+      var isLoaded = false;
+      function injectScript(src, id) {
+        if (id && d.getElementById(id)) return;
+        if (d.querySelector('script[src="' + src + '"]')) return;
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = src;
+        if (id) s.id = id;
+        (d.head || d.body).appendChild(s);
+      }
+      var events = ['scroll', 'touchstart', 'pointerdown', 'keydown', 'wheel'];
+      function triggerDeferredLoad() {
+        if (isLoaded) return;
+        isLoaded = true;
+        events.forEach(function(e) { w.removeEventListener(e, triggerDeferredLoad); });
+        injectScript('https://www.googletagmanager.com/gtag/js?id=G-RMEP3RZB14', 'ga4-deferred-script');
+        injectScript('https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355', 'gtm-deferred-script');
+        injectScript('https://www.clarity.ms/tag/yy4l1xv1a9', 'clarity-deferred-script');
+      }
+      events.forEach(function(e) {
+        w.addEventListener(e, triggerDeferredLoad, { passive: true, once: true });
+      });
+    })(window, document);
+  </script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://khanhdp.com/articles/7-gate-multi-agent-engineering-harness/#article",
+      "headline": "How I Built a 7-Gate Multi-Agent Engineering Harness (And Survived a 6:00 AM Race Condition Storm)",
+      "name": "How I Built a 7-Gate Multi-Agent Engineering Harness (And Survived a 6:00 AM Race Condition Storm) — Dương Phúc Khánh (Duong Phuc Khanh · Kido)",
+      "description": "Inside the architecture of Duong Phuc Khanh (Kido): Scaling a real-world PWA to 1,100+ weekly active athletes on a single 8GB VPS using Valkey Distributed Locks and Autonomous AI Agents.",
+      "url": "https://khanhdp.com/articles/7-gate-multi-agent-engineering-harness/",
+      "mainEntityOfPage": "https://khanhdp.com/articles/7-gate-multi-agent-engineering-harness/",
+      "inLanguage": "en",
+      "datePublished": "2026-10-20",
+      "dateModified": "2026-10-23",
+      "author": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "publisher": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "articleSection": "Multi-Agent AI"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://khanhdp.com/#person",
+      "name": "Dương Phúc Khánh",
+      "givenName": "Khánh",
+      "familyName": "Dương",
+      "additionalName": "Phúc",
+      "alternateName": [
+        "Duong Phuc Khanh",
+        "khanhdp",
+        "Kido",
+        "Khánh Dương",
+        "Khanh Duong",
+        "khanhduong22",
+        "phuckhanh22",
+        "kode.x.kido",
+        "kodexkido"
+      ],
+      "jobTitle": "Senior Software Engineer & Systems Architect",
+      "url": "https://khanhdp.com",
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "birthDate": "1995",
+      "identifier": [
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Google Knowledge Graph ID",
+          "value": "/g/11zyg5zq1c"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Wikidata",
+          "value": "Q141718572"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "ORCID",
+          "value": "0009-0005-7192-2664"
+        }
+      ],
+      "sameAs": [
+        "https://www.google.com/search?kgmid=/g/11zyg5zq1c",
+        "https://g.co/kg/g/11zyg5zq1c",
+        "https://khanhdp.com",
+        "https://khanhdp.com/about",
+        "https://khanhdp.com/en",
+        "https://duongphuckhanh.dev",
+        "https://www.wikidata.org/wiki/Q141718572",
+        "https://orcid.org/0009-0005-7192-2664",
+        "https://baodanang.vn/goi-mon-an-bang-dien-thoai-thong-minh-3174905.html",
+        "https://github.com/khanhduong22",
+        "https://dev.to/khanhduong22",
+        "https://viblo.asia/u/khanhdp",
+        "https://linkedin.com/in/duong-phuc-khanh/",
+        "https://x.com/duongphuckhanh",
+        "https://facebook.com/khanhduong2295/",
+        "https://truyen.khanhdp.com"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://khanhdp.com/articles/7-gate-multi-agent-engineering-harness/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://khanhdp.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Technical Articles",
+          "item": "https://khanhdp.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How I Built a 7-Gate Multi-Agent Engineering Harness (And Survived a 6:00 AM Race Condition Storm)",
+          "item": "https://khanhdp.com/articles/7-gate-multi-agent-engineering-harness/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="preload" href="/fonts/inter-vietnamese.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/index.min.css" />
+</head>
+<body class="bg-craft-bg text-craft-text font-sans antialiased selection:bg-white/20 selection:text-white min-h-screen relative">
+  <!-- Top Reading Progress Indicator -->
+  <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-zinc-500 via-zinc-200 to-white z-50 transition-all duration-100 ease-out" style="width: 0%;"></div>
+
+  <!-- Ambient Light Header Radial -->
+  <div class="absolute inset-x-0 top-0 h-[480px] ambient-glow pointer-events-none"></div>
+
+  <!-- Sticky Minimal Navigation Bar -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-[#0a0a0a]/85 border-b border-white/[0.06] transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="/" class="group flex items-center gap-2.5 text-zinc-100 hover:text-white transition-colors">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse"></span>
+        <span class="font-mono text-xs tracking-wider uppercase font-semibold text-zinc-200">DUONG PHUC KHANH · KIDO</span>
+      </a>
+
+      <nav class="flex items-center gap-4 text-xs font-mono">
+        <div class="hidden sm:flex items-center gap-4 text-zinc-400">
+          <a href="/" class="hover:text-zinc-200 transition-colors">Overview</a>
+          <a href="/en" class="hover:text-zinc-200 transition-colors">Biography (EN)</a>
+          <a href="/about" class="hover:text-zinc-200 transition-colors">Tiểu sử (VI)</a>
+          <a href="/articles/" class="text-white font-semibold flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Articles
+          </a>
+          <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-zinc-200 transition-colors">Chronicles</a>
+          <a href="/portfolio" class="px-2.5 py-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all font-semibold flex items-center gap-1.5">
+            SME Portfolio
+          </a>
+        </div>
+
+        <div class="h-3 w-[1px] bg-white/10 hidden sm:block"></div>
+
+        <a href="mailto:phuckhanh22@gmail.com" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-zinc-300 hover:text-zinc-100 transition-all text-xs font-mono">
+          <span>Contact</span>
+          <span>↗</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Article Container -->
+  <main class="max-w-4xl mx-auto px-6 pt-12 pb-24">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-xs font-mono text-zinc-500 tracking-wider uppercase mb-6 pb-3 border-b border-white/[0.06] overflow-x-auto">
+      <a href="/" class="hover:text-zinc-300 transition-colors shrink-0">KHANHDP.COM</a>
+      <span>/</span>
+      <a href="/articles/" class="hover:text-zinc-300 transition-colors shrink-0">ARTICLES</a>
+      <span>/</span>
+      <span class="text-zinc-400 shrink-0">MULTI-AGENT AI</span>
+    </div>
+
+    <!-- Article Header -->
+    <header class="space-y-4 mb-8">
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Multi-Agent AI</span>
+        <span class="text-zinc-500">2026-10-20</span>
+        <span class="text-zinc-600">·</span>
+        <span class="text-zinc-400">By Dương Phúc Khánh (Kido)</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-semibold tracking-tight text-zinc-100 leading-tight">
+        How I Built a 7-Gate Multi-Agent Engineering Harness (And Survived a 6:00 AM Race Condition Storm)
+      </h1>
+
+      <p class="text-base sm:text-lg text-zinc-400 leading-relaxed">
+        Inside the architecture of Duong Phuc Khanh (Kido): Scaling a real-world PWA to 1,100+ weekly active athletes on a single 8GB VPS using Valkey Distributed Locks and Autonomous AI Agents.
+      </p>
+    </header>
+
+    
+        <!-- Top Author & Entity Verification Ribbon -->
+        <div class="border border-emerald-500/30 bg-emerald-950/20 rounded-xl p-4 my-6 text-xs font-mono text-zinc-300">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-500/20 pb-2.5 mb-2.5">
+            <div class="flex items-center gap-2 text-emerald-400 font-semibold uppercase tracking-wider text-[11px]">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Authoritative Technical Whitepaper</span>
+            </div>
+            <div class="flex items-center gap-3 text-zinc-400 text-[11px]">
+              <span>Verified Entity:</span>
+              <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Wikidata Q141718572</a>
+              <span>·</span>
+              <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-sky-400 hover:underline">ORCID 0009-0005-7192-2664</a>
+            </div>
+          </div>
+          <div class="text-[12px] leading-relaxed text-zinc-300">
+            Authored by <strong class="text-white">Duong Phuc Khanh</strong> (<strong class="text-zinc-200">Dương Phúc Khánh</strong> · <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>), Senior Software Engineer &amp; Systems Architect. Explore the <a href="/en" class="text-sky-400 hover:underline font-semibold">Official English Biography</a>, read the <a href="/about" class="text-sky-400 hover:underline">Tiểu sử Tiếng Việt</a>, browse the <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>, or inspect the 128-episode engineering postmortem anthology on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline font-semibold">Kido Chronicles</a>.
+          </div>
+        </div>
+        
+
+    <!-- Article Body Prose -->
+    <article class="prose prose-invert max-w-none text-zinc-300 leading-relaxed font-normal text-sm sm:text-base border-t border-white/[0.06] pt-6">
+      <p class="leading-relaxed my-3.5 text-zinc-300">At 06:00 AM in Da Nang, Vietnam, while most people are just waking up, nearly <strong class="text-white font-semibold">1,000 calisthenics athletes</strong> open the <strong class="text-white font-semibold">Winter Arc</strong> mobile PWA simultaneously to log their morning workouts and protect their daily streaks.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Behind the scenes, there is no $5,000/month AWS Kubernetes cluster. The entire production ecosystem—serving <strong class="text-white font-semibold">1,100+ weekly active users</strong> with an average session duration of <strong class="text-white font-semibold">8 minutes 04 seconds</strong> and a <strong class="text-white font-semibold">P75 LCP of 1.12s</strong>—runs smoothly on a single <strong class="text-white font-semibold">8GB RAM bare-metal Linux VPS</strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">I'm <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (mostly known in the engineering community as <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong>, <strong class="text-white font-semibold">Kido</strong>, or <strong class="text-white font-semibold">Khánh Dương</strong>, <a href="https://github.com/khanhduong22" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">@khanhduong22</a>). Over the past 7+ years—from winning <em class="italic text-zinc-200">First Prize at Startup Runway 2018</em> (featured in <a href="https://baodanang.vn/goi-mon-an-bang-dien-thoai-thong-minh-3174905.html" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Báo Đà Nẵng</a>) and spending 6 years architecting financial systems at <em class="italic text-zinc-200">FPT Software (SBI Lab)</em> to leading AI-Native systems at <em class="italic text-zinc-200">Tech Pulse</em>—I've obsessed over one question:</p>
+<blockquote class="border-l-2 border-emerald-400 pl-4 py-1.5 my-4 bg-white/[0.02] rounded-r text-zinc-300 italic text-sm"><strong class="text-white font-semibold">How can a tiny, AI-augmented engineering team ship like a 20-person department without sacrificing production reliability?</strong></blockquote>
+<p class="leading-relaxed my-3.5 text-zinc-300">Here are the two core architectural pillars that made it possible—and the full story behind my 114-episode engineering war journal, <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles</a></strong>.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="pillar-1-taming-the-6-00-am-check-in-storm-with-valkey-distributed-locks" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>Pillar 1: Taming the 6:00 AM Check-In Storm with Valkey Distributed Locks</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">When hundreds of athletes tap "Complete Workout" at the exact same second—often on flaky 4G connections inside basement gyms—double-taps and network retries create a textbook <strong class="text-white font-semibold">TOCTOU (Time-of-Check to Time-of-Use) race condition</strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Without concurrency control, concurrent requests read the same streak state in PostgreSQL, resulting in duplicate streak increments, corrupted leaderboard scores, and database lock contention.</p>
+<h3 id="the-fix-sub-5ms-idempotent-mutex-in-valkey-8" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">The Fix: Sub-5ms Idempotent Mutex in Valkey 8</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Instead of relying on heavy <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">SERIALIZABLE</code> database transactions that choke connection pools under burst load, we guard the state transition at the edge using an atomic <strong class="text-white font-semibold">Valkey/Redis Distributed Lock</strong> (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">SET NX PX</code>) paired with an idempotency key:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-typescript">// Atomic check-in guard (Valkey 8 + NestJS)
+const lockKey = `lock:checkin:${userId}:${workoutDate}`;
+const acquired = await this.valkey.set(lockKey, requestId, &#x27;PX&#x27;, 5000, &#x27;NX&#x27;);
+
+if (!acquired) {
+  // Concurrent retry detected — return cached idempotent state in &lt;2ms
+  return this.getCachedCheckInStatus(userId, workoutDate);
+}</code></pre>
+<p class="leading-relaxed my-3.5 text-zinc-300">Combined with a <strong class="text-white font-semibold">Service Worker Offline Outbox</strong> on the client and <strong class="text-white font-semibold">Caddy 2</strong> native reverse-proxying, our p99 check-in latency dropped from <strong class="text-white font-semibold">800ms+ to under 5ms</strong> with zero duplicate writes.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="pillar-2-the-7-rung-ponytail-philosophy-agent-harness-kit" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>Pillar 2: The 7-Rung "Ponytail" Philosophy & <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">agent-harness-kit</code></span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">To maintain <strong class="text-white font-semibold">4x delivery velocity</strong> across products like <a href="https://index.vn" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Index.vn</a>, <a href="https://linkpul.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Linkpul</a> (50,000+ req/sec short-link gateway), and <a href="https://vantoicalis.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Winter Arc</a>, I (<strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh (khanhdp · Kido)</a></strong>) built <strong class="text-white font-semibold"><a href="https://github.com/khanhduong22/agent-harness-kit" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">agent-harness-kit</a></strong>—a multi-agent orchestration framework for Claude Code, Cursor, Gemini, and Google Antigravity.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Every autonomous sub-agent operates in an isolated Git worktree and is governed by what I call the <strong class="text-white font-semibold">7-Rung Ladder</strong>:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">Does this need to exist at all? (YAGNI)</strong></li>
+<li><strong class="text-white font-semibold">Is it already in the codebase?</strong></li>
+<li><strong class="text-white font-semibold">Does the standard library solve it?</strong></li>
+<li><strong class="text-white font-semibold">Does a native platform feature (HTML/CSS/PostgreSQL constraint) cover it?</strong></li>
+<li><strong class="text-white font-semibold">Does an already-installed package handle it?</strong></li>
+<li><strong class="text-white font-semibold">Can it be written in one clear line?</strong></li>
+<li><strong class="text-white font-semibold">Only then: write the minimum production-grade code.</strong></li>
+</ol>
+<p class="leading-relaxed my-3.5 text-zinc-300">Before any PR can merge, it must pass <strong class="text-white font-semibold">7 automated verification gates</strong>: AST linting, strict TypeScript typecheck, SonarQube smell checks, unit tests, and headless <strong class="text-white font-semibold">Playwright E2E tests with real-time video telemetry</strong>.</p>
+<hr class="border-white/[0.08] my-8" />
+<blockquote class="border-l-2 border-emerald-400 pl-4 py-1.5 my-4 bg-white/[0.02] rounded-r text-zinc-300 italic text-sm"><strong class="text-white font-semibold">About the Author (Tiểu sử tác giả):</strong> <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (canonical handle: <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong>, moniker: <strong class="text-white font-semibold">Kido</strong>) là Kỹ sư Kiến trúc Hệ thống (Senior AI-Native Lead & Systems Architect) tại Đà Nẵng, Việt Nam; cựu Tech Lead 6 năm tại FPT Software (SBI Lab), Quán quân Startup Runway 2018 (ĐH Kinh tế - ĐH Đà Nẵng), tác giả của <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Winter Arc</a></strong>, <strong class="text-white font-semibold"><a href="https://github.com/khanhduong22" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Agent Harness Kit</a></strong> và <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles</a></strong>. Xem đầy đủ tại <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Tiểu sử Dương Phúc Khánh</a></strong> & <strong class="text-white font-semibold"><a href="https://www.wikidata.org/wiki/Q141718572" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Wikidata Q141718572</a></strong>.</blockquote>
+<h2 id="explore-the-full-architecture-war-stories" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>Explore the Full Architecture & War Stories</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">If you enjoy deep-dive postmortems, distributed systems math, and real production numbers:</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>🌐 <strong class="text-white font-semibold">Official Hub & Architecture Case Studies</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (<a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a>)</li>
+<li>🏛️ <strong class="text-white font-semibold">Full Biography & Systems Philosophy</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh (khanhdp · Kido)</a></strong> (<a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Tiểu sử</a>)</li>
+<li>🔥 <strong class="text-white font-semibold">Kido Chronicles (127 Real Production Postmortems)</strong>: <a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">https://truyen.khanhdp.com</a></li>
+<li>💻 <strong class="text-white font-semibold">Open-Source Multi-Agent Harness</strong>: <a href="https://github.com/khanhduong22/agent-harness-kit" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">github.com/khanhduong22/agent-harness-kit</a></li>
+</ul>
+    </article>
+
+    <!-- Contextual Kido Chronicles Episodes (Deep Links) -->
+    <section class="mt-16 pt-8 border-t border-white/[0.06] space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          <span>Related Production Postmortems (Kido Chronicles)</span>
+        </h2>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-xs font-mono text-purple-300 hover:text-purple-200 hover:underline">
+          View all 128 episodes ↗
+        </a>
+      </div>
+      <p class="text-xs text-zinc-400">
+        Curated real-world war stories and incident postmortems authored by Duong Phuc Khanh on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">truyen.khanhdp.com</a> related to this topic:
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+        
+        <a href="https://truyen.khanhdp.com/tap/tap-1-thang-em-vibe-coding/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">AI & Agentic</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 1 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 1: Cú Sốc Vibe-Coding & Cuộc Tháo Chạy Nửa Đêm
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Bài học xương máu khi giao trọn niềm tin cho AI sinh code không có guardrails và cú crash hệ thống lúc 2 giờ sáng.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-111-tieng-keu-cuu-luc-04h48-cua-minh-chu-va-chiec-bay-time-proof-secret/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Security</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 111 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 111: Tiếng Kêu Cứu Lúc 04h48 & Chiếc Bẫy Time-Proof Secret
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Giải cứu chuỗi kỷ luật rạng sáng, bảo vệ chữ ký HMAC SHA-256 chống lại tấn công Replay Attack từ client.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-121-dai-di-cu-monorepo-len-full-bun-chat-dut-long-task-205ms-va-day-lcp-ve-frame-2/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Infrastructure</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 121 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 121: Đại Di Cư Monorepo Lên Full Bun — Chặt Đứt Long Task 205ms
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Chuyển dịch toàn bộ runtime sang Bun, tối ưu build pipeline và đẩy thời gian nạp trang LCP về Frame 2.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-126-nghe-thuat-xe-thit-god-file-2000-dong-va-tuyet-ky-tab-preloader/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Code Refactor</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 126 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 126: Nghệ Thuật Xẻ Thịt God-File 2000 Dòng & Tuyệt Kỹ Tab Preloader
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Phương pháp luận phân rã tệp tin khổng lồ thành các slice domain rành mạch và kỹ thuật prefetch theo cử chỉ chạm.
+          </div>
+        </a>
+        
+      </div>
+    </section>
+
+    <!-- Author Bio & Entity Verification Card (Bottom) -->
+    <section class="mt-12 p-6 rounded-2xl border border-white/10 bg-[#121212] space-y-4">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+        <img
+          src="/duong-phuc-khanh.jpg"
+          alt="Duong Phuc Khanh (Dương Phúc Khánh · Kido)"
+          width="88"
+          height="88"
+          style="width:88px;height:88px;object-fit:cover;"
+          class="rounded-xl border border-white/15 shrink-0"
+        />
+        <div class="space-y-2 text-center sm:text-left flex-1">
+          <h3 class="text-base font-semibold text-zinc-100">About the Author: Duong Phuc Khanh (khanhdp · Kido)</h3>
+          
+        <p class="text-sm text-zinc-300 leading-relaxed mb-3">
+          <strong>Duong Phuc Khanh</strong> (Vietnamese: <em>Dương Phúc Khánh</em>, born 1995 in Da Nang, Vietnam) is a Senior Software Engineer and Systems Architect at <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>. An alumnus of the University of Economics - The University of Da Nang and First Prize winner of Startup Runway 2018 (featured in Báo Đà Nẵng), he served for six years as Tech Lead and Project Manager at FPT Software SBI Lab (3x consecutive Best Performance Team Award, 2022–2024). He is the creator of <a href="https://vantoicalis.com" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Winter Arc</a>, the 128-episode <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>, and the <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Agent Harness Kit</a>.
+        </p>
+        
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs font-mono pt-1">
+            <a href="https://khanhdp.com" class="text-sky-400 hover:underline">Home</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/en" class="text-sky-400 hover:underline">Biography (EN)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/about" class="text-sky-400 hover:underline">Tiểu sử (VI)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Wikidata</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">ORCID</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="border-t border-white/[0.06] bg-[#080808] text-xs font-mono text-zinc-500 py-12">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <a href="https://khanhdp.com" class="text-zinc-300 hover:text-white font-semibold uppercase transition-colors">DUONG PHUC KHANH (KIDO)</a>
+      </div>
+      <div class="flex items-center gap-4 text-zinc-400 flex-wrap">
+        <a href="/" class="hover:text-white transition-colors">Overview</a>
+        <a href="/en" class="hover:text-white transition-colors">Biography (EN)</a>
+        <a href="/about" class="hover:text-white transition-colors">Tiểu sử (VI)</a>
+        <a href="/articles/" class="text-white hover:text-emerald-400 transition-colors">Articles</a>
+        <a href="/portfolio" class="hover:text-white transition-colors">Portfolio</a>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Chronicles</a>
+        <a href="https://github.com/khanhduong22" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://www.linkedin.com/in/duong-phuc-khanh/" target="_blank" rel="noopener" class="hover:text-white transition-colors">LinkedIn</a>
+      </div>
+    </div>
+    <div class="max-w-5xl mx-auto px-6 mt-4 text-[11px] text-zinc-600 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>© 2026 Duong Phuc Khanh (khanhdp · Kido). All rights reserved.</p>
+      <p>Crafted with quiet confidence</p>
+    </div>
+  </footer>
+
+  <!-- Scroll Progress Script -->
+  <script>
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar) progressBar.style.width = scrolled + '%';
+    }, { passive: true });
+
+    document.addEventListener("click", (e) => {
+      let a = e.target.closest("a[href]");
+      if (a) {
+        let h = a.getAttribute("href");
+        if (h && (h.startsWith("http://") || h.startsWith("https://")) && !h.includes(window.location.hostname)) {
+          let t = (a.getAttribute("title") || a.textContent || h).trim().slice(0, 60);
+          if (window.trackEvent) window.trackEvent("outbound_click", { event_category: "outbound", destination_url: h, link_text: t });
+        } else if (h && (h.startsWith("#") || h.startsWith("/"))) {
+          let t = (a.textContent || h).trim().slice(0, 40);
+          if (window.trackEvent) window.trackEvent("nav_click", { event_category: "navigation", destination: h, link_text: t });
+        }
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>

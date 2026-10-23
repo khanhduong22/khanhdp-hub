@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anatomy of a Next.js 16 + Cloudflare Edge Outage: Eradicating RSC Flight Payload Cache Poisoning — Dương Phúc Khánh (Duong Phuc Khanh · Kido)</title>
+  <meta name="description" content="How Next.js App Router client navigation headers (RSC: 1) poisoned Cloudflare Edge Cache with raw Flight streams, resulting in white screens on iOS Safari PWA, and our 3-layer zero-downtime architectural fix." />
+
+  <!-- Canonical Tag -->
+  <link rel="canonical" href="https://khanhdp.com/articles/nextjs-16-cloudflare-rsc-flight-cache-poisoning/" />
+
+  <!-- Favicons & Brand Suite -->
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="144x144" href="/favicon-144x144.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- OpenGraph Metadata -->
+  <meta property="og:title" content="Anatomy of a Next.js 16 + Cloudflare Edge Outage: Eradicating RSC Flight Payload Cache Poisoning — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta property="og:description" content="How Next.js App Router client navigation headers (RSC: 1) poisoned Cloudflare Edge Cache with raw Flight streams, resulting in white screens on iOS Safari PWA, and our 3-layer zero-downtime architectural fix." />
+  <meta property="og:url" content="https://khanhdp.com/articles/nextjs-16-cloudflare-rsc-flight-cache-poisoning/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Dương Phúc Khánh (khanhdp · Kido)" />
+  <meta property="og:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Anatomy of a Next.js 16 + Cloudflare Edge Outage: Eradicating RSC Flight Payload Cache Poisoning — Dương Phúc Khánh (Duong Phuc Khanh · Kido)" />
+  <meta name="twitter:description" content="How Next.js App Router client navigation headers (RSC: 1) poisoned Cloudflare Edge Cache with raw Flight streams, resulting in white screens on iOS Safari PWA, and our 3-layer zero-downtime architectural fix." />
+  <meta name="twitter:image" content="https://khanhdp.com/duong-phuc-khanh.jpg" />
+
+  <!-- Deferred Lossless Telemetry -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-RMEP3RZB14');
+    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
+    window.clarity = window.clarity || function() { (window.clarity.q = window.clarity.q || []).push(arguments); };
+
+    window.addEventListener('error', function(e) {
+      if (window.Sentry && typeof window.Sentry.captureException === 'function') {
+        var id = window.Sentry.captureException(e.error || e.message);
+        if (id && window.clarity) window.clarity('set', 'sentry_event_id', id);
+      }
+    });
+
+    window.trackEvent = function(eventName, params) {
+      params = params || {};
+      if (typeof window.gtag === 'function') window.gtag('event', eventName, params);
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', eventName);
+        var label = params.event_label || params.label || params.destination_url || params.category;
+        if (label) window.clarity('set', eventName, String(label).slice(0, 50));
+      }
+    };
+
+    (function(w, d) {
+      var isLoaded = false;
+      function injectScript(src, id) {
+        if (id && d.getElementById(id)) return;
+        if (d.querySelector('script[src="' + src + '"]')) return;
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = src;
+        if (id) s.id = id;
+        (d.head || d.body).appendChild(s);
+      }
+      var events = ['scroll', 'touchstart', 'pointerdown', 'keydown', 'wheel'];
+      function triggerDeferredLoad() {
+        if (isLoaded) return;
+        isLoaded = true;
+        events.forEach(function(e) { w.removeEventListener(e, triggerDeferredLoad); });
+        injectScript('https://www.googletagmanager.com/gtag/js?id=G-RMEP3RZB14', 'ga4-deferred-script');
+        injectScript('https://www.googletagmanager.com/gtm.js?id=GTM-NXV7B355', 'gtm-deferred-script');
+        injectScript('https://www.clarity.ms/tag/yy4l1xv1a9', 'clarity-deferred-script');
+      }
+      events.forEach(function(e) {
+        w.addEventListener(e, triggerDeferredLoad, { passive: true, once: true });
+      });
+    })(window, document);
+  </script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://khanhdp.com/articles/nextjs-16-cloudflare-rsc-flight-cache-poisoning/#article",
+      "headline": "Anatomy of a Next.js 16 + Cloudflare Edge Outage: Eradicating RSC Flight Payload Cache Poisoning",
+      "name": "Anatomy of a Next.js 16 + Cloudflare Edge Outage: Eradicating RSC Flight Payload Cache Poisoning — Dương Phúc Khánh (Duong Phuc Khanh · Kido)",
+      "description": "How Next.js App Router client navigation headers (RSC: 1) poisoned Cloudflare Edge Cache with raw Flight streams, resulting in white screens on iOS Safari PWA, and our 3-layer zero-downtime architectural fix.",
+      "url": "https://khanhdp.com/articles/nextjs-16-cloudflare-rsc-flight-cache-poisoning/",
+      "mainEntityOfPage": "https://khanhdp.com/articles/nextjs-16-cloudflare-rsc-flight-cache-poisoning/",
+      "inLanguage": "en",
+      "datePublished": "2026-10-20",
+      "dateModified": "2026-10-23",
+      "author": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "publisher": {
+        "@id": "https://khanhdp.com/#person"
+      },
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "articleSection": "Edge & Next.js"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://khanhdp.com/#person",
+      "name": "Dương Phúc Khánh",
+      "givenName": "Khánh",
+      "familyName": "Dương",
+      "additionalName": "Phúc",
+      "alternateName": [
+        "Duong Phuc Khanh",
+        "khanhdp",
+        "Kido",
+        "Khánh Dương",
+        "Khanh Duong",
+        "khanhduong22",
+        "phuckhanh22",
+        "kode.x.kido",
+        "kodexkido"
+      ],
+      "jobTitle": "Senior Software Engineer & Systems Architect",
+      "url": "https://khanhdp.com",
+      "image": "https://khanhdp.com/duong-phuc-khanh.jpg",
+      "birthDate": "1995",
+      "identifier": [
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Google Knowledge Graph ID",
+          "value": "/g/11zyg5zq1c"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "Wikidata",
+          "value": "Q141718572"
+        },
+        {
+          "@type": "PropertyValue",
+          "propertyID": "ORCID",
+          "value": "0009-0005-7192-2664"
+        }
+      ],
+      "sameAs": [
+        "https://www.google.com/search?kgmid=/g/11zyg5zq1c",
+        "https://g.co/kg/g/11zyg5zq1c",
+        "https://khanhdp.com",
+        "https://khanhdp.com/about",
+        "https://khanhdp.com/en",
+        "https://duongphuckhanh.dev",
+        "https://www.wikidata.org/wiki/Q141718572",
+        "https://orcid.org/0009-0005-7192-2664",
+        "https://baodanang.vn/goi-mon-an-bang-dien-thoai-thong-minh-3174905.html",
+        "https://github.com/khanhduong22",
+        "https://dev.to/khanhduong22",
+        "https://viblo.asia/u/khanhdp",
+        "https://linkedin.com/in/duong-phuc-khanh/",
+        "https://x.com/duongphuckhanh",
+        "https://facebook.com/khanhduong2295/",
+        "https://truyen.khanhdp.com"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://khanhdp.com/articles/nextjs-16-cloudflare-rsc-flight-cache-poisoning/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://khanhdp.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Technical Articles",
+          "item": "https://khanhdp.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Anatomy of a Next.js 16 + Cloudflare Edge Outage: Eradicating RSC Flight Payload Cache Poisoning",
+          "item": "https://khanhdp.com/articles/nextjs-16-cloudflare-rsc-flight-cache-poisoning/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="preload" href="/fonts/inter-vietnamese.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/index.min.css" />
+</head>
+<body class="bg-craft-bg text-craft-text font-sans antialiased selection:bg-white/20 selection:text-white min-h-screen relative">
+  <!-- Top Reading Progress Indicator -->
+  <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-zinc-500 via-zinc-200 to-white z-50 transition-all duration-100 ease-out" style="width: 0%;"></div>
+
+  <!-- Ambient Light Header Radial -->
+  <div class="absolute inset-x-0 top-0 h-[480px] ambient-glow pointer-events-none"></div>
+
+  <!-- Sticky Minimal Navigation Bar -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-[#0a0a0a]/85 border-b border-white/[0.06] transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="/" class="group flex items-center gap-2.5 text-zinc-100 hover:text-white transition-colors">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse"></span>
+        <span class="font-mono text-xs tracking-wider uppercase font-semibold text-zinc-200">DUONG PHUC KHANH · KIDO</span>
+      </a>
+
+      <nav class="flex items-center gap-4 text-xs font-mono">
+        <div class="hidden sm:flex items-center gap-4 text-zinc-400">
+          <a href="/" class="hover:text-zinc-200 transition-colors">Overview</a>
+          <a href="/en" class="hover:text-zinc-200 transition-colors">Biography (EN)</a>
+          <a href="/about" class="hover:text-zinc-200 transition-colors">Tiểu sử (VI)</a>
+          <a href="/articles/" class="text-white font-semibold flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Articles
+          </a>
+          <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-zinc-200 transition-colors">Chronicles</a>
+          <a href="/portfolio" class="px-2.5 py-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all font-semibold flex items-center gap-1.5">
+            SME Portfolio
+          </a>
+        </div>
+
+        <div class="h-3 w-[1px] bg-white/10 hidden sm:block"></div>
+
+        <a href="mailto:phuckhanh22@gmail.com" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-zinc-300 hover:text-zinc-100 transition-all text-xs font-mono">
+          <span>Contact</span>
+          <span>↗</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Article Container -->
+  <main class="max-w-4xl mx-auto px-6 pt-12 pb-24">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-xs font-mono text-zinc-500 tracking-wider uppercase mb-6 pb-3 border-b border-white/[0.06] overflow-x-auto">
+      <a href="/" class="hover:text-zinc-300 transition-colors shrink-0">KHANHDP.COM</a>
+      <span>/</span>
+      <a href="/articles/" class="hover:text-zinc-300 transition-colors shrink-0">ARTICLES</a>
+      <span>/</span>
+      <span class="text-zinc-400 shrink-0">EDGE & NEXT.JS</span>
+    </div>
+
+    <!-- Article Header -->
+    <header class="space-y-4 mb-8">
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Edge & Next.js</span>
+        <span class="text-zinc-500">2026-10-20</span>
+        <span class="text-zinc-600">·</span>
+        <span class="text-zinc-400">By Dương Phúc Khánh (Kido)</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-semibold tracking-tight text-zinc-100 leading-tight">
+        Anatomy of a Next.js 16 + Cloudflare Edge Outage: Eradicating RSC Flight Payload Cache Poisoning
+      </h1>
+
+      <p class="text-base sm:text-lg text-zinc-400 leading-relaxed">
+        How Next.js App Router client navigation headers (RSC: 1) poisoned Cloudflare Edge Cache with raw Flight streams, resulting in white screens on iOS Safari PWA, and our 3-layer zero-downtime architectural fix.
+      </p>
+    </header>
+
+    
+        <!-- Top Author & Entity Verification Ribbon -->
+        <div class="border border-emerald-500/30 bg-emerald-950/20 rounded-xl p-4 my-6 text-xs font-mono text-zinc-300">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-500/20 pb-2.5 mb-2.5">
+            <div class="flex items-center gap-2 text-emerald-400 font-semibold uppercase tracking-wider text-[11px]">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Authoritative Technical Whitepaper</span>
+            </div>
+            <div class="flex items-center gap-3 text-zinc-400 text-[11px]">
+              <span>Verified Entity:</span>
+              <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Wikidata Q141718572</a>
+              <span>·</span>
+              <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-sky-400 hover:underline">ORCID 0009-0005-7192-2664</a>
+            </div>
+          </div>
+          <div class="text-[12px] leading-relaxed text-zinc-300">
+            Authored by <strong class="text-white">Duong Phuc Khanh</strong> (<strong class="text-zinc-200">Dương Phúc Khánh</strong> · <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>), Senior Software Engineer &amp; Systems Architect. Explore the <a href="/en" class="text-sky-400 hover:underline font-semibold">Official English Biography</a>, read the <a href="/about" class="text-sky-400 hover:underline">Tiểu sử Tiếng Việt</a>, browse the <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>, or inspect the 128-episode engineering postmortem anthology on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline font-semibold">Kido Chronicles</a>.
+          </div>
+        </div>
+        
+
+    <!-- Article Body Prose -->
+    <article class="prose prose-invert max-w-none text-zinc-300 leading-relaxed font-normal text-sm sm:text-base border-t border-white/[0.06] pt-6">
+      <p class="leading-relaxed my-3.5 text-zinc-300">At 09:14 AM on a Monday morning, customer support channels lit up with urgent incident reports:</p>
+<blockquote class="border-l-2 border-emerald-400 pl-4 py-1.5 my-4 bg-white/[0.02] rounded-r text-zinc-300 italic text-sm"><em class="italic text-zinc-200">"The app won't open on iPhone! It's just a blank screen with weird text like <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">:HL[&quot;/static/css/...&quot;]</code> and <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">1:I[&quot;$Sreact.fragment&quot;...]</code>."</em></blockquote>
+<p class="leading-relaxed my-3.5 text-zinc-300">Users opening the Progressive Web App (PWA) from their iOS Home Screen were greeting by a completely unrendered, raw stream of React Server Component (RSC) Flight protocol wire data. Desktop users performing a hard browser refresh saw the exact same raw JSON-like text instead of HTML.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Yet, our backend health checks showed <strong class="text-white font-semibold">100% green</strong>. PostgreSQL CPU was resting at 4%, the Node.js process had zero unhandled exceptions, and API latency was under 8ms.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">We had fallen victim to <strong class="text-white font-semibold">RSC Flight Payload Cache Poisoning at the Edge</strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">I'm <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (known across the engineering community as <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong> or <strong class="text-white font-semibold">Kido</strong>, <a href="https://github.com/khanhduong22" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">@khanhduong22</a>). As Senior AI-Native Lead & Systems Architect, I have documented critical production postmortems across 127 chapters of <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles</a></strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">In this deep dive, we dissect the root cause of this modern Next.js App Router vulnerability, analyze why intermediate CDN caches collapse without strict header partitioning, and present the <strong class="text-white font-semibold">3-Layer Defense Architecture</strong> we deployed to permanently eradicate it.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="1-the-evolutionary-architecture-of-next-js-navigation-html-vs-flight-wire-data" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>1. The Evolutionary Architecture of Next.js Navigation: HTML vs. Flight Wire Data</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">To understand how edge cache poisoning occurs, we must trace how Next.js App Router navigates between routes:</p>
+<div class="overflow-x-auto my-6 border border-white/10 rounded-lg">
+<table class="w-full text-left text-xs text-zinc-300 border-collapse">
+<thead class="bg-white/[0.04] text-[11px] font-mono uppercase tracking-wider text-zinc-400 border-b border-white/10">
+<tr>
+<th class="p-3">Request Type</th>
+<th class="p-3">Trigger</th>
+<th class="p-3">Client Headers</th>
+<th class="p-3">Server Response Format</th>
+<th class="p-3">MIME Content-Type</th>
+</tr></thead><tbody class="divide-y divide-white/[0.06]">
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">Full Page Load (Hard Refresh)</strong></td>
+<td class="p-3">User types URL, hard reloads (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Cmd+Shift+R</code>), or opens PWA</td>
+<td class="p-3"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Accept: text/html,application/xhtml+xml</code></td>
+<td class="p-3">Fully rendered HTML document</td>
+<td class="p-3"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">text/html; charset=utf-8</code></td>
+</tr>
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">Soft Navigation (Link Transition)</strong></td>
+<td class="p-3">User taps <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">&lt;Link href=&quot;/dashboard&quot;&gt;</code> inside React tree</td>
+<td class="p-3"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Accept: text/x-component</code><br><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">RSC: 1</code><br><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Next-Router-State-Tree: ...</code></td>
+<td class="p-3">Serialized React Virtual DOM Flight Stream</td>
+<td class="p-3"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">text/x-component</code></td>
+</tr>
+</tbody></table></div>
+<h3 id="the-fatal-design-conflict" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">The Fatal Design Conflict</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">Notice the architectural reality: <strong class="text-white font-semibold">Both requests hit the exact same URI pathname (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">https://khanhdp.com/dashboard</code>)!</strong></p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>When a user first opens <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">/dashboard</code>, Next.js renders the full HTML page with CSS and client script tags.</li>
+<li>When an already hydrated user clicks a link to <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">/dashboard</code>, Next.js does <em class="italic text-zinc-200">not</em> fetch HTML. Instead, its router client issues a background fetch to <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">/dashboard</code> with the HTTP header <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">RSC: 1</code>. Next.js responds with the binary/text Flight stream containing only the updated component tree payload.</li>
+</ol>
+<p class="leading-relaxed my-3.5 text-zinc-300">The client-side React router receives this Flight stream, deserializes the Virtual DOM, and updates the view without a full page refresh.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="2-anatomy-of-the-poisoning-incident" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>2. Anatomy of the Poisoning Incident</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Here is the exact step-by-step sequence of how our Cloudflare Edge Cache was poisoned:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-mermaid">sequenceDiagram
+    autonumber
+    actor MobileUser as User A (Navigating PWA)
+    actor NewVisitor as User B (Hard Page Load)
+    participant CF as Cloudflare Edge CDN (Cache Key: URI)
+    participant NextServer as Next.js 16 Origin Server
+
+    Note over MobileUser,NextServer: Step 1: Soft Navigation triggers RSC Fetch
+    MobileUser-&gt;&gt;CF: GET /profile (Header: RSC: 1)
+    Note over CF: Cache Miss for URI &#x27;/profile&#x27;
+    CF-&gt;&gt;NextServer: GET /profile (Forwarding RSC: 1)
+    NextServer--&gt;&gt;CF: 200 OK (Content-Type: text/x-component) [Flight Payload]
+    Note over CF: Cloudflare caches body under key: &#x27;khanhdp.com/profile&#x27; (TTL 4h)!
+    CF--&gt;&gt;MobileUser: Returns Flight Payload (React navigates smoothly)
+
+    Note over NewVisitor,CF: Step 2: New Visitor opens URL directly (Fatal Poison!)
+    NewVisitor-&gt;&gt;CF: GET /profile (Accept: text/html, No RSC header)
+    Note over CF: Cache HIT on URI &#x27;khanhdp.com/profile&#x27;!
+    CF--&gt;&gt;NewVisitor: Returns CACHED Flight Stream (:HL[...]) with Content-Type: text/x-component!
+    Note over NewVisitor: Browser cannot render HTML! Displays raw text / Blank Screen!</code></pre>
+<h3 id="why-cloudflare-edge-caches-poisoned-the-key" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Why Cloudflare Edge Caches Poisoned the Key</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">By default, Cloudflare Edge Cache (and most reverse proxies like standard Nginx or Varnish setups) constructs its internal cache key using only:</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">$$\text{Cache Key} = \text{Scheme} + \text{Host} + \text{URI Path} + \text{Query String}$$</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Crucially, <strong class="text-white font-semibold">request headers like <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">RSC</code> are not part of the default cache key</strong>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">When User A clicked a <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">&lt;Link href=&quot;/profile&quot;&gt;</code>, the edge cache was empty. The request arrived with <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">RSC: 1</code>. The origin Next.js server correctly replied with <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Content-Type: text/x-component</code> and the Flight stream.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Because our caching rules instructed Cloudflare to cache HTML/document responses for high performance (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Cache-Control: public, max-age=3600, s-maxage=14400</code>), Cloudflare stored this Flight stream under the cache key <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">https://khanhdp.com/profile</code>.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Seconds later, User B opened Safari and loaded <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">https://khanhdp.com/profile</code>. Cloudflare detected a cache hit, bypassed the Next.js origin completely, and returned the cached Flight stream!</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">Because the browser expected HTML but received <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">text/x-component</code>, it either rendered raw unformatted text or choked completely, producing a white screen of death.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="3-why-vary-rsc-is-not-enough" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>3. Why <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Vary: RSC</code> Is Not Enough</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Many developers assume adding an HTTP <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Vary</code> header solves this:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-http">Vary: RSC, Next-Router-State-Tree, Accept</code></pre>
+<p class="leading-relaxed my-3.5 text-zinc-300">In theory, RFC 7234 dictates that CDNs must partition cached variants when <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Vary</code> headers differ.</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">However, in real-world production:</p>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">Cloudflare Tier Limitations</strong>: Cloudflare's standard caching engine deliberately ignores most <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Vary</code> headers (except <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Accept-Encoding</code>) on Free and Pro tiers to prevent cache fragmentation and resource exhaustion.</li>
+<li><strong class="text-white font-semibold">CDN Normalization</strong>: Intermediate proxy layers frequently strip or collapse unknown <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Vary</code> values.</li>
+<li><strong class="text-white font-semibold">PWA Service Worker Traps</strong>: Even if the CDN respects <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Vary</code>, local browser Service Workers using <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Cache.match(request)</code> without <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">{ ignoreVary: false }</code> often serve stale variants from disk cache.</li>
+</ol>
+<p class="leading-relaxed my-3.5 text-zinc-300">Relying solely on <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Vary</code> is a textbook trap. A multi-layered, defense-in-depth architecture is mandatory.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="4-the-3-layer-defense-in-depth-architecture" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>4. The 3-Layer Defense-in-Depth Architecture</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">To permanently immunize our infrastructure, <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh (khanhdp · Kido)</a></strong> engineered a <strong class="text-white font-semibold">3-Layer Defense Architecture</strong>:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code>┌──────────────────────────────────────────────────────────────────┐
+│ LAYER 1: Cloudflare Edge Wirefilter (Cache Bypass &amp; Header Key)   │
+│ - Bypasses edge cache if `rsc: 1` header is present               │
+│ - Partitions custom cache keys by `http.request.headers[&quot;rsc&quot;]`   │
+├──────────────────────────────────────────────────────────────────┤
+│ LAYER 2: Next.js Origin Guard (Middleware &amp; Strict Cache-Control)│
+│ - Forces `Cache-Control: private, no-store` on all RSC payloads   │
+│ - Restricts public edge caching strictly to HTML documents        │
+├──────────────────────────────────────────────────────────────────┤
+│ LAYER 3: Client PWA Service Worker Self-Healing Immune System    │
+│ - Verifies `Content-Type: text/html` on document navigations     │
+│ - Automatically detects and purges poisoned edge responses       │
+└──────────────────────────────────────────────────────────────────┘</code></pre>
+<hr class="border-white/[0.08] my-8" />
+<h3 id="layer-1-cloudflare-edge-wirefilter-cache-rules" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Layer 1: Cloudflare Edge Wirefilter & Cache Rules</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">In Cloudflare Dashboard (or via Terraform / Cloudflare API), we deploy two deterministic rules:</p>
+<h4 id="rule-1-bypass-edge-cache-for-all-rsc-flight-requests" class="text-sm sm:text-base font-semibold text-zinc-300 mt-4 mb-2">Rule 1: Bypass Edge Cache for All RSC Flight Requests</h4>
+<p class="leading-relaxed my-3.5 text-zinc-300">Under <strong class="text-white font-semibold">Caching > Cache Rules</strong>:</p>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">Expression</strong>: <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">(http.request.headers[&quot;rsc&quot;][0] eq &quot;1&quot;) or (http.request.uri.path contains &quot;_next/data&quot;)</code></li>
+<li><strong class="text-white font-semibold">Action</strong>: <strong class="text-white font-semibold">Bypass Cache</strong> (Eligible for Dynamic routing only).</li>
+</ul>
+<h4 id="rule-2-custom-cache-key-for-enterprise-pro-tiers" class="text-sm sm:text-base font-semibold text-zinc-300 mt-4 mb-2">Rule 2: Custom Cache Key for Enterprise / Pro Tiers</h4>
+<p class="leading-relaxed my-3.5 text-zinc-300">If you wish to cache RSC payloads separately for extreme speed, configure a <strong class="text-white font-semibold">Custom Cache Key</strong>:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-hcl"># Terraform configuration for Cloudflare Cache Rule
+resource &quot;cloudflare_cache_rule&quot; &quot;partition_rsc_cache&quot; {
+  zone_id     = var.cloudflare_zone_id
+  name        = &quot;Partition RSC Cache Key&quot;
+  description = &quot;Ensures RSC wire payloads never collide with SSR HTML documents&quot;
+  expression  = &quot;(http.host eq \&quot;khanhdp.com\&quot;)&quot;
+
+  action = &quot;set_cache_settings&quot;
+  action_parameters {
+    cache = true
+    edge_ttl {
+      mode    = &quot;respect_origin&quot;
+      default = 3600
+    }
+    custom_cache_key {
+      headers {
+        include = [&quot;rsc&quot;, &quot;next-router-state-tree&quot;]
+      }
+    }
+  }
+}</code></pre>
+<hr class="border-white/[0.08] my-8" />
+<h3 id="layer-2-next-js-origin-middleware-guard" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Layer 2: Next.js Origin Middleware Guard</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">At the origin server level, we enforce a strict policy in <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">middleware.ts</code>: <strong class="text-white font-semibold">Never allow intermediate CDNs to cache an RSC Flight stream under a public shared directive.</strong></p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-typescript">// middleware.ts
+import { NextResponse } from &#x27;next/server&#x27;;
+import type { NextRequest } from &#x27;next/server&#x27;;
+
+export function middleware(request: NextRequest) {
+  const isRSC = request.headers.get(&#x27;rsc&#x27;) === &#x27;1&#x27;;
+  const response = NextResponse.next();
+
+  if (isRSC) {
+    // Flight stream: strictly private or non-cacheable at intermediate proxies
+    response.headers.set(
+      &#x27;Cache-Control&#x27;,
+      &#x27;private, no-cache, no-store, must-revalidate, max-age=0&#x27;
+    );
+    response.headers.set(&#x27;X-Content-Type-Options&#x27;, &#x27;nosniff&#x27;);
+  } else {
+    // Standard HTML document: safe for public CDN edge caching
+    response.headers.set(
+      &#x27;Cache-Control&#x27;,
+      &#x27;public, max-age=0, s-maxage=3600, stale-while-revalidate=86400&#x27;
+    );
+    response.headers.set(&#x27;Vary&#x27;, &#x27;RSC, Next-Router-State-Tree, Accept&#x27;);
+  }
+
+  return response;
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt
+     */
+    &#x27;/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)&#x27;,
+  ],
+};</code></pre>
+<hr class="border-white/[0.08] my-8" />
+<h3 id="layer-3-client-pwa-service-worker-self-healing-gate" class="text-base sm:text-lg font-semibold text-zinc-200 mt-6 mb-3">Layer 3: Client PWA Service Worker Self-Healing Gate</h3>
+<p class="leading-relaxed my-3.5 text-zinc-300">What if a misconfigured CDN edge or proxy still serves a poisoned payload to an iOS user?</p>
+<p class="leading-relaxed my-3.5 text-zinc-300">We implement a client-side <strong class="text-white font-semibold">Self-Healing Immune Gate</strong> inside our PWA Service Worker (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">sw.js</code>). When the browser requests a <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">mode: &#x27;navigate&#x27;</code> document, the Service Worker inspects the response headers before committing it to the screen:</p>
+<pre class="bg-[#121212] border border-white/10 rounded-lg p-4 overflow-x-auto text-xs font-mono my-4"><code class="language-javascript">// sw.js - Service Worker Immune Gate
+self.addEventListener(&#x27;fetch&#x27;, (event) =&gt; {
+  const request = event.request;
+
+  // Intercept navigation requests (user opening the app or clicking links)
+  if (request.mode === &#x27;navigate&#x27;) {
+    event.respondWith(
+      fetch(request)
+        .then((response) =&gt; {
+          const contentType = response.headers.get(&#x27;Content-Type&#x27;) || &#x27;&#x27;;
+          
+          // Verify that a document navigation receives genuine HTML
+          if (!contentType.includes(&#x27;text/html&#x27;)) {
+            console.error(
+              &#x27;[SW Gate] POISONED CACHE DETECTED! Expected text/html, received:&#x27;,
+              contentType
+            );
+
+            // 1. Purge all local caches immediately
+            caches.keys().then((keys) =&gt; {
+              keys.forEach((key) =&gt; caches.delete(key));
+            });
+
+            // 2. Bypass CDN cache with a unique anti-poison query param
+            const bypassUrl = new URL(request.url);
+            bypassUrl.searchParams.set(&#x27;__sw_bypass&#x27;, Date.now().toString());
+
+            return fetch(bypassUrl.toString(), {
+              headers: { Accept: &#x27;text/html&#x27; },
+              cache: &#x27;reload&#x27;,
+            });
+          }
+
+          return response;
+        })
+        .catch((error) =&gt; {
+          // Offline fallback logic
+          return caches.match(&#x27;/offline.html&#x27;);
+        })
+    );
+  }
+});</code></pre>
+<p class="leading-relaxed my-3.5 text-zinc-300">If Cloudflare ever returns a <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">text/x-component</code> payload for an HTML navigation request, the Service Worker intercepts it, logs the violation, purges client caches, and refetches with a cache-busting token—restoring the user interface in <strong class="text-white font-semibold">under 200ms without manual intervention</strong>.</p>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="5-production-telemetry-outage-postmortem-metrics" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>5. Production Telemetry & Outage Postmortem Metrics</span></h2>
+<p class="leading-relaxed my-3.5 text-zinc-300">Since deploying this 3-Layer Defense across <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong>'s production platforms:</p>
+<div class="overflow-x-auto my-6 border border-white/10 rounded-lg">
+<table class="w-full text-left text-xs text-zinc-300 border-collapse">
+<thead class="bg-white/[0.04] text-[11px] font-mono uppercase tracking-wider text-zinc-400 border-b border-white/10">
+<tr>
+<th class="p-3">Telemetry Metric</th>
+<th class="p-3">During Incident (Pre-Fix)</th>
+<th class="p-3">Post-Implementation</th>
+<th class="p-3">Improvement</th>
+</tr></thead><tbody class="divide-y divide-white/[0.06]">
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">White Screen / Poisoned Page Reports</strong></td>
+<td class="p-3">42 incidents / morning</td>
+<td class="p-3"><strong class="text-white font-semibold">0 incidents</strong></td>
+<td class="p-3"><strong class="text-white font-semibold">100% Resolved</strong></td>
+</tr>
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">Edge Cache Hit Ratio (HTML)</strong></td>
+<td class="p-3"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">64.2%</code> (Unstable)</td>
+<td class="p-3"><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">98.4%</code></strong></td>
+<td class="p-3"><strong class="text-white font-semibold">+34.2% stability</strong></td>
+</tr>
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">p95 Time To First Byte (TTFB)</strong></td>
+<td class="p-3"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">480ms</code> (Erratic revalidation)</td>
+<td class="p-3"><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">24ms</code></strong></td>
+<td class="p-3"><strong class="text-white font-semibold">20x faster</strong></td>
+</tr>
+<tr class="hover:bg-white/[0.02]">
+<td class="p-3"><strong class="text-white font-semibold">Mean Time to Recovery (MTTR)</strong></td>
+<td class="p-3">~45 minutes</td>
+<td class="p-3"><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">&lt;200ms</code> (Automated SW recovery)</strong></td>
+<td class="p-3"><strong class="text-white font-semibold">Instant Self-Healing</strong></td>
+</tr>
+</tbody></table></div>
+<hr class="border-white/[0.08] my-8" />
+<h2 id="6-key-takeaways-for-senior-architects" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>6. Key Takeaways for Senior Architects</span></h2>
+<ol class="list-decimal pl-6 space-y-1.5 my-3 text-zinc-300">
+<li><strong class="text-white font-semibold">Never Assume CDNs Differentiate by URI Alone</strong>: Modern fullstack frameworks (Next.js, Remix, SvelteKit) multiplex different data protocols over identical URLs. Your edge cache keys must explicitly partition by protocol headers (<code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">RSC: 1</code>).</li>
+<li><strong class="text-white font-semibold"><code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Vary</code> Headers Are a Hint, Not a Guarantee</strong>: Cloudflare and intermediate cellular proxies often strip <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Vary</code>. Always back up HTTP headers with explicit edge cache rules.</li>
+<li><strong class="text-white font-semibold">Build Client-Side Immune Systems</strong>: The client Service Worker is your last line of defense. By verifying <code class="px-1.5 py-0.5 rounded bg-white/[0.06] text-emerald-400 font-mono text-[13px]">Content-Type: text/html</code> on document navigations, you make white-screen crashes mathematically impossible.</li>
+</ol>
+<hr class="border-white/[0.08] my-8" />
+<blockquote class="border-l-2 border-emerald-400 pl-4 py-1.5 my-4 bg-white/[0.02] rounded-r text-zinc-300 italic text-sm"><strong class="text-white font-semibold">About the Author (Tiểu sử tác giả):</strong> <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (canonical handle: <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a></strong>, moniker: <strong class="text-white font-semibold">Kido</strong>) là Kỹ sư Kiến trúc Hệ thống (Senior AI-Native Lead & Systems Architect) tại Đà Nẵng, Việt Nam; cựu Tech Lead 6 năm tại FPT Software (SBI Lab), Quán quân Startup Runway 2018 (ĐH Kinh tế - ĐH Đà Nẵng), tác giả của <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Winter Arc</a></strong>, <strong class="text-white font-semibold"><a href="https://github.com/khanhduong22" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Agent Harness Kit</a></strong> và <strong class="text-white font-semibold"><a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Kido Chronicles</a></strong>. Xem đầy đủ tại <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Tiểu sử Dương Phúc Khánh</a></strong> & <strong class="text-white font-semibold"><a href="https://www.wikidata.org/wiki/Q141718572" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Wikidata Q141718572</a></strong>.</blockquote>
+<h2 id="about-the-author-engineering-research" class="text-xl sm:text-2xl font-semibold text-zinc-100 mt-8 mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>About the Author & Engineering Research</span></h2>
+<ul class="list-disc pl-6 space-y-1.5 my-3 text-zinc-300">
+<li>🌐 <strong class="text-white font-semibold">Official Architecture Hub</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh</a></strong> (<a href="https://khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">khanhdp</a>)</li>
+<li>🏛️ <strong class="text-white font-semibold">Biography & Engineering Timeline</strong>: <strong class="text-white font-semibold"><a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Dương Phúc Khánh (khanhdp · Kido)</a></strong> (<a href="https://khanhdp.com/about" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">Tiểu sử</a>)</li>
+<li>🔥 <strong class="text-white font-semibold">Kido Chronicles (127 Real Production Postmortems)</strong>: <a href="https://truyen.khanhdp.com" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">https://truyen.khanhdp.com</a></li>
+<li>💻 <strong class="text-white font-semibold">Open-Source Multi-Agent Framework</strong>: <a href="https://github.com/khanhduong22/agent-harness-kit" class="text-sky-400 hover:text-emerald-400 underline decoration-zinc-600 underline-offset-4 transition-colors" target="_blank" rel="noopener">github.com/khanhduong22/agent-harness-kit</a></li>
+</ul>
+    </article>
+
+    <!-- Contextual Kido Chronicles Episodes (Deep Links) -->
+    <section class="mt-16 pt-8 border-t border-white/[0.06] space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          <span>Related Production Postmortems (Kido Chronicles)</span>
+        </h2>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-xs font-mono text-purple-300 hover:text-purple-200 hover:underline">
+          View all 128 episodes ↗
+        </a>
+      </div>
+      <p class="text-xs text-zinc-400">
+        Curated real-world war stories and incident postmortems authored by Duong Phuc Khanh on <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">truyen.khanhdp.com</a> related to this topic:
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+        
+        <a href="https://truyen.khanhdp.com/tap/tap-120-xoa-bo-loading-tsx-cua-nextjs-bi-kip-zero-streaming-fallback-va-frame-0-skeleton/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Next.js</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 120 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 120: Xóa Bỏ loading.tsx Của Next.js & Frame-0 Skeleton
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Khắc phục triệt để hiện tượng giật màn hình (CLS) khi Next.js chuyển trang bằng Skeleton đồng bộ Frame-0.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-124-vu-an-dau-doc-bo-nho-dem-rsc-service-worker-v7-va-accessibility-100-tuyet-doi/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Edge & PWA</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 124 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 124: Vụ Án Đầu Độc Bộ Nhớ Đệm RSC & Service Worker v7
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Phân tích cú xung đột giữa Service Worker Cache và Next.js RSC Flight Header khiến iOS Safari bị crash trắng xóa.
+          </div>
+        </a>
+        
+
+        <a href="https://truyen.khanhdp.com/tap/tap-131-dao-trung-o-bug-multi-temporal-tenancy-khi-asia-saigon-troi-day-va-cu-lua-ip-cloudflare/" target="_blank" rel="noopener" class="p-3.5 border border-white/10 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-all flex flex-col justify-between group">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
+            <span class="text-emerald-400 font-semibold">Distributed Systems</span>
+            <span class="group-hover:text-emerald-400 transition-colors">Tập 131 ↗</span>
+          </div>
+          <div class="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-2">
+            Tập 131: Đào Trúng Ổ Bug Multi-Temporal Tenancy & Cú Lừa IP Cloudflare
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1 line-clamp-2">
+            Xử lý sai lệch múi giờ đa quốc gia của vận động viên quốc tế và cách bóc tách IP gốc qua Cloudflare Header.
+          </div>
+        </a>
+        
+      </div>
+    </section>
+
+    <!-- Author Bio & Entity Verification Card (Bottom) -->
+    <section class="mt-12 p-6 rounded-2xl border border-white/10 bg-[#121212] space-y-4">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+        <img
+          src="/duong-phuc-khanh.jpg"
+          alt="Duong Phuc Khanh (Dương Phúc Khánh · Kido)"
+          width="88"
+          height="88"
+          style="width:88px;height:88px;object-fit:cover;"
+          class="rounded-xl border border-white/15 shrink-0"
+        />
+        <div class="space-y-2 text-center sm:text-left flex-1">
+          <h3 class="text-base font-semibold text-zinc-100">About the Author: Duong Phuc Khanh (khanhdp · Kido)</h3>
+          
+        <p class="text-sm text-zinc-300 leading-relaxed mb-3">
+          <strong>Duong Phuc Khanh</strong> (Vietnamese: <em>Dương Phúc Khánh</em>, born 1995 in Da Nang, Vietnam) is a Senior Software Engineer and Systems Architect at <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>. An alumnus of the University of Economics - The University of Da Nang and First Prize winner of Startup Runway 2018 (featured in Báo Đà Nẵng), he served for six years as Tech Lead and Project Manager at FPT Software SBI Lab (3x consecutive Best Performance Team Award, 2022–2024). He is the creator of <a href="https://vantoicalis.com" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Winter Arc</a>, the 128-episode <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>, and the <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Agent Harness Kit</a>.
+        </p>
+        
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs font-mono pt-1">
+            <a href="https://khanhdp.com" class="text-sky-400 hover:underline">Home</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/en" class="text-sky-400 hover:underline">Biography (EN)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/about" class="text-sky-400 hover:underline">Tiểu sử (VI)</a>
+            <span class="text-zinc-600">·</span>
+            <a href="/articles/" class="text-sky-400 hover:underline">Articles Hub</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://www.wikidata.org/wiki/Q141718572" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Wikidata</a>
+            <span class="text-zinc-600">·</span>
+            <a href="https://orcid.org/0009-0005-7192-2664" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">ORCID</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="border-t border-white/[0.06] bg-[#080808] text-xs font-mono text-zinc-500 py-12">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <a href="https://khanhdp.com" class="text-zinc-300 hover:text-white font-semibold uppercase transition-colors">DUONG PHUC KHANH (KIDO)</a>
+      </div>
+      <div class="flex items-center gap-4 text-zinc-400 flex-wrap">
+        <a href="/" class="hover:text-white transition-colors">Overview</a>
+        <a href="/en" class="hover:text-white transition-colors">Biography (EN)</a>
+        <a href="/about" class="hover:text-white transition-colors">Tiểu sử (VI)</a>
+        <a href="/articles/" class="text-white hover:text-emerald-400 transition-colors">Articles</a>
+        <a href="/portfolio" class="hover:text-white transition-colors">Portfolio</a>
+        <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Chronicles</a>
+        <a href="https://github.com/khanhduong22" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://www.linkedin.com/in/duong-phuc-khanh/" target="_blank" rel="noopener" class="hover:text-white transition-colors">LinkedIn</a>
+      </div>
+    </div>
+    <div class="max-w-5xl mx-auto px-6 mt-4 text-[11px] text-zinc-600 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>© 2026 Duong Phuc Khanh (khanhdp · Kido). All rights reserved.</p>
+      <p>Crafted with quiet confidence</p>
+    </div>
+  </footer>
+
+  <!-- Scroll Progress Script -->
+  <script>
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar) progressBar.style.width = scrolled + '%';
+    }, { passive: true });
+
+    document.addEventListener("click", (e) => {
+      let a = e.target.closest("a[href]");
+      if (a) {
+        let h = a.getAttribute("href");
+        if (h && (h.startsWith("http://") || h.startsWith("https://")) && !h.includes(window.location.hostname)) {
+          let t = (a.getAttribute("title") || a.textContent || h).trim().slice(0, 60);
+          if (window.trackEvent) window.trackEvent("outbound_click", { event_category: "outbound", destination_url: h, link_text: t });
+        } else if (h && (h.startsWith("#") || h.startsWith("/"))) {
+          let t = (a.textContent || h).trim().slice(0, 40);
+          if (window.trackEvent) window.trackEvent("nav_click", { event_category: "navigation", destination: h, link_text: t });
+        }
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>
