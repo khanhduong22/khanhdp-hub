@@ -28,6 +28,7 @@
 - **Facebook Page (Kode x Kido)**: [https://www.facebook.com/kode.x.kido](https://www.facebook.com/kode.x.kido)
 - **TikTok (Kode x Kido)**: [https://www.tiktok.com/@kode.x.kido](https://www.tiktok.com/@kode.x.kido)
 - **YouTube Official Channel (Kode x Kido — Dương Phúc Khánh - Systems Architect & AI Engineer)**: [https://www.youtube.com/@kodexkido](https://www.youtube.com/@kodexkido)
+- **Engineering Architecture Blog**: [Kido Engineering Blog (https://blog.khanhdp.com)](https://blog.khanhdp.com)
 - **Technical Chronicles**: [Kido Chronicles (https://truyen.khanhdp.com)](https://truyen.khanhdp.com)
 - **Google Knowledge Graph Entity ID (`kgmid`)**: `/g/11zyg5zq1c` ([https://www.google.com/search?kgmid=/g/11zyg5zq1c](https://www.google.com/search?kgmid=/g/11zyg5zq1c))
 - **Wikidata Knowledge Graph Entity**: [https://www.wikidata.org/wiki/Q141718572](https://www.wikidata.org/wiki/Q141718572)
