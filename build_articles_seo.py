@@ -76,6 +76,7 @@ CANONICAL_PERSON = {
         "https://linkedin.com/in/duong-phuc-khanh/",
         "https://x.com/duongphuckhanh",
         "https://facebook.com/khanhduong2295/",
+        "https://blog.khanhdp.com",
         "https://truyen.khanhdp.com"
     ]
 }
@@ -1432,6 +1433,7 @@ def render_article_page(art, html_content):
         <a href="/en" class="hover:text-white transition-colors">Biography (EN)</a>
         <a href="/about" class="hover:text-white transition-colors">Tiểu sử (VI)</a>
         <a href="/articles/" class="text-white hover:text-emerald-400 transition-colors">Articles</a>
+        <a href="https://blog.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Engineering Blog</a>
         <a href="/portfolio" class="hover:text-white transition-colors">Portfolio</a>
         <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Chronicles</a>
         <a href="https://github.com/khanhduong22" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a>
@@ -1801,7 +1803,7 @@ def render_hub_index_page(articles):
             <span class="text-xs font-mono text-zinc-400">/ Duong Phuc Khanh · khanhdp · Kido</span>
           </div>
           <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-            Senior Software Engineer &amp; Systems Architect based in Da Nang, Vietnam. 6 years at FPT Software SBI Lab (3x Best Performance Award recipient), Startup Runway 2018 Champion. Creator of <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>, <a href="/en" class="text-sky-400 hover:underline">Official Biography (EN)</a>, <a href="/about" class="text-sky-400 hover:underline">Tiểu sử Tiếng Việt</a>, <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>, and <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Agent Harness Kit</a>.
+            Senior Software Engineer &amp; Systems Architect based in Da Nang, Vietnam. 6 years at FPT Software SBI Lab (3x Best Performance Award recipient), Startup Runway 2018 Champion. Creator of <a href="https://khanhdp.com" class="text-emerald-400 hover:underline">khanhdp.com</a>, <a href="/en" class="text-sky-400 hover:underline">Official Biography (EN)</a>, <a href="/about" class="text-sky-400 hover:underline">Tiểu sử Tiếng Việt</a>, <a href="https://blog.khanhdp.com" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Kido Engineering Blog</a>, <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="text-purple-300 hover:underline">Kido Chronicles</a>, and <a href="https://github.com/khanhduong22/agent-harness-kit" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Agent Harness Kit</a>.
           </p>
           <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs font-mono pt-1">
             <a href="https://www.google.com/search?kgmid=/g/11zyg5zq1c" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Google KG /g/11zyg5zq1c</a>
@@ -1834,6 +1836,7 @@ def render_hub_index_page(articles):
         <a href="/en" class="hover:text-white transition-colors">Biography (EN)</a>
         <a href="/about" class="hover:text-white transition-colors">Tiểu sử (VI)</a>
         <a href="/articles/" class="text-white hover:text-emerald-400 transition-colors">Articles</a>
+        <a href="https://blog.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Engineering Blog</a>
         <a href="/portfolio" class="hover:text-white transition-colors">Portfolio</a>
         <a href="https://truyen.khanhdp.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Chronicles</a>
         <a href="https://github.com/khanhduong22" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a>

@@ -29,6 +29,7 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-# XML Sitemaps (Root Entity Home + Kido Chronicles Ecosystem)
+# XML Sitemaps (Root Entity Home + Engineering Blog + Kido Chronicles Ecosystem)
 Sitemap: https://khanhdp.com/sitemap.xml
+Sitemap: https://blog.khanhdp.com/sitemap-index.xml
 Sitemap: https://truyen.khanhdp.com/sitemap.xml
